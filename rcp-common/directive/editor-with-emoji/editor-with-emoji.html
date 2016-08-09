@@ -1,20 +1,3 @@
-
 <!--
 editor-with-emoji
--->
-<div class="editor-with-emoji">
-  <div class="exceed-prompt">
-    <span ng-class="{'c-gray':exceed}" ng-hide="exceed">还可以输入<b class="text1">{{surplus}}</b>字</span>
-    <span ng-class="{'c-red':exceed>0}" ng-show="exceed">已超出<b class="text1">{{exceed}}</b>字</span>
-  </div>
-  <label>
-    <textarea ng-attr-placeholder="{{config.placeholder}}"
-              ng-attr-id="{{config.id}}"
-              ng-model="content"
-              ng-focus="onFocus()"
-              ng-blur="onBlur()"
-              ng-trim="false"
-              ng-class="config.class"
-              ng-style="config.style"></textarea>
-  </label>
-</div>
+--><div class="editor-with-emoji"><div class="exceed-prompt"><span ng-class="{'c-gray':exceed}" ng-hide="exceed">还可以输入<b class="text1">{{surplus}}</b>字</span> <span ng-class="{'c-red':exceed>0}" ng-show="exceed">已超出<b class="text1">{{exceed}}</b>字</span></div><label><textarea ng-attr-placeholder="{{config.placeholder}}" ng-attr-id="{{config.id}}" ng-model="content" ng-focus="onFocus()" ng-blur="onBlur()" ng-trim="false" ng-class="config.class" ng-style="config.style"></textarea></label></div>

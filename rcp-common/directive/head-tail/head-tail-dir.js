@@ -338,7 +338,7 @@ module.controller('categoriesCtrl', ['$rootScope', '$scope', 'service', function
 }]);
 
 //@ 搜索栏
-module.directive("searchDir", function() {
+module.directive("searchDir", function () {
     return {
         template:'<div class="h-sc"><div class="head-search-bar"><div class="enter" ng-click="stopPropagation($event)"><input type="text" class="input" ng-model="scText" ng-keydown="onkeydown($event)" ng-change="matchChange(scSelectVal.value,scText)" placeholder="请输入关键词搜索"><div class="match-kw-v" ng-show="matchReadyLock && mcCourseList && mcCourseList.length"><div class="mc-list"><ul><li ng-repeat="item in mcCategoryList track by $index" ng-if="$index < lMaxLen" ng-class="{hover: $index == moveKeyIndex}" ng-mouseenter="mouseenter($index,\'类\')" ng-click="matchGoToCategory(item.tag,scText)"><div class="text-of"><a href="javascript:;">{{text}}</a> 在 <a href="javascript:;" class="item-name color-cyan">{{item.tag}}</a> 分类中搜索</div></li></ul><div style="margin:0 10px;border-top:1px solid #dfdfdf" ng-if="mcCourseList.length && mcCategoryList.length"></div><ul><li ng-repeat="item in mcCourseList track by $index" ng-click="intoDetail(item)" ng-if="$index < cMaxLen" ng-class="{hover: $index + lMaxLen == moveKeyIndex}" ng-mouseenter="mouseenter($index,\'资源\')"><div class="text-of"><a href="javascript:;" class="item-name" ng-bind-html="item.name|titleMatchKw:scText"></a></div></li></ul></div></div></div><a ng-click="goToSearch(scSelectVal.value,scText)" class="submit" title="提交"><i class="fa fa-search" aria-hidden="true"></i></a></div><div class="hot-word"><a href="" class="mg-r20" ng-repeat="item in scHotWord" ng-click="goToSort(item.name)">{{item.name}}</a></div></div>',
         restrict: "E",
@@ -568,7 +568,7 @@ module.controller('headSearchCtrl', ['$rootScope', '$scope', '$document', '$elem
                 }
             },
             function(err) {
-                service.dialog.alert('获取提示结果失败，错误代码：' + err.data.data.code + '，错误信息：' + (err.data.data.msg || err.data.data.dmsg));
+                dialog('错误代码：' + err.data.data.code);
             }
         );
     };

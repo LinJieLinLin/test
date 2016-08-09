@@ -131,18 +131,6 @@
                 case '学习痕迹':
                     url = '/course/learning-record.html';
                     break;
-                case '确认订单':
-                    url = '/order/confirm-order.html';
-                    break;
-                case '已售订单':
-                    url = '/order/teacher-order.html';
-                    break;
-                case '我的订单':
-                    url = '/order/my-order.html';
-                    break;
-                case '订单详情':
-                    url = '/order/order-detail.html';
-                    break;
             }
             return url;
         };

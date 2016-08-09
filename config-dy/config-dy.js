@@ -1,5 +1,5 @@
 function configInit() {
-    var srvEnd = '.dev.gdy.io/';
+    var srvEnd = '.dyfchk2.kuxiao.cn/';
     var srvList = {
             //课程相关
             course: 'http://course' + srvEnd,
@@ -94,7 +94,7 @@ function configInit() {
         },
         host: {
             kuxiao: 'http://rcp' + srvEnd,
-            aikexue: 'http://aikexue' + srvEnd,
+            aikexue: 'http://rcp' + '.dyfchk2.aikexue.com',
             gzmooc: 'http://gzmooc' + srvEnd
         },
 

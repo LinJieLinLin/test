@@ -121,6 +121,9 @@
                             }
                     }
                 }
+                if(response.config.option.alertError&&response.data&&response.data.code!==0){
+                    dialog.alert(response.data.msg);
+                }
                 return response;
             },
             responseError: function(response) {
