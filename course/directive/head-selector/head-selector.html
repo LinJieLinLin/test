@@ -1,0 +1,7 @@
+<div class="head-selector">
+    <style type="text/css">.head-selector{display:inline-block;position:relative;text-align:center;cursor:pointer}.head-selector>span>i.fa{margin-left:7px}.head-selector .hs-options{position:absolute;border:1px solid #f7f7f7;background:#fff;z-index:10}.head-selector .hs-options>li{width:98px;line-height:30px;cursor:pointer}.head-selector .hs-options .hover-bg:hover{background:#fcf8e8}.head-selector .hs-options .active{background:#02c0b9;color:#fff}</style>
+    <span ng-click="toggle();">{{content}}<i class="fa fa-caret-down" aria-hidden="true" ng-class="{'fa-caret-down': !showOptions, 'fa-caret-up': showOptions}"></i></span>
+    <ul class="hs-options" ng-show="showOptions">
+        <li ng-repeat="option in options" ng-click="setValue(option, $index);" ng-class="{'active': curSelectIndex == $index, 'hover-bg': curSelectIndex != $index}">{{option.name}}</li>
+    </ul>
+</div>

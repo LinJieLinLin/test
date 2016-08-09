@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html ng-app="RCP">
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>就业直通</title>
+    <script src="config-dy/config-dy.js"></script>
+    <!-- build:css recruit/recruit.min.css-->
+    <link rel="stylesheet" href="rcp-common/styles/common.css" />
+    <link rel="stylesheet" href="rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="rcp-common/directive/common/common-dir.css" />
+    <link rel="stylesheet" href="rcp-common/directive/head-tail/head-tail-dir.css" />
+    <link rel="stylesheet" href="rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.css" />
+    <link rel="stylesheet" href="recruit/recruit.css" />
+    <!-- endbuild -->
+</head>
+
+<body ng-controller="mainCtrl">
+    <!-- 头部 -->
+    <headnav item-list="itemList" user="user"></headnav>
+    <!--主体-->
+    <div class="wrap" ng-controller="recruitCtrl">
+        <div class="banner"></div>
+        <div class="w-p">
+            <div ng-repeat="w in works" class="w-list" ng-show="$index<10" ng-click="view(w,$index)">
+                <div ng-style="w.style">
+                    <div ng-bind="w.name"></div>
+                    <div class="view-list">
+                        <div>
+                            <div>查看职位列表</div>
+                        </div>
+                    </div>
+                </div>
+                <div ng-bind="w.name"></div>
+                <div class="c-gran" ng-bind="'月薪：'+w.money"></div>
+                <div ng-bind="'岗位数：'+w.num"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="more">
+            <button onclick="$('html,body').stop().animate({scrollTop:$('#work').offset().top},'normal');">更多岗位</button>
+        </div>
+        <div class="content" id="work">
+            <div class="nav">
+                <div>岗位类别</div>
+                <div ng-click="changeType(0)" ng-class="{'btn-1':type==0}">
+                    全部</div>
+                <div ng-click="changeType(1)" ng-class="{'btn-1':type==1}">
+                    产品
+                </div>
+                <div ng-click="changeType(2)" ng-class="{'btn-1':type==2}">
+                    运营
+                </div>
+                <div ng-click="changeType(3)" ng-class="{'btn-1':type==3}">
+                    技术
+                </div>
+                <div ng-click="changeType(4)" ng-class="{'btn-1':type==4}">
+                    项目
+                </div>
+            </div>
+            <div ng-repeat="l in works |filter:filterName">
+                <div id="work{{$index}}" class="l-list" ng-class="{'b-b0':$last||l.viewStyle}">
+                    <div ng-bind="l.name"></div>
+                    <div>
+                        <div class="c-y" ng-bind="l.money"></div>
+                        <div ng-bind="l.resume"></div>
+                        <div style="margin-left:20px;" ng-bind="email"></div>
+                        <button class="bg-y" ng-show="l.viewStyle" ng-click="changeStatus(l)">收起</button>
+                        <button class="bg-b" ng-show="!l.viewStyle" ng-click="changeStatus(l)">查看详细</button>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="describe" ng-show="l.viewStyle" ng-bind-html="l.describe|sanitize"></div>
+            </div>
+            <div class="mouter"></div>
+            <div class="clear"></div>
+        </div>
+    </div>
+    <!-- 尾部 -->
+    <tailnav></tailnav>
+    <script src="../rcp-common/service/lib-default.min.js"></script>
+    <!-- build:js recruit/recruit.min.js-->
+    <script src="recruit/recruit.js"></script>
+    <script src="rcp-common/module/main/main-ctrl.js"></script>
+    <script src="rcp-common/service/service.min.js"></script>
+    <script src="rcp-common/directive/head-tail/head-tail-dir.js"></script>
+    <script src="rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.js"></script>
+    <!-- endbuild-->
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+{
+  "name": "course",
+  "authors": [
+    "linj"
+  ],
+  "license": "NO",
+  "description": "course",
+  "main": "",
+  "moduleType": [],
+  "homepage": "",
+  "ignore": [
+    "*.cmd",
+    "test",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "study-circle": "https://w.gdy.io/dyf_w/dms.git#buildDev",
+    "wcms": "https://w.gdy.io/dyf_w/wcms.git",
+    "rcp-common": "https://w.gdy.io/dyf_w/dyf.git#buildDev",
+    "ckeditor_ext": "https://w.gdy.io/dyf_w/ckeditor_ext.git"
+  },
+  "scripts": {
+    "postinstall": "gulp build"
+  },
+  "_release": "d4a0e7b84f",
+  "_resolution": {
+    "type": "branch",
+    "branch": "buildDev",
+    "commit": "d4a0e7b84fdec28bf996b1e8d9baf73dc1b63576"
+  },
+  "_source": "https://w.gdy.io/dyf_w/course.git",
+  "_target": "buildDev",
+  "_originalSource": "https://w.gdy.io/dyf_w/course.git"
+}

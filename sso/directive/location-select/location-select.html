@@ -1,0 +1,15 @@
+<div class="choice-selector">
+    <!--<div class="con"  ng-show="country">
+        <select class="p-r" ng-model="data.country" ng-options="item.Name as item.Name for item in country"></select>
+        <i class="fa fa-chevron-down chevron" aria-hidden="true"></i>
+    </div>-->
+    <div class="con"  ng-show="state">
+        <select class="p-r" ng-model="data.province"  ng-options="item as item for item in state"></select>
+        <i class="fa fa-chevron-down chevron" aria-hidden="true"></i>
+    </div>
+    <div class="con m-l"  ng-show="city">
+        <select class="p-r" ng-model="data.city"  ng-options="item as item for item in city"></select>
+        <i class="fa fa-chevron-down chevron" aria-hidden="true"></i>
+    </div>
+
+</div>

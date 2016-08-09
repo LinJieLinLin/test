@@ -1,0 +1,61 @@
+<div class="breadcrumb">
+    账号管理 > 机构管理 >
+    <span class="color-bc-blue-c" ng-bind="typeOpt[type].title"></span>
+</div>
+
+<div class="main-content">
+    <div class="content-edit">
+        <table>
+            <tr>
+                <td>
+                    <span class="require">*</span>
+                    <span class="title">机构名称：</span>
+                </td>
+                <td>
+                    <input type="text" class="n-input" placeholder="请输入机构名称" ng-model="orgInfo.attrs.org.name" maxlength="20">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="require">*</span>
+                    <span class="title">机构标签：</span>
+                </td>
+                <td>
+                    <div ng-show="type === 'new'">
+                        <input type="text" class="n-input" placeholder="请输入机构标签" ng-model="orgInfo.attrs.org.tags[0]" maxlength="20">
+                        <div class="tips">此标签用于统计该机构用户</div>
+                    </div>
+                    <div ng-show="type === 'edit'">
+                        <span ng-bind="orgInfo.attrs.org.tags[0]" class="info"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-show="">
+                <td>
+                    <span class="title">管理员昵称：</span>
+                </td>
+                <td>
+                    <input type="text" class="n-input" placeholder="请输入管理员昵称" ng-model="orgInfo.attrs.basic.nickName">
+                </td>
+            </tr>
+            <tr ng-show="">
+                <td>
+                    <span class="title">密码：</span>
+                </td>
+                <td>
+                    <input type="text" class="n-input" placeholder="请输入密码" ng-model="orgExt.pw">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <div class="form-btn">
+                        <a href="" ng-click="confirm()">确认</a>
+                        <a href="#/manage-organization" id="cancel">取消</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

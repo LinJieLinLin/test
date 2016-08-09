@@ -1,0 +1,27 @@
+{
+    "name": "course",
+    "version": "0.0.1",
+    "authors": [
+        "linj"
+    ],
+    "license": "NO",
+    "description": "course",
+    "main": "",
+    "moduleType": [],
+    "homepage": "",
+    "ignore": [
+        "*.cmd",
+        "test",
+        "node_modules",
+        "bower_components"
+    ],
+    "dependencies": {
+        "study-circle": "https://w.gdy.io/dyf_w/dms.git#buildDev",
+        "wcms": "https://w.gdy.io/dyf_w/wcms.git",
+        "rcp-common": "https://w.gdy.io/dyf_w/dyf.git#buildDev",
+        "ckeditor_ext": "https://w.gdy.io/dyf_w/ckeditor_ext.git"
+    },
+    "scripts": {
+        "postinstall": "gulp build"
+    }
+}

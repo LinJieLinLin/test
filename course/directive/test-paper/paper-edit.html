@@ -1,0 +1,467 @@
+<div class="edit-w content-n paper-editor" id="paper-edit-{{config.aid}}">
+    <div ng-show="!loading">
+        <y-loading show="true"></y-loading>
+    </div>
+
+    <div class="loading-layer" id="loading-layer" ng-show="saveLoading">
+        <span class="loading-circle loading-amit-spin"></span>
+    </div>
+
+
+
+    <div class="ew-h con" ng-show="loading">
+
+        <div class="list-ac">
+
+            <div class="grp">
+
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" class="back" ng-click="closeEdit()">
+                            <p class="ic"><i class="image-con-head-back"></i></p>
+                            <p>返回</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" class="overview-b">
+                            <p class="ic"><i class="image-con-head-dir"></i></p>
+                            <p>目录</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="addItem('T1',null,curItemIndex.index,curItemIndex.group)">
+                            <p class="ic"><i class="image-con-head-q-6"></i></p>
+                            <p>添加题组</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="addItem('e_sel','single',curItemIndex.index,curItemIndex.group)">
+                            <p class="ic"><i class="image-con-head-q-1"></i></p>
+                            <p>单选题</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-show="editWidthMode === 'wide'">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="addItem('e_sel','multi',curItemIndex.index,curItemIndex.group)">
+                            <p class="ic"><i class="image-con-head-q-2"></i></p>
+                            <p>多选题</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-show="editWidthMode === 'wide'">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="addItem('e_sel','judge',curItemIndex.index,curItemIndex.group)">
+                            <p class="ic"><i class="image-con-head-q-5"></i></p>
+                            <p>判断题</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-show="editWidthMode === 'wide'">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="addItem('e_fill',null,curItemIndex.index,curItemIndex.group)">
+                            <p class="ic"><i class="image-con-head-q-3"></i></p>
+                            <p>填空题</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-show="editWidthMode === 'wide'">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="addItem('e_text',null,curItemIndex.index,curItemIndex.group)">
+                            <p class="ic"><i class="image-con-head-q-4"></i></p>
+                            <p>简答题</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-show="editWidthMode === 'petty'">
+                    <div class="bw">
+                        <a href="javascript:;" class="up-panel down-list-h">
+                            <p class="ic"><i class="image-con-head-more"></i></p>
+                            <p>更多</p>
+                            <div class="down-list">
+                                <ul>
+                                    <li ng-click="addItem('e_sel','multi',curItemIndex.index,curItemIndex.group)"
+                                        ng-show="editWidthMode === 'petty'">
+                                        <div class="img-p"><i class="image-con-s-q-2"></i></div>
+                                        多选题
+                                    </li>
+                                    <li ng-click="addItem('e_sel','judge',curItemIndex.index,curItemIndex.group)"
+                                        ng-show="editWidthMode === 'petty'">
+                                        <div class="img-p"><i class="image-con-s-q-5"></i></div>
+                                        判断题
+                                    </li>
+                                    <li ng-click="addItem('e_fill',null,curItemIndex.index,curItemIndex.group)"
+                                        ng-show="editWidthMode === 'petty'">
+                                        <div class="img-p"><i class="image-con-s-q-4"></i></div>
+                                        填空题
+                                    </li>
+                                    <li ng-click="addItem('e_text',null,curItemIndex.index,curItemIndex.group)"
+                                        ng-show="editWidthMode === 'petty'">
+                                        <div class="img-p"><i class="image-con-s-q-4"></i></div>
+                                        简答题
+                                    </li>
+                                </ul>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="seq"></div>
+
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" class="save-b" ng-click="savePaper()">
+                            <p class="ic"><i class="image-con-head-save"></i></p>
+                            <p>保存</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" ng-href="{{'/course/exam.html?aid='+config.aid+'&preview=1' + (paper.type === 'e_test' && config.tid ? ('&tid=' + config.tid) : '')}}" target="_blank">
+                            <p class="ic"><i class="image-con-head-preview"></i></p>
+                            <p>预览</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="seq"></div>
+
+            </div>
+
+            <div class="grp">
+                <div class="block_new ck-tool-bar" ng-class="ckToolPosMode">
+                    <div id="topEditor-exam" class="top-editor">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ew-m con">
+            <div class="ew-list">
+                <a href="javascript:;" class="close-b" title="隐藏"><i class="image-con-dir-close"></i></a>
+                <div class="h">
+                    <span>试卷目录</span>
+                </div>
+                <div class="l dir">
+                    <div class="l-c">
+                        <div class="tree-line"></div>
+                        <ul ng-repeat="group in paper.groups track by $index">
+                            <li class="option">
+                                <div class="icon">
+                                    <i class="image-con-dir-t1"></i>
+                                </div>
+                                <a ng-click="gotoLoc('q-t-' + config.aid + '-' + group.title.id)" class="section-context first" title="{{group.title.data.title}}">{{group.title.data.title || '未命名题组'}}</a>
+                            </li>
+                            <li class="option" ng-repeat="item in group.items track by $index">
+                                <div class="icon">
+                                    <i class="image-con-dir-t2"></i>
+                                </div>
+                                <a ng-click="gotoLoc('q-' + config.aid + '-' + item.id)"
+                                   class="section-context second" ng-bind="transTitle(item.data.text)" title="{{transTitle(item.data.text)}}"></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="ew-word" id="ew-paper-{{config.aid}}">
+                <div class="m w-ck dir">
+
+                    <div>
+                        <div class="test-main">
+                            <div class="head-info">
+                                <div>
+                                    <span class="info">
+                                        <em class="icon"><i class="image-test-h-1"></i></em>
+                                        <input class="n name" placeholder="请输入试卷名称" ng-model="paper.title" maxlength="20">
+                                    </span>
+                                    <span class="info">
+                                        <em class="icon"><i class="image-test-h-2"></i></em>
+                                        <input class="n limit" placeholder="建议时长（分）" type="text" maxlength="3" title="建议时长，单位：分钟"
+                                               ng-model="paper.advise_cost" ng-show="paper.type !== 'e_test'">
+                                        <input class="n limit" placeholder="考试时长（分）" type="text" maxlength="3" title="考试时长，单位：分钟"
+                                               ng-model="paper.advise_cost" ng-show="paper.type === 'e_test'">
+                                    </span>
+                                    <span class="info" ng-show="paper.type === 'e_test' && editWidthMode === 'wide'">
+                                        <span class="time">开放时间</span>
+                                        <input type="text" class="jf-date n time"
+                                               plug-style="all time" readonly id="startTime-{{config.aid}}"
+                                               ng-model="paper.tInfo.start_time" placeholder="点击选择开始时间">
+                                        <span class="time">--</span>
+                                        <input type="text" class="jf-date n time"
+                                               plug-style="all time" readonly id="endTime-{{config.aid}}"
+                                               ng-model="paper.tInfo.end_time" placeholder="点击选择结束时间">
+                                    </span>
+                                    <!--<span class="info" ng-show="paper.type === 'e_paper' && editWidthMode === 'wide'">-->
+                                    <span class="info" ng-show="">
+                                        <label for="pubAns" class="pub-ans" title="勾选后，只有客观题的试卷学生作答后可直接查看分数解析，有主观题的试卷老师批改后会直接公布成绩">
+                                            <input type="checkbox" id="pubAns" ng-model="paper.answerPub">
+                                            <span>是否直接公布答案</span>
+                                        </label>
+                                    </span>
+                                    <div class="r">
+                                        <span class="mode-btn-grp">
+                                            <a href="" ng-click="paper.type = 'e_paper'" ng-class="{'cur': paper.type === 'e_paper'}" title="普通试卷，无做题时间限制">普通试卷</a>
+                                            <a href="" ng-click="paper.type = 'e_test'" ng-class="{'cur': paper.type === 'e_test'}" title="有做题时间限制">考试模式</a>
+                                        </span>
+                                    </div>
+                                </div>
+                                <p class="h-20" ng-show="editWidthMode === 'petty'"></p>
+                                <div class="second-l" ng-show="editWidthMode === 'petty'">
+                                    <span class="info" ng-show="paper.type === 'e_test'">
+                                        <span class="time">开放时间</span>
+                                        <input type="text" class="jf-date n time"
+                                               plug-style="all time" readonly id="startTime-{{config.aid}}"
+                                               ng-model="paper.tInfo.start_time" placeholder="点击选择开始时间">
+                                        <span class="time">--</span>
+                                        <input type="text" class="jf-date n time"
+                                               plug-style="all time" readonly id="endTime-{{config.aid}}"
+                                               ng-model="paper.tInfo.end_time" placeholder="点击选择结束时间">
+                                    </span>
+                                    <!--<span class="info" ng-show="paper.type === 'e_paper'">-->
+                                    <span class="info" ng-show="">
+                                        <label for="pubAns" class="pub-ans" title="勾选后，只有客观题的试卷学生作答后可直接查看分数解析，有主观题的试卷老师批改后会直接公布成绩">
+                                            <input type="checkbox" id="pubAns" ng-model="paper.answerPub">
+                                            <span>是否直接公布答案</span>
+                                        </label>
+                                    </span>
+                                </div>
+                                <p class="h-20"></p>
+                                <div>
+                                    <span class="info desc">
+                                        <em class="icon" ><i class="image-test-h-3"></i></em>
+                                        <input class="n explain" placeholder="请输入试卷说明" ng-model="paper.desc" maxlength="50">
+                                    </span>
+                                    <div class="r">
+                                        <span class="score-total">
+                                            共 <span>{{paper.total}}</span> 题 ,总分 <span>{{paper.score}}</span> 分
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="q-area">
+                                <div class="item" ng-repeat="group in paper.groups track by $index" ng-class="{'cur': group.cur}">
+
+                                    <div class="item-t1" ng-click="changeCurFocus($index,-1)" id="{{'q-t-'+config.aid+'-'+group.title.id}}"
+                                         ng-class="{'gray-back':curItemIndex.group == $index && curItemIndex.index == -1}">
+
+                                        <div class="tools" ng-show="paper.groups.length > 1" ng-mouseenter="group.cur = true" ng-mouseleave="group.cur = false">
+                                            <a ng-click="moveGroup($index,'up')" ng-show="!$first" title="上移题组">
+                                                <div class="ic"><i class="image-new-pos-up"></i></div>
+                                            </a>
+                                            <a ng-click="moveGroup($index,'down')" ng-show="!$last" title="下移题组">
+                                                <div class="ic"><i class="image-new-pos-down"></i></div>
+                                            </a>
+                                            <a ng-click="deleteGroup($index)" title="删除题组">
+                                                <div class="ic"><i class="image-new-pos-del"></i></div>
+                                            </a>
+                                        </div>
+
+                                        <div class="main-t1">
+                                            <input type="text" placeholder="请输入题组名称" ng-model="group.title.data.title">
+                                        </div>
+                                        <div class="r">
+                                            <span class="score-alert" ng-show="group.scoreAlert">{{group.scoreAlert}}</span>
+                                            <span>
+                                                每题
+                                                <input type="text" class="score" title="快速设置题组分值"
+                                                       ng-model="group.aveScore" ng-blur="averageScoreBlur(group)" ng-keydown="averageScoreKeyDown($event, group)" maxlength="3">
+                                                分&nbsp;&nbsp;&nbsp;
+                                                共{{group.title.score}}分/{{group.items.length}}题
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div ng-repeat="item in group.items track by $index" ng-click="changeCurFocus($parent.$index,$index)" id="{{'q-'+config.aid+'-'+item.id}}"
+                                         ng-class="{'gray-back':curItemIndex.group == $parent.$index && curItemIndex.index == $index}" class="item-n">
+
+                                        <div class="item-q">
+                                            <div class="normal" ng-show="item.mode === 'normal'">
+                                                <div class="main-l">
+                                                    <div class="q-index">{{$index + 1}}.</div>
+
+                                                    <div ng-show="item.type === 'e_sel'">
+                                                        <div class="q-content" ng-bind-html="item.data.text | html"></div>
+                                                        <div class="q-item" ng-repeat="option in item.data.optionList track by $index">
+                                                            <div class="o-code" ng-hide="item.data.type === 'judge'">{{oCode[$index]}}.&nbsp;</div>
+                                                            <!--<div ng-bind-html="option"></div>-->
+                                                            <div class="o-option" ng-bind-html="option.text"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div ng-show="item.type === 'e_fill'">
+                                                        <div class="q-content" ng-bind-html="item.data.text | html"></div>
+                                                        <div class="q-item" ng-repeat="option in item.data.optionList track by $index">
+                                                            <div class="o-code">({{$index + 1}}).&nbsp;</div>
+                                                            <!--<div ng-bind-html="option"></div>-->
+                                                            <div class="o-option" ng-bind-html="option.text"></div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div ng-show="item.type === 'e_text'">
+                                                        <div class="q-content text" ng-bind-html="item.data.text | html"></div>
+                                                    </div>
+
+                                                    <div class="q-score">
+                                                        分值
+                                                        <input type="text" title="题目分值"
+                                                               ng-model="item.data.score" ng-change="changeQuestionScore(item)" maxlength="3">
+                                                        分
+                                                        <span class="score-alert" ng-show="item.scoreAlert">{{item.scoreAlert}}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="main-r">
+                                                    <a href="" title="编辑题目" ng-click="editQuestion(item)"><i class="image-test-q-1"></i></a>
+                                                    <a href="" title="上移题目" ng-click="($parent.$first && $first) ? null : moveQuestion(item, $parent.$index, $index, 'up')"><i class="image-test-q-2" ng-class="$parent.$first && $first ? 'image-test-q-2r' : 'image-test-q-2'"></i></a>
+                                                    <a href="" title="下移题目" ng-click="($parent.$last && $last) ? null : moveQuestion(item, $parent.$index, $index, 'down')"><i class="image-test-q-3" ng-class="$parent.$last && $last ? 'image-test-q-3r' : 'image-test-q-3'"></i></a>
+                                                    <a href="" title="删除题目" ng-click="deleteQuestion(item,$index,$parent.$index)"><i class="image-test-q-4"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="edit" ng-if="item.mode === 'edit'">
+                                                <table class="mode-edit">
+                                                    <tr>
+                                                        <td><span>题目：</span></td>
+                                                        <td>
+                                                            <div class="qe-content">
+                                                                <div id="editor-paper-{{item.id}}"
+                                                                     class="content-editor"
+                                                                     args="item" scope="dataEmit" index="$index"
+                                                                     tag="'paper'"
+                                                                     ng-model="item.dataT.text"
+                                                                     content-editor
+                                                                     editor-scope="item.editorScope"
+                                                                     group="'exam'"
+                                                                     ng-bind-html="item.dataT.content.text | html"
+                                                                     contenteditable="true">
+                                                                </div>
+                                                            </div>
+
+                                                            <div ng-show="item.type === 'e_sel'">
+                                                                <div class="qe-item">
+                                                                    <div class="p" ng-repeat="option in item.dataT.optionList track by $index">
+                                                                    <span ng-show="item.data.type === 'single'">
+                                                                        <input type="radio" title="" name="radio-single-{{item.id}}" class="head" ng-model="item.dataT.radioAnswer" ng-value="$index">
+                                                                        <span class="index">{{oCode[$index]}}</span>
+                                                                        <input type="text" title="" class="content" ng-model="option.text" placeholder="请输入选项内容">
+                                                                        <a class="btn"><i class="image-test-q-4" ng-click="optionDel(item, $index)"></i></a>
+                                                                    </span>
+                                                                    <span ng-show="item.data.type === 'multi'">
+                                                                        <input type="checkbox" title="" class="head" ng-model="option.answer">
+                                                                        <span class="index">{{oCode[$index]}}</span>
+                                                                        <input type="text" title="" class="content" ng-model="option.text" placeholder="请输入选项内容">
+                                                                        <a class="btn"><i class="image-test-q-4" ng-click="optionDel(item, $index)"></i></a>
+                                                                    </span>
+                                                                    <span ng-show="item.data.type === 'judge'">
+                                                                        <input type="radio" title="" name="radio-judge-{{item.id}}" class="head" ng-model="item.dataT.radioAnswer" ng-value="$index">
+                                                                        <span>{{option.text}}</span>
+                                                                    </span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="qe-btn-grp" ng-show="item.data.type === 'single' || item.data.type === 'multi'">
+                                                                    <a href="" class="btn-p-n" ng-click="optionAdd(item)">添加选项</a>
+                                                                </div>
+                                                            </div>
+
+                                                            <div ng-show="item.type === 'e_fill'">
+                                                                <div class="qe-item">
+                                                                    <div class="p" ng-repeat="option in item.dataT.optionList track by $index">
+                                                                        <span>
+                                                                            <span class="index">{{$index + 1}}</span>
+                                                                            <input type="text" title="" class="content" ng-model="option.text" placeholder='请在此输入答案，多个答案用"/"隔开'>
+                                                                            <a class="btn"><i class="image-test-q-4" ng-click="optionDel(item, $index)"></i></a>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="qe-btn-grp">
+                                                                    <a href="" class="btn-p-n" ng-click="optionAddFill(item)">添加选项</a>
+                                                                </div>
+                                                            </div>
+
+                                                            <div ng-show="item.type === 'e_text'">
+
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr ng-show="item.type === 'e_text'">
+                                                        <td><span>答案：</span></td>
+                                                        <td>
+                                                            <div class="qe-content">
+                                                                <div id="editor-ans-{{item.id}}"
+                                                                     class="content-editor"
+                                                                     args="item" scope="dataEmit" index="$index"
+                                                                     tag="'ans'"
+                                                                     ng-model="item.dataT.answer"
+                                                                     content-editor
+                                                                     editor-scope="item.editorScope"
+                                                                     group="'exam'"
+                                                                     ng-bind-html="item.dataT.content.answer | html"
+                                                                     contenteditable="true">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>答案解析：</span></td>
+                                                        <td>
+                                                            <div class="qe-content">
+                                                                <div id="editor-ana-{{item.id}}"
+                                                                     class="content-editor"
+                                                                     args="item" scope="dataEmit" index="$index"
+                                                                     tag="'ana'"
+                                                                     ng-model="item.dataT.analyze"
+                                                                     content-editor
+                                                                     editor-scope="item.editorScope"
+                                                                     group="'exam'"
+                                                                     ng-bind-html="item.dataT.content.analyze | html"
+                                                                     contenteditable="true">
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td><span>分值：</span></td>
+                                                        <td>
+                                                            <div class="qe-score">
+                                                                <input type="text" title="分值" ng-model="item.dataT.score" maxlength="3">
+                                                                分
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td></td>
+                                                        <td>
+                                                            <div class="qe-btn-grp">
+                                                                <a href="" class="btn-p-n g green" ng-click="questionEditConfirm(item)">保存</a>
+                                                                <a href="" class="btn-p-n g" ng-click="questionEditCancel(item)">取消</a>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-tool" ng-show="">
+                                    <a href="" class="btn-p-n" ng-click="addItem('e_sel','single')" ng-show="paper.groups.length">单选</a>
+                                    <a href="" class="btn-p-n" ng-click="addItem('e_sel','multi')" ng-show="paper.groups.length">多选</a>
+                                    <a href="" class="btn-p-n" ng-click="addItem('e_sel','judge')" ng-show="paper.groups.length">判断</a>
+                                    <a href="" class="btn-p-n" ng-click="addItem('T1')">添加题组</a>
+                                    <a href="" class="btn-p-n r build" ng-click="savePaper('close')">生成试卷</a>
+                                    <a href="" class="btn-p-n r build" ng-click="savePaper()">保存试卷</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

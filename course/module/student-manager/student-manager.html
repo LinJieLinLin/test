@@ -1,0 +1,269 @@
+<div class="stdm-main">
+    <div class="stdm-list-view" ng-show="mainShow">
+        <h2>学生管理</h2>
+
+        <!--<table class="stdm-course-list mg-t20" ng-init="showMore = false" ng-if="courseList.length">-->
+            <!--<tr>-->
+                <!--<td>课程：</td>-->
+                <!--<td>-->
+                    <!--<ul ng-class="{'full-height': showMore}" ng-if="courseList.length">-->
+                        <!--<li class="text-of" ng-repeat="course in courseList track by $index">-->
+                            <!--<span ng-bind="course.title" ng-if="!stdLoading" ng-class="{'color-cyan': course.isActive}" ng-attr-title="{{course.title}}" ng-click="setCurrentCourse($index)" style="cursor: pointer"></span>-->
+                            <!--<span ng-bind="course.title" ng-if="stdLoading" ng-class="{'color-cyan': course.isActive}" ng-attr-title="{{course.title}}" style="cursor: not-allowed;"></span>-->
+                        <!--</li>-->
+                    <!--</ul>-->
+                    <!--<loader-ui ng-if="courseLoading"></loader-ui>-->
+                    <!--<div ng-if="courseList.length === 0 && !courseLoading">暂无内容</div>-->
+                <!--</td>-->
+                <!--<td ng-show="courseList.length > 4">-->
+                    <!--<div ng-click="showMore = !showMore">-->
+                        <!--更多课程-->
+                        <!--<i class="fa fa-chevron-down" ng-hide="showMore"></i>-->
+                        <!--<i class="fa fa-chevron-up" ng-show="showMore"></i>-->
+                    <!--</div>-->
+                <!--</td>-->
+            <!--</tr>-->
+        <!--</table>-->
+
+        <div class="stdm-tool-bar" ng-if="courseList.length">
+            <button class="stdm-set-btn" ng-click="switchView()" ng-disabled="stdLoading || courseList.length === 0">
+                <i class="fa fa-file-text-o mg-r5"></i>设置申请条件
+            </button>
+            <button ng-disabled="!hasSetRole || stdLoading || courseList.length === 0" ng-click="verifyStd('MULTI', 1)">批量通过</button>
+            <button ng-disabled="!hasSetRole || stdLoading || courseList.length === 0" ng-click="verifyStd('MULTI', 0)">批量不通过</button>
+            <button ng-disabled="!hasSetRole || stdLoading || courseList.length === 0" ng-if="!hasSetRole || stdLoading" style="width: 130px;">筛选显示列<i class="fa fa-chevron-down mg-l5"></i></button>
+            <div class="stdm-tb-filter" ng-if="hasSetRole && !stdLoading && courseList.length">
+                <button>
+                    筛选显示列
+                    <i class="fa fa-chevron-down mg-l5" ng-hide="showFilter"></i>
+                    <i class="fa fa-chevron-up mg-l5" ng-show="showFilter"></i>
+                </button>
+                <div slide-show="showFilter">
+                    <ul>
+                        <li ng-repeat="role in roleList track by $index">
+                            <label>
+                                <input type="checkbox" ng-model="role.isShow" /><span ng-bind="role.name"></span>
+                            </label>
+                        </li>
+                    </ul>
+                    <span ng-if="roleList.length === 0" style="text-align: center">暂无内容</span>
+                    <!--<button class="stdm-tb-sure-btn" ng-hide="roleList.length === 0">确定</button>-->
+                    <!--<button class="stdm-tb-cancel-btn" ng-click="showFilter = false">取消</button>-->
+                </div>
+            </div>
+
+            <!--todo search-->
+            <!--<div class="stdm-search-bar">-->
+                <!--<input type="text" placeholder="请输入关键字搜索" />-->
+                <!--<div class="stdm-search-btn"></div>-->
+            <!--</div>-->
+
+            <div class="stdm-clear-both"></div>
+        </div>
+
+        <table class="stdm-std-list" ng-if="!(!hasSetRole && !hasJoinedStd) && courseList.length">
+            <thead>
+                <tr>
+                    <th>
+                        <!--<label ng-click="selectAll()">-->
+                            <!--<input type="checkbox" ng-model="clickAll" />-->
+                        <!--</label>-->
+                        <span ng-click="selectAll()">
+                            <i class="fa fa-square-o" ng-hide="clickAll"></i>
+                            <i class="fa fa-check-square-o color-cyan" ng-show="clickAll"></i>
+                            <!--<input type="checkbox" style="display: none;"/>-->
+                        </span>
+                    </th>
+                    <th>用户名</th>
+                    <th ng-if="!hasSetRole">手机</th>
+                    <!--<th>手机</th>-->
+                    <!--<th>所属机构</th>-->
+                    <th ng-repeat="role in roleList track by $index" ng-bind="role.name" ng-show="role.isShow" ng-if="hasSetRole" ng-attr-title="{{role.name}}"></th>
+                    <th>
+                        <head-selector content="'审核状态'" config="statusSelector"></head-selector>
+                    </th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody ng-if="!stdLoading">
+                <tr ng-repeat="std in stdList track by $index">
+                    <td>
+                        <!--<label ng-click="selectClick(std)">-->
+                            <!--<input type="checkbox" ng-model="std.isSelected" />-->
+                        <!--</label>-->
+                        <span ng-click="selectClick(std)" ng-if="std.status == 'WAITING'">
+                            <i class="fa fa-square-o" ng-hide="std.isSelected"></i>
+                            <i class="fa fa-check-square-o color-cyan" ng-show="std.isSelected"></i>
+                        </span>
+                        <i class="fa fa-square-o" ng-if="std.status != 'WAITING'" style="cursor: not-allowed"></i>
+                    </td>
+                    <td>
+                        <div class="stdm-user-info">
+                            <span ng-bind="getUserInfo(std.uid).name"></span>
+                            <div class="stdm-info-detail">
+                                <table ng-if="hasSetRole">
+                                    <tr ng-repeat="role in roleList track by $index">
+                                        <td ng-bind="role.name"></td>
+                                        <td style="width: 1px; vertical-align: top">：</td>
+                                        <td ng-bind="std.roleMsg[role.name]"></td>
+                                    </tr>
+                                    <tr ng-if="std.status == 'FAIL'">
+                                        <td>不通过理由</td>
+                                        <td style="width: 1px; vertical-align: top">：</td>
+                                        <td ng-bind="std.reason" ng-class="{'color-red': std.status == 'FAIL', 'color-green': std.status == 'NORMAL'}"></td>
+                                    </tr>
+                                </table>
+                                <table ng-if="!hasSetRole">
+                                    <tr>
+                                        <td>手机</td>
+                                        <td style="width: 1px; vertical-align: top">：</td>
+                                        <td ng-bind="getUserInfo(std.uid).phone"></td>
+                                    </tr>
+                                </table>
+                                <div ng-if="roleList.length === 0">暂无内容</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td ng-if="!hasSetRole">
+                        <span ng-bind="getUserInfo(std.uid).phone"></span>
+                    </td>
+                    <td ng-repeat="role in roleList track by $index" ng-show="role.isShow" ng-if="hasSetRole">
+                        <div class="stdm-role-msg" ng-bind="std.roleMsg[role.name]" ng-attr-title="{{std.roleMsg[role.name]}}"></div>
+                    </td>
+                    <td>
+                        <span class="color-green" ng-if="std.status == 'NORMAL'">通过</span>
+                        <span class="color-red" ng-if="std.status == 'FAIL'">不通过</span>
+                        <span class="color-cyan" ng-if="std.status == 'WAITING'">待审核</span>
+                        <span class="color-orange" ng-if="std.status == 'INCOMPLETE'">待补充信息</span>
+                        <span class="color-red" ng-if="std.status == 'QUIT'">已退学</span>
+                    </td>
+                    <td>
+                        <div class="stdm-btn-group" ng-if="std.status == 'WAITING'">
+                            <!--<button class="mg-r20" ng-click="verifyStd('SINGLE', 1, std.uid)">通过</button>-->
+                            <!--<button ng-click="verifyStd('SINGLE', 0, std.uid)">不通过</button>-->
+                            <button class="mg-r20" ng-click="verifyStd('SINGLE', 1, std.uid)">通过</button>
+                            <button ng-click="setReasonDialog(std.uid, 0)">不通过</button>
+                        </div>
+                        <div ng-if="std.status != 'WAITING'">
+                            --
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <pagination class="page-bar s3 jump-hide f-r mg-t35 mg-b35" list="stdList" pageargs="pageArgs" pagefn="pageFn" ng-hide="stdList.length === 0 || !hasSetRole || stdLoading"></pagination>
+
+        <empty-tip ng-if="stdList.length === 0 && (hasSetRole || (!hasSetRole && hasJoinedStd)) && !stdLoading"></empty-tip>
+
+        <loader-ui ng-if="stdLoading"></loader-ui>
+
+        <div class="stdm-empty-list" ng-if="!hasSetRole && !hasJoinedStd">
+            <img src="../course/imgs/empty-role.png" />
+            <div class="mg-t25">
+                还没有设置条件哦，马上<a ng-click="switchView()">设置申请条件</a>
+            </div>
+        </div>
+
+        <div class="stdm-dialog" ng-show="showReasonDialog">
+            <div class="stdm-dialog-bg"></div>
+
+            <div class="stdm-frame-dialog" style="height: auto;">
+                <a class="stdm-frame-dialog-close" ng-if="!isSendingReason" ng-click="closeReasonDialog()">×</a>
+                <a class="stdm-frame-dialog-close" ng-if="isSendingReason" style="cursor: not-allowed">×</a>
+                <p class="stdm-frame-dialog-title"></p>
+                <!--<p class="info">-->
+                    <!--<textarea placeholder="请输入不通过理由（可选，最多50字）" maxlength="50" ng-model="reason" style="padding: 10px; width: 300px; height: 100px;"></textarea>-->
+                <!--</p>-->
+                <div class="stdm-input-area">
+                    <textarea placeholder="请输入不通过理由（可选，最多50字）" maxlength="50" ng-model="reason"></textarea>
+                </div>
+
+                <div class="stdm-frame-dialog-btn" ng-if="!isSendingReason" style="margin-bottom: 10px">
+                    <div class="ok" ng-click="confirmReason()">确定</div>
+                    <div class="cancel" ng-click="closeReasonDialog()">取消</div>
+                </div>
+
+                <div class="stdm-frame-dialog-btn" ng-if="isSendingReason" style="margin-bottom: 10px">
+                    <div class="ok" style="cursor: not-allowed">确定</div>
+                    <div class="cancel" style="cursor: not-allowed">取消</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="stdm-set-view" ng-hide="mainShow">
+        <h2><span ng-click="switchView()">学生管理</span> > 设置申请条件<span ng-bind="'（' + currentCourse.title + '）'"></span></h2>
+        <div class="stdm-sv-head mg-t20">
+            <div class="stdm-sv-head-title color-cyan">设置申请条件</div>
+            <div class="stdm-sv-head-detail mg-t15">（申请条件设置后，学生需要填写相对应的信息进行审核，通过审核才能进行该课程的学习）</div>
+        </div>
+
+        <!--<div class="stdm-sv-org-select">-->
+            <!--<table>-->
+                <!--<tr>-->
+                    <!--<td>-->
+                        <!--免审机构<div class="stdm-sv-org-tips mg-l5" title="含有以下机构标签的用户不需要填写申请信息">？</div>：-->
+                    <!--</td>-->
+                    <!--<td>-->
+                        <!--<ul>-->
+                            <!--<li ng-repeat="roleOrg in roleOrgList track by $index">-->
+                                <!--<label>-->
+                                    <!--<input type="checkbox" ng-model="roleOrg.isSelected" />-->
+                                    <!--<span ng-bind="roleOrg.name"></span>-->
+                                <!--</label>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            <!--</table>-->
+        <!--</div>-->
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="pd-l20">名称</th>
+                    <th class="pd-l20">填空（选项）信息</th>
+                    <th ng-if="!hasSetRole">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="role in roleList track by role.index">
+                    <td>
+                        <input type="text" placeholder="请输入选项名称（10个字以内）" ng-model="role.name" ng-readonly="hasSetRole" maxlength="10" />
+                    </td>
+                    <td>
+                        <div ng-repeat="range in role.rangeList track by $index" ng-class="{'mg-b15': $index != role.rangeList.length - 1}">
+                            <input type="text" placeholder="请输入选项信息（30个字以内）" ng-model="range.name" ng-readonly="hasSetRole" maxlength="30" />
+                            <!--<span ng-if="$index == role.rangeList.length - 1">-->
+                                <!--<a ng-click="addRange(role.index)">新增</a>-->
+                                <!--<a ng-click="deleteRange(role.index, $index)" ng-if="role.rangeList.length != 1">删除</a>-->
+                            <!--</span>-->
+                            <span ng-if="!hasSetRole">
+                                <a ng-click="deleteRange(role.index, $index)" ng-if="role.rangeList.length != 1">删除</a>
+                                <a ng-click="addRange(role.index)" ng-if="$index == role.rangeList.length - 1">新增</a>
+                            </span>
+                        </div>
+                    </td>
+                    <td ng-if="!hasSetRole">
+                        <a ng-click="deleteRole(role.index)">删除</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <empty-tip ng-if="roleList.length === 0"></empty-tip>
+
+        <div class="stdm-sv-btn-bar">
+            <div class="f-l">
+                <button class="stdm-sv-add-btn" ng-click="addRole()" ng-if="!hasSetRole">添加名称</button>
+            </div>
+            <div class="f-r">
+                <button class="stdm-sv-save-btn mg-r20" ng-click="saveRole()" ng-if="!hasSetRole">保存</button>
+                <a class="mg-r10" ng-click="switchView()">取消</a>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+</div>

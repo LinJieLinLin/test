@@ -1,0 +1,11 @@
+<div class="empty-tip" ng-style="boxStyle">
+    <style type="text/css">.empty-tip{text-align:center;padding:30px 0}.empty-tip .msg{padding:10px 0 0;color:#999}.empty-tip .img{width:100%}</style>
+    <div ng-show="theme==1"><img src="/rcp-common/imgs/common/no-data.png" class="img" ng-style="imgStyle" /></div>
+    <div ng-show="!theme">
+        <img src="/rcp-common/imgs/common/icon-cloud.png" ng-style="imgStyle" />
+    </div>
+    <div ng-show="!theme" class="msg">
+        <span ng-hide="showLogin">{{msg}}</span>
+        <a href="" style="color:blue;" ng-show="showLogin">请先登录</a>
+    </div>
+</div>

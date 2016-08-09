@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <title>搜索结果</title>
+    <script src="config-dy/config-dy.js"></script>
+
+
+    <!-- build:css search/search.min.css -->
+    <link rel="stylesheet" href="rcp-common/styles/common.css"/>
+    <link rel="stylesheet" href="rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="rcp-common/directive/common/common-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/chat/chat-directive.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/datetime/datetime-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/default-img/default-img.css" />
+    <link rel="stylesheet" href="search/search.css"/>
+    <!--course sprite end-->
+    <!-- endbuild -->
+</head>
+
+<body ng-controller="mainCtrl" class="bg-body-c " ng-class="{'loading-body': firstLoading}">
+
+    <!-- 页头 -->
+    <headnav item-list="itemList" user="user"></headnav>
+
+    <!-- 整个页面的loading页 -->
+    <!--<div ng-show="loading" class="page-loader">-->
+        <!--<span></span>-->
+    <!--</div>-->
+
+    <!-- 内容 -->
+    <div class="g-m-w" ng-controller="searchCtrl">
+
+        <!-- 左侧 内容页 -->
+        <div class="content-l">
+
+            <!--搜索关键字-->
+
+            <span class="loading" ng-if="searchWord" ng-class="{'loading': loading}" style="word-break: break-all">
+                <span class="tag-box mg-t25">
+                    <span class="mg-l10 mg-r10">
+                        关键字：<span ng-bind="searchWord"></span><i class="fa fa-close mg-l5" ng-click="clearKeyword()" style="cursor: pointer; margin-bottom: 4px"></i>
+                    </span>
+                </span>
+                <span class="mg-l25">
+                    共找到<span class="color-cyan"
+                             ng-bind="resultTotal"></span>门<span class="color-cyan">“<span
+                        ng-bind="searchWord"></span>”</span>相关<span
+                        ng-bind="'课程'"></span>
+                </span>
+            </span>
+
+            <div class="loading mg-t25" ng-if="!searchWord" ng-class="{'loading': loading}">
+                共找到<span class="color-cyan" ng-bind="resultTotal"></span>门相关课程
+            </div>
+
+
+            <!--搜索关键字end-->
+
+            <!-- 面包屑导航栏 -->
+            <ul class="breadcrumb mg-t20">
+                <li>
+                    <span class="href" ng-click="reload()">全部课程</span>
+                    <i class="fa fa-chevron-right" style="padding: 0 5px; color: #404040;" ng-show="selectedCont.length"></i>
+                </li>
+                <!--<li ng-repeat="nav in breadcrumbNav track by $index" ng-class="{true: 'active'}[$index == breadcrumbNav.length - 1]">-->
+                    <!--<i class="fa fa-chevron-right" style="padding: 0 5px; color: #404040;"></i>-->
+                    <!--<span class="href" ng-bind="nav" ng-if="$index != breadcrumbNav.length - 1" ng-click="navClickAt($index)"></span>-->
+                    <!--<span ng-bind="nav" ng-if="$index == breadcrumbNav.length - 1"></span>-->
+                <!--</li>-->
+                <li class="mg-t5" ng-repeat="cont in selectedCont track by $index">
+                    <span class="tag-box mg-r20">
+                        <span class="mg-l10 mg-r10">
+                            <span ng-bind="cont.pName + '：'"></span>
+                            <span ng-bind="cont.mName"></span>
+                            <i class="fa fa-close mg-l5" ng-click="clearContAt($index)" style="cursor: pointer;"></i>
+                        </span>
+                    </span>
+                </li>
+            </ul>
+            <!-- 面包屑导航栏end -->
+
+            <!-- tag筛选 -->
+
+            <!--<div class="mg-t20 category-list loading" ng-class="{'loading': loading}" style="background-color: #f7f7f7">-->
+                <!--<div ng-bind="catgContList.catgName">分类：</div>-->
+                <!--<div id="catg-list" ng-repeat="catg in catgContList.catgList track by $index">-->
+                    <!--<span id="{{catg}}" ng-bind="catg" ng-click="clickCatgCont([catg],'CATG')"></span>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <div class="mg-t20">
+                <!--<div class="category-list" ng-repeat="catg in categoryList track by $index">-->
+                    <!--<div class="tag">-->
+                        <!--<div ng-bind="catg.name + '：'"></div>-->
+                    <!--</div>-->
+                    <!--<div class="tag">-->
+                        <!--<div ng-repeat="tag in catg.tags track by $index">-->
+                            <!--<label>-->
+                                <!--<input type="checkbox" ng-model="tag.isSelected" ng-show="catg.isMultiSelect" />-->
+                                <!--<span ng-bind="tag.name" ng-show="catg.isMultiSelect"></span>-->
+                            <!--</label>-->
+                            <!--<span ng-bind="tag.name" ng-hide="catg.isMultiSelect" ng-click="clickTag(tag.name, catg.name)"></span>-->
+                        <!--</div>-->
+                        <!--<div class="multi-select-btn" style="padding: 5px 15px; margin: 9px;" ng-init="catg.isMultiSelect = false" ng-hide="catg.isMultiSelect" ng-click="multiSelect(catg.name)">-->
+                            <!--<i class="fa fa-plus"></i> 多选-->
+                        <!--</div>-->
+                        <!--<div ng-show="catg.isMultiSelect" style="width: 100%;">-->
+                            <!--<div class="multi-select-box" style="display: block;">-->
+                                <!--<span class="confirm-btn" ng-click="confirmMulti(catg.name)">确定</span>-->
+                                <!--<span class="clear-btn" ng-click="clearMulti(catg.name)">清除</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+                <table class="category-list">
+                    <tr ng-repeat="catg in categoryList track by $index">
+                        <td class="tags pd-t10 pd-b10" style="width: 100px; vertical-align: text-top">
+                            <div ng-bind="catg.name + '：'"></div>
+                        </td>
+                        <td class="tags pd-t10 pd-b10">
+                            <div ng-repeat="tag in catg.tags track by $index">
+                                <label>
+                                    <input type="checkbox" ng-model="tag.isSelected" ng-show="catg.isMultiSelect" />
+                                    <span class="tag" ng-bind="tag.name" ng-show="catg.isMultiSelect"></span>
+                                </label>
+                                <button class="tag" ng-bind="tag.name" ng-hide="catg.isMultiSelect" ng-disabled="loading" ng-click="clickTag(tag.name, catg.name)"></button>
+                            </div>
+                            <div ng-show="catg.isMultiSelect" style="width: 100%;">
+                                <div class="multi-select-box" style="display: block;">
+                                    <span class="confirm-btn mg-r20" ng-click="confirmMulti(catg.name)">确定</span>
+                                    <span class="clear-btn" ng-click="clearMulti(catg.name)">清除</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="tags pd-t10 pd-b10" style="width: 88px">
+                            <div class="multi-select-btn" ng-init="catg.isMultiSelect = false" ng-hide="catg.isMultiSelect" ng-click="multiSelect(catg.name)">
+                                <i class="fa fa-plus"></i> 多选
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!--<div class="mg-t20 category-list loading" ng-class="{'loading': loading}">-->
+                <!--<div>内容：</div>-->
+                <!--<div ng-repeat="cont in catgContList.cont track by $index">-->
+                    <!--<label>-->
+                        <!--<input type="checkbox" ng-model="cont.isSelected" ng-show="isMultiSelect">-->
+                        <!--<span ng-bind="cont.name" ng-show="isMultiSelect"></span>-->
+                    <!--</label>-->
+                    <!--<span ng-bind="cont.name" ng-hide="isMultiSelect" ng-click="clickCatgCont([cont.name],'CONT')"></span>-->
+                <!--</div>-->
+                <!--<div class="multi-select-btn" style="padding: 5px 15px; margin: 9px" ng-init="isMultiSelect = false" ng-hide="isMultiSelect" ng-click="isMultiSelect = true">-->
+                    <!--<i class="fa fa-plus" style="font-weight: lighter"></i> 多选-->
+                    <!--&lt;!&ndash;+ 多选&ndash;&gt;-->
+                <!--</div>-->
+                <!--<div ng-show="isMultiSelect" style="width: 100%;">-->
+                    <!--<div class="multi-select-box" style="display: block;">-->
+                        <!--<span class="confirm-btn" ng-click="confirmMulti()">确定</span>-->
+                        <!--<span class="clear-btn" ng-click="clearMulti()">清除</span>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <!-- tag筛选end -->
+
+            <!-- 排序工具栏 -->
+            <table class="sort-bar mg-t20" ng-class="{'loading': loading}">
+                <tr>
+                    <td style="background-color: #f7f7f7">
+                        <span class="sort-label" ng-repeat="sort in sortTypes track by $index" ng-class="{active: sort.active}" ng-click="clickSort(sort, sort.name == '人气' || sort.name == '价格')">
+                            <span ng-bind="sort.name"></span>
+                            <span ng-if="sort.name == '人气' || sort.name == '价格'">
+                                <i class="fa fa-sort-asc" ng-class="{opposite: sort.isDescended}"></i>
+                                <i class="fa fa-sort-desc" ng-class="{opposite: !sort.isDescended}" style="margin-left: -12px"></i>
+                            </span>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+            <!--todo 增值服务 暂时用.loading隐藏-->
+            <div class="increment-service loading">
+                增值服务：
+                <label>
+                    <input type="checkbox" />评测
+                </label>
+                <label>
+                    <input type="checkbox" />答疑
+                </label>
+            </div>
+            <!-- 排序工具栏end -->
+
+            <!-- 搜索结果展示页 -->
+            <div ng-hide="loading">
+                <ul class="r-list mg-t20 mg-b20 course-list ng-cloak loading" ng-cloak ng-show="searchResult.length" ng-class="{'loading': loading}">
+
+                    <!-- 课程 -->
+                    <li class="item" ng-repeat="resource in searchResult track by $index">
+                        <!-- 课程图片区域 -->
+                        <div class="img">
+                            <!-- 未发布图标 -->
+                            <!--<em class="unpublished-ic" ng-show="resource.unPublished"></em>-->
+
+                            <!-- 课程图标 -->
+                            <a ng-href="{{getCourseUrl(resource)}}" target="_blank" title="{{resource.title}}">
+                                <div class="chapter-num">
+                                    共<span ng-if="resource.isCurriculum" ng-bind="(resource.chapterNum || 0) + '章节'"></span><span ng-if="resource.isQuestion" ng-bind="(resource.paperNum || 0) + '份试卷'"></span>
+                                </div>
+                                <!--<img ng-src="{{resource.imgs[0] || '/imgs/icon-65.gif'}}" src="/imgs/icon-65.gif">-->
+                                <default-img src="resource.imgs[0]" conf="lImgConfig"></default-img>
+                            </a>
+                        </div>
+                        <!-- 课程信息区域 -->
+                        <div class="inw">
+                            <div class="title">
+                                <a ng-href="{{getCourseUrl(resource)}}" target="_blank" target="_blank" title="{{resource.title}}"
+                                   ng-bind-html="resource.highLightText|html"></a>
+                            </div>
+                            <p>
+                                <!-- 参与人数 -->
+                                <span class="u-icf">
+                                    参与人数<span ng-bind="resource.joinedNum">0</span>人
+                                </span>
+                                <!-- 课程创建者昵称 -->
+                                <span class="w-button">
+                                    <span ng-bind="resource.creatorName" ng-attr-title="{{resource.creatorName}}"></span>
+                                </span>
+                            </p>
+                            <p>
+                                <span class="color-orange text-of" ng-if="resource.totalPrice != 0" ng-bind="'￥' + (resource.totalPrice | number: 2)" style="display: inline-block; max-width: 180px;"></span>
+                                <span class="color-green text-of" ng-if="resource.totalPrice === 0" style="display: inline-block; max-width: 180px;">免费</span>
+                                <!-- 表示课程类型图标 -->
+                                <!--<span ng-show="resource.isCurriculum || resource.isQuestion"-->
+                                      <!--ng-class="{'s1': resource.isCurriculum, 's2': resource.isQuestion}"-->
+                                      <!--class="type-ic"-->
+                                      <!--ng-bind="(resource.isCurriculum && '课程') || (resource.isQuestion && '题库') || '' "></span>-->
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- todo -->
+                <div ng-show="!searchResult.length && query" class="not-found loading"  ng-class="{'loading': loading}">
+                    搜索不到与 <span class="orange-c" ng-bind="query"></span> 相关的<span
+                        ng-bind="'课程'"></span>。
+                </div>
+
+                <!-- todo -->
+                <div ng-show="!searchResult.length && !query" class="not-found loading"  ng-class="{'loading': loading}">
+                    暂无<span ng-bind="'课程'"></span>。
+                </div>
+
+                <!-- 页码工具栏 -->
+                <div class="mg-t20">
+                    <pagination class="page-bar s3" pagefn="pagefn" pageargs="pageargs" list="searchResult"></pagination>
+                </div>
+                <!-- 页码工具栏end -->
+            </div>
+            <!-- 搜索结果展示页end -->
+
+            <!-- 搜索结果loading页 -->
+            <div ng-show="loading" style="padding: 100px 0">
+                <loader-ui></loader-ui>
+            </div>
+            <!-- 搜索结果loading页end-->
+        </div>
+        <!-- 左侧 内容页end -->
+
+        <!-- 右侧 课程或题库推荐 todo-->
+        <!--<div class="content-r">-->
+            <!--<div class="r-title mg-t20">-->
+                <!--<span ng-bind="type == '' ? '课程或题库':(type == '10' ? '课程':'题库')"></span>推荐-->
+            <!--</div>-->
+            <!--<ul class="rcd-list loading"  ng-class="{'loading': loading}">-->
+                <!--<li class="item" ng-repeat="resource in recommendCourse track by $index" ng-click="GoToResource(resource)">-->
+                    <!--<div class="img">-->
+                        <!--<a target="_blank" ng-href="{{courseLink(resource)}}" title="{{resource.name}}"><img-->
+                                <!--ng-src="{{resource.imgs.split(',')[0] || 'imgs/icon-65.gif'}}" src="imgs/icon-65.gif"></a>-->
+                    <!--</div>-->
+                    <!--<div class="inw">-->
+                        <!--<div class="title mg-b5 mg-t5">-->
+                            <!--<a target="_blank" ng-href="{{courseLink(resource)}}" title="{{resource.name}}"-->
+                               <!--ng-bind="resource.name"></a>-->
+                        <!--</div>-->
+                        <!--<p>-->
+                            <!--<span class="type-ic f-r s1" ng-show="resource.courseType == '10'">课</span>-->
+                            <!--<span class="type-ic f-r s2" ng-show="resource.courseType == '20'">题</span>-->
+                            <!--<span class="type-ic f-r s3" ng-show="resource.courseType == '30'">活</span>-->
+                            <!--<span ng-bind="resource.chapterCnt" class="orange-c"-->
+                                  <!--ng-show="resource.courseType == '10'"></span>-->
+                            <!--<span class="orange-c" ng-show="resource.courseType == '10'">章节</span>-->
+                            <!--<span ng-bind="resource.paperCnt" class="orange-c" ng-show="resource.courseType == '20'"></span>-->
+                            <!--<span class="orange-c" ng-show="resource.courseType == '20'">份试卷</span>-->
+                            <!--<star n="resource.ext.A || 0" isrca="imgs/star.png" isrcb="imgs/star_half.png"></star>-->
+                        <!--</p>-->
+                        <!--<p class="pd-t5">-->
+                            <!--<span class="o-button f-r free-btn">免费</span>-->
+                            <!--&lt;!&ndash; <span class="price">¥15.00</span> &ndash;&gt;-->
+                            <!--&lt;!&ndash;<span class="u-icf" title="{{resource.userName}}" ng-bind="resource.userName"></span>&ndash;&gt;-->
+                            <!--<span class="u-icf" title="{{resource.creatorName}}">-->
+                                <!--<span class="image-icon-88" style="display: inline-block;"></span>-->
+                                <!--<span ng-bind="resource.creatorName"></span>-->
+                            <!--</span>-->
+                        <!--</p>-->
+                        <!--<p class="pd-t5">-->
+                                    <!--&lt;!&ndash;<span class="w-button mg-b5">&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<span class="us-icf">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<span ng-bind="resource.joinCnt"></span>人&ndash;&gt;-->
+                                        <!--&lt;!&ndash;</span>&ndash;&gt;-->
+                                    <!--&lt;!&ndash;</span>&ndash;&gt;-->
+                            <!--<span class="w-button">-->
+                                <!--<span class="image-icon-137" style="display: inline-block;"></span>-->
+                                <!--<span ng-bind="resource.joinCnt"></span>人-->
+                            <!--</span>-->
+                            <!--<span class="w-button"-->
+                                  <!--ng-show="resource.startTime && resource.startTime != '0000-00-00 00:00:00'"><span-->
+                                    <!--class="cyan-c"><span-->
+                                    <!--ng-bind="resource.startTime.substring(0,10)"></span> 开课</span></span>-->
+                        <!--</p>-->
+                    <!--</div>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+
+
+        <!--demo-->
+        <div class="content-r">
+            <div class="r-title mg-t20">
+                <!--<span ng-bind="type == '' ? '课程或题库':(type == '10' ? '课程':'题库')"></span>推荐-->
+                课程推荐
+            </div>
+            <ul class="rcd-list loading" ng-class="{'loading': loading}">
+                <li class="item" ng-repeat="course in recommendCourse track by $index">
+                    <div class="img">
+                        <a title="{{course.title}}" ng-href="{{getCourseUrl(course)}}" target="_blank">
+                            <!--<img ng-src="{{course.imgs.split(',')[0] || 'imgs/icon-65.gif'}}" src="imgs/icon-65.gif">-->
+                            <default-img src="course.imgs[0]" conf="rImgConfig"></default-img>
+                        </a>
+                    </div>
+                    <div class="inw">
+                        <div class="title mg-b5 mg-t5 text-of" style="width: 188px">
+                            <a title="{{course.title}}" ng-bind="course.title" ng-href="{{getCourseUrl(course)}}" target="_blank"></a>
+                        </div>
+                        <p>
+                            <span class="u-icf" title="{{course.uid}}">
+                                参与人数<span ng-bind="course.joined"></span>
+                            </span>
+                            <span class="w-button" style="max-width: 82px;">
+                                <span ng-bind="getRCUserData(course.uid)" ng-attr-title="{{getRCUserData(course.uid)}}"></span>
+                            </span>
+
+                        </p>
+                        <p class="mg-t10">
+                            <span class="color-orange text-of" ng-if="course.minPrice != 0" ng-bind="'￥' + (course.minPrice | number: 2)" style="display: inline-block; max-width: 140px;"></span>
+                            <span class="color-green text-of" ng-if="course.minPrice === 0" style="display: inline-block; max-width: 140px;">免费</span>
+                            <!--<span class="type-ic f-r s1" ng-show="course.type == '10'">课程</span>-->
+                            <!--<span class="type-ic f-r s2" ng-show="course.type == '20'">题库</span>-->
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!--demo end-->
+        <!-- 右侧 课程或题库推荐end -->
+
+        <div class="clear"></div>
+
+    </div>
+
+    <div class="gap-20"></div>
+
+    <!-- 页尾 -->
+    <tailnav></tailnav>
+
+    <!--<chat getscope="getscope"></chat>-->
+
+    <!--已打包好的basic package-->
+    <script src="../rcp-common/service/lib-default.min.js"></script>
+    <!--已打包好的basic package end-->
+
+<!-- build:js search/search.min.js -->
+
+<!-- lib -->
+    <!--<script src="jquery/dist/jquery.js"></script>-->
+    <!--<script src="angular/angular.js"></script>-->
+    <!--<script src="angular-cookies/angular-cookies.js"></script>-->
+    <!--<script src="angular-route/angular-route.js"></script>-->
+    <!--<script src="angular-sanitize/angular-sanitize.js"></script>-->
+    <!--<script src="angular-local-storage/dist/angular-local-storage.js"></script>-->
+<!-- lib end -->
+
+<!-- useless angular -->
+<script src="rcp-common/service/aid.js"></script>
+<script src="rcp-common/service/jf-v1.0.js"></script>
+<!-- useless angular end-->
+
+<!-- itself -->
+<script src="search/search.js"></script>
+<script src="rcp-common/module/main/main-ctrl.js"></script>
+<script src="course/service/course.js"></script>
+<script src="rcp-common/directive/star/star.js"></script>
+<script src="service/search.js"></script>
+<!-- itself end -->
+
+<!-- chat -->
+<script src="rcp-common/service/chat.js"></script>
+<script src="rcp-common/directive/chat/websocket.js"></script>
+<script src="rcp-common/directive/chat/chat-directive.js"></script>
+<script src="rcp-common/directive/chat/chat-content-ctrl.js"></script>
+<script src="rcp-common/directive/chat/chat-contact-ctrl.js"></script>
+<script src="rcp-common/directive/chat/chat-record-ctrl.js"></script>
+<script src="rcp-common/directive/chat/chat-msg-directive.js"></script>
+<script src="rcp-common/directive/chat/chat-add-friend-ctrl.js"></script>
+<script src="rcp-common/directive/chat/chat-add-group-ctrl.js"></script>
+<script src="rcp-common/directive/chat/chat-msg-image.js"></script>
+<!-- chat end -->
+
+<!-- other service -->
+<!-- other service end -->
+
+<!-- directive   -->
+<script src="rcp-common/directive/image-slider/image-slider.js"></script>
+<script src="rcp-common/directive/pagination/pagination.js"></script>
+<script src="rcp-common/directive/dynamic/dynamicService.js"></script>
+<script src="rcp-common/directive/textarea/textarea.js"></script>
+<script src="rcp-common/directive/datetime/datetime-dir.js"></script>
+<script src="rcp-common/directive/head-tail/head-tail-dir.js"></script>
+<script src="rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.js"></script>
+<script src="rcp-common/directive/default-img/default-img.js"></script>
+<!-- directive end    -->
+
+<!-- filter   -->
+<!-- filter end -->
+<!-- endbuild -->
+<script src="rcp-common/service/service.min.js"></script>
+
+
+
+</body>
+</html>
+
+
+<!--
+
+“Pragma:No-cache”标记可能无法防止页面被缓存 https://support.microsoft.com/zh-cn/kb/222064
+
+-->

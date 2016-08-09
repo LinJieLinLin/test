@@ -1,0 +1,248 @@
+<div class="breadcrumb">
+    账号管理 >
+    <span class="color-bc-blue-c">用户管理</span>
+</div>
+
+<div class="main-content">
+
+    <div class="c-tab">
+        <div class="tabs">
+            <a href="" ng-click="switchTab($index)" class="tab-btn" ng-repeat="tab in tabGroup track by $index" ng-class="{'active': $index === tabGroupCur}">{{tab.name}}</a>
+        </div>
+    </div>
+
+
+    <div class="c-head">
+        <div class="sel-key">
+            <select-ui class="s-sort" option="kwSelect" value="kwSelectValue"></select-ui>
+        </div>
+        <div class="search">
+            <input type="text" placeholder="请输入关键字搜索" ng-model="searchKey" ng-keydown="onKeyDown($event)">
+            <a href="" ng-click="searchByKey()">
+                <i class="image-mo-search"></i>
+            </a>
+        </div>
+        <div class="new" ng-show="tabGroupCur == 0">
+            <a href="" class="btn-m-new" ng-click="tagAdd()">
+                <i class="fa fa-plus"></i>
+                添加标签
+            </a>
+            <a href="#/manage-user-edit/new/null" class="btn-m-new">
+                <i class="fa fa-plus"></i>
+                添加用户
+            </a>
+        </div>
+        <div class="new-usr-m" ng-show="tagAddShow">
+            <div class="tag-head">标签名称</div>
+            <div class="tag-name">
+                <input type="text" id="btn-m-new" ng-model="tagNew" maxlength="20" ng-keydown="tagAddKeyDown($event)">
+            </div>
+            <div class="tag-btn-g">
+                <a href="" class="confirm" ng-click="tagAddConfirm()">确定</a>
+                <a href="" class="cancel" ng-click="tagAddCancel()">取消</a>
+            </div>
+            <div class="arr">
+                <div class="arr1"></div>
+                <div class="arr2"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="c-u-head">
+        <span>{{tagSelCur || '全部用户'}}({{tagSelCur ? totalCur : total}})</span>
+    </div>
+    <div class="c-content">
+        <div class="con-main" ng-class="{'ex':tabGroupCur != 0}">
+            <div class="con-left">
+                <div class="opt-btn">
+                    <label for="checkAll" class="chk-all">
+                        <input type="checkbox" id="checkAll" ng-model="checkAll" ng-change="checkAllUser()">
+                        <span>全部</span>
+                    </label>
+
+                    <a href="" class="btn-m-opt" ng-show="tabGroupCur == 0" ng-click="userChangeTag()">
+                        <i class="image-mo-tags"></i>
+                        修改标签
+                    </a>
+                    <a href="" class="btn-m-opt" ng-show="tabGroupCur == 1" ng-click="userActive()">
+                        <i class="image-mo-able"></i>
+                        激活用户
+                    </a>
+                    <a href="" class="btn-m-opt" ng-show="tabGroupCur == 0" ng-click="userForbid()">
+                        <i class="image-mo-disable"></i>
+                        禁用用户
+                    </a>
+                    <a href="" class="btn-m-opt" ng-click="userDelete()">
+                        <i class="image-mo-delete"></i>
+                        删除用户
+                    </a>
+                    <a href="" class="btn-m-opt reset-ps" ng-show="tabGroupCur == 0" ng-click="userResetPw()">
+                        重置密码
+                        <i class="image-mo-i"></i>
+                        <div class="reset-ps-tips">重置密码为：123456
+                            <div class="arr">
+                                <div class="arr1"></div>
+                                <div class="arr2"></div>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="" class="btn-m-opt" ng-show="">
+                        <i class="image-mo-date"></i>
+                        设置有效日期
+                    </a>
+                </div>
+                <div class="list">
+                    <div class="tag-s-all">
+                        <select-org config="selOrgConfig" list="selOrgConfig.tagSelect" ng-show="selOrgConfig.cur == 'all'"></select-org>
+                    </div>
+                    <ul class="list-ul" ng-show="!listLoading">
+                        <li class="list-li" ng-repeat="user in orgList track by $index" id="user-{{user._id}}">
+                            <span class="chk">
+                                <input type="checkbox" ng-model="user.check" ng-checked="checkAll">
+                            </span>
+                            <div class="avatar-area">
+                                <div class="avatar">
+                                    <img ng-src="{{user.attrs.basic.avatar}}" alt="">
+                                    <div class="user-detail">
+                                        <div class="u-head">
+                                            <div class="ava">
+                                                <img ng-src="{{user.attrs.basic.avatar}}" alt="">
+                                            </div>
+                                            <div class="u-info">
+                                                <div class="name">
+                                                    <span ng-bind="user.attrs.basic.nickName"></span>
+                                                    <i class="fa fa-user"></i>
+                                                    <i class="fa mg-l5" ng-class="'fa-' + gender[user.attrs.basic.gender].icon" ng-show="user.attrs.basic.gender != 2"></i>
+                                                </div>
+                                                <div class="account">
+                                                    <span ng-bind="user.usr[0]"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="u-body">
+                                            <ul>
+                                                <li>
+                                                    <span class="ic"><i class="fa fa-calendar"></i></span>
+                                                    <span class="text">有效期 : 永久  </span>
+                                                </li>
+                                                <li ng-show="user.attrs.certification && user.attrs.certification.phone">
+                                                    <span class="ic"><i class="fa fa-mobile-phone"></i></span>
+                                                    <span class="text">手机号 : {{user.attrs.certification.phone}}</span>
+                                                </li>
+                                                <li>
+                                                    <span class="ic"><i class="fa fa-map-marker"></i></span>
+                                                    <span class="text">地区 :  {{user.attrs.extra.country}}  {{user.attrs.extra.province}}  {{user.attrs.extra.city}}  </span>
+                                                </li>
+                                                <li ng-show="">
+                                                    <span class="ic"><i class="fa fa-envelope"></i></span>
+                                                    <span class="text">邮箱： 569198041@qq.com</span>
+                                                </li>
+                                                <li>
+                                                    <span class="ic"><i class="fa fa-pencil"></i></span>
+                                                    <span class="text">个性签名： <span class="pencil">{{user.attrs.basic.desc || '无'}}</span></span>
+                                                </li>
+                                                <li ng-show="user.attrs.certification">
+                                                    <span class="ic"><i class="fa fa-credit-card"></i></span>
+                                                <span class="text">
+                                                    <span>身份证： {{user.attrs.certification.idCardNo}}</span>
+                                                    <span class="card">真实姓名： {{user.attrs.certification.realName}}</span>
+                                                    <span class="card">审核状态： <span ng-class="'status-'+user.attrs.certification.status">{{certStatus[user.attrs.certification.status]}}</span></span>
+                                                    <span class="card">身份照片： <a href="" ng-click="viewCard(user.attrs.certification)">查看</a></span>
+                                                </span>
+                                                </li>
+                                                <li>
+                                                    <span class="ic"><i class="fa fa-tags"></i></span>
+                                                    <span class="text">标签：
+                                                        <span class="tag-t">
+                                                            <div class="tag-o" ng-repeat="tag in user.attrs.orgMembers.orgs.tags">{{tag}}</div>
+                                                        </span>
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="con">
+                                <div class="n">
+                                    <span class="name" ng-bind="user.attrs.basic.nickName"></span>
+                                    <span class="tel">({{user.usr[0]}})</span>
+                                    <span class="mg-l10" title="课程管理员" ng-show="user.type['20']"><i class="image-mo-course-mg"></i></span>
+                                </div>
+                                <div class="t" ng-show="tabGroupCur == 0">
+                                    <span class="tag-set">
+                                        <span class="tag-click" ng-click="selOrgConfig.selectUser(user._id, user)">标签</span>
+                                        <span class="arrow"></span>
+                                        <div class="tag-s">
+                                            <select-org config="selOrgConfig" list="selOrgConfig.tagSelect" ng-show="selOrgConfig.cur == user._id"></select-org>
+                                        </div>
+                                    </span>
+                                    <div class="tag-list">
+                                        <div class="tag-o" ng-repeat="tag in user.attrs.orgMembers.orgs.tags">{{tag}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="u-edit">
+                                <a ng-href="#/manage-user-edit/edit/{{user.usr[0]}}" href="">编辑用户</a>
+                            </div>
+                        </li>
+                    </ul>
+
+
+                    <div class="data-empty" ng-show="!orgList.length && !listLoading">
+                        <div class="em-image">
+                            <img src="../../course/imgs/icon-cloud.png" />
+                        </div>
+                        <div class="pd-t10">暂无数据</div>
+                    </div>
+
+                    <div class="loader-ui-style" ng-show="listLoading">
+                        <loader-ui></loader-ui>
+                    </div>
+                </div>
+
+                <div ng-show="!listLoading">
+                    <pagination class="page-bar s2 mg-t20 mg-b20" list="orgList" pageargs="pageArgs" pagefn="listFn"></pagination>
+                </div>
+
+            </div>
+            <div class="con-right" ng-show="tabGroupCur == 0">
+                <div class="head">
+                    <span class="title">用户标签</span>
+                    <span class="btn-g" ng-show="">
+                        <a href="" ng-show="!tagFilterStatus" ng-click="tagFilterChange()">筛选</a>
+                        <a href="" ng-show="tagFilterStatus" ng-click="tagFilter()">过滤</a>
+                        <a href="" ng-show="tagFilterStatus" class="cancel" ng-click="tagFilterCancel()">取消</a>
+                    </span>
+                </div>
+                <div class="content">
+                    <ul>
+                        <li title="全部用户" ng-click="tagActive('')" ng-class="{'active': !tagSelCur}">
+                            <span class="point" ng-show="!tagFilterStatus"></span>
+                            <span>
+                                <span class="text" title="全部用户({{total}})">全部用户</span>
+                                <span class="number">({{total}})</span>
+                            </span>
+                        </li>
+                        <li title="{{tag.name}}" ng-repeat="tag in tags track by $index" ng-click="tagActive(tag.name)" ng-class="{'active':tagSelCur == tag.name}">
+                            <span class="point" ng-show="!tagFilterStatus"></span>
+                            <span class="check" ng-show="tagFilterStatus"><input type="checkbox" ng-model="tagCheck[tag.name]"></span>
+                            <span ng-hide="tagEditCur == $index">
+                                <span class="text" title="{{tag.name}}({{tag.count}})">{{tag.name}}</span>
+                                <span class="number">({{tag.count}})</span>
+                                <span class="btn-g" ng-show="!tagFilterStatus">
+                                    <a href="" title="编辑标签" ng-click="tagEdit($event,$index)"><i class="image-mo-li-edit"></i></a>
+                                    <a href="" title="删除标签" ng-click="tagDelete($event,$index)"><i class="image-mo-li-del"></i></a>
+                                </span>
+                            </span>
+                            <span ng-show="tagEditCur == $index">
+                                <span class="text-edit"><input type="text" maxlength="20" ng-click="$event.stopPropagation()" ng-model="tag.name" ng-blur="tagEditConfirm($index)"></span>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

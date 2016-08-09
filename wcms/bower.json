@@ -1,0 +1,19 @@
+{
+    "name": "wcms.js",
+    "version": "0.0.1",
+    "authors": [
+        "wensh"
+    ],
+    "license": "NO",
+    "ignore": [
+        "**/.*",
+        "**/node_modules",
+        "src",
+        "**/bower_components",
+        "www/test"
+    ],
+    "dependencies": {
+        "jquery": "1.11.1",
+        "angular": "1.2.9"
+    }
+}

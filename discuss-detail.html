@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <title>帖子详情</title>
+    <script src="config-dy/config-dy.js"></script>
+
+    <!--build:css discuss-detail/discuss-detail.min.css-->
+    <link rel="stylesheet" href="rcp-common/styles/common.css"/>
+    <link rel="stylesheet" href="rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="rcp-common/directive/common/common-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/chat/chat-directive.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/datetime/datetime-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/dynamic/dynamicService.css" />
+    <!-- emoticon -->
+    <link rel="stylesheet" href="rcp-common/directive/editor-with-emoji/editor-with-emoji.css">
+    <link rel="stylesheet" href="rcp-common/styles/emoticon.css">
+    <!--my stylesheet-->
+    <link rel="stylesheet" href="discuss-detail/discuss-detail.css" />
+    <!--endbuild-->
+</head>
+<body ng-controller="mainCtrl">
+
+    <headnav item-list="itemList" user="user"></headnav>
+
+    <div class="g-m-w" ng-controller="discussDetailCtrl">
+
+        <div class="main-view mg-t20 mg-b20">
+
+            <table class="main-content">
+                <tr>
+                    <td class="td-left">
+                        <img class="avatar-img" ng-src="{{getUserData(discussDetail.usrId).avatar}}">
+                    </td>
+                    <td class="pd-r35">
+                        <div class="title" ng-bind="getUserData(discussDetail.usrId).nickname"></div>
+                        <div class="content" ng-bind-html="discussDetail.contentTxt | encodeHtml | emojiUnifiedToCss | html"></div>
+
+                        <!--<div class="img" ng-repeat="imgsrc in discussDetail.contentImg track by $index">-->
+                            <!--<img ng-src="{{imgsrc}}" />-->
+                        <!--</div>-->
+
+                        <image-slider images="discussDetail.contentImg"></image-slider>
+
+                        <div class="discuss-info mg-t20">
+                            <div class="date-time" ng-bind="discussDetail.subTime | date: 'yyyy-MM-dd HH:mm'"></div>
+                            <div class="count-num">
+                                <ul>
+                                    <li>
+                                        <i class="fa fa-lg fa-eye"></i>
+                                        <!--<div class="read-icon"></div>-->
+                                        <span ng-bind="discussDetail.readNum"></span>
+                                    </li>
+                                    <li>
+                                        <a ng-hide="isSending" ng-click="sendReply(discussDetail, 30)">
+                                            <i class="fa fa-lg fa-thumbs-o-up" ng-class="{'color-orange': discussDetail.isLiked}"></i>
+                                            <!--<div class="like-icon" ng-if="!discussDetail.isLiked"></div>-->
+                                            <!--<div class="liked-icon" ng-if="discussDetail.isLiked"></div>-->
+                                            <span ng-bind="discussDetail.likeNum"></span>
+                                        </a>
+                                        <span ng-show="isSending" style="cursor: not-allowed; vertical-align: middle;">
+                                            <i class="fa fa-lg fa-thumbs-o-up" ng-class="{'color-orange': discussDetail.isLiked}"></i>
+                                            <span ng-bind="discussDetail.likeNum"></span>
+                                        </span>
+                                    </li>
+                                    <!--<li>-->
+                                        <!--<a>-->
+                                            <!--<i class="fa fa-lg fa-share-alt"></i>分享-->
+                                            <!--<div class="share-icon"></div>分享-->
+                                        <!--</a>-->
+                                    <!--</li>-->
+                                </ul>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+
+                        <button class="reply-btn" ng-click="scoreTo('replyDiscussContent', 'send-reply')">回复</button>
+                    </td>
+                </tr>
+            </table>
+
+
+            <div class="split">
+                <span ng-bind="discussDetail.replyNum + '个回复'"></span>
+            </div>
+
+            <table class="reply-content">
+                <tr ng-repeat="reply in discussDetail.replies track by $index">
+                    <td class="td-left">
+                        <img class="avatar-img" ng-src="{{getUserData(reply.usrId).avatar}}">
+                    </td>
+                    <td>
+                        <div class="head">
+                            <div style="float: left">
+                                <span class="mg-r20" ng-bind="getUserData(reply.usrId).nickname" style="color: #525252;"></span>
+                                <span ng-bind="reply.subTime | date: 'yyyy-MM-dd HH:mm'"></span>
+                            </div>
+                            <div style="float: right;">
+                                <a ng-hide="isSending" ng-click="sendReply(reply, 30)">
+                                    <i class="fa fa-lg fa-thumbs-o-up" ng-class="{'color-orange': reply.isLiked}"></i>
+                                    <span ng-bind="'赞（' + reply.likeNum + '）'"></span>
+                                </a>
+                                <span ng-show="isSending" style="cursor: not-allowed; vertical-align: middle;">
+                                    <i class="fa fa-lg fa-thumbs-o-up" ng-class="{'color-orange': reply.isLiked}"></i>
+                                    <span ng-bind="'赞（' + reply.likeNum + '）'"></span>
+                                </span>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                        <div class="content">
+                            <div ng-bind-html="reply.contentTxt | encodeHtml | emojiUnifiedToCss | html" style="color: #525252; padding: 10px 20px"></div>
+                            <div style="padding: 10px 20px;">
+                                <image-slider images="reply.contentImg"></image-slider>
+                            </div>
+                            <div style="float: right;">
+                                <a ng-click="setReplyTarget(reply, {})">
+                                    <span ng-bind="'回复（' + reply.replyNum + '）'"></span>
+                                </a>
+                            </div>
+                            <div style="clear: both"></div>
+                        </div>
+
+                        <div class="comment">
+                            <ul>
+                                <li class="comment-li" ng-repeat="comment in reply.comments track by $index">
+                                    <table>
+                                        <tr>
+                                            <td style="vertical-align: top; width: 60px;">
+                                                <img class="avatar-img" ng-src="{{getUserData(comment.usrId).avatar}}" />
+                                            </td>
+                                            <td class="pd-l20">
+                                                <div class="mg-b10">
+                                                    <span ng-bind="getUserData(comment.usrId).nickname"></span>
+                                                    <span class="mg-l20 color-gray" ng-bind="comment.subTime | date: 'yyyy-MM-dd HH:mm'"></span>
+                                                </div>
+                                                <div style="word-break: normal">
+                                                    回复<span class="mg-l5 color-cyan" ng-bind="getUserData(comment.pid).nickname"></span>：
+                                                    <span ng-bind-html="comment.contentTxt | encodeHtml | emojiUnifiedToCss | html"></span>
+                                                    <div class="mg-t10">
+                                                        <image-slider images="comment.contentImg"></image-slider>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style="vertical-align: bottom; text-align: right; width: 50px; color: #a0a0a0;">
+                                                <a ng-click="setReplyTarget(reply, comment)">回复</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </li>
+                                <li class="comment-li" slide-show="reply.showReplyEditor" style="display: none;">
+                                    <!--<div class="text-area">-->
+                                        <!--<textarea ng-model="reply.replyComment" maxlength="120" placeholder="请输入内容"></textarea>-->
+                                    <!--</div>-->
+
+                                    <div ng-show="hasLogin">
+                                        <div class="mg-t10">
+                                            <!--<dyeditor model="reply.replyComment.content" exceed="reply.exceed" config="{id: reply.id,len:150,style:{minHeight:80,overflow:'auto'},placeholder: getUserData(reply.replyTarget.usrId).nickname ? ('回复 ' + getUserData(reply.replyTarget.usrId).nickname) : '请输入内容'}" style="padding: 5px; border: none"></dyeditor>-->
+                                            <!--<div class="up-img" ng-show="reply.replyComment.uploadData.img.length">-->
+                                                <!--<div ng-repeat="img in reply.replyComment.uploadData.img track by $index">-->
+                                                    <!--<ng-img c="{img:img}" class="img"></ng-img>-->
+                                                    <!--<div class="close"></div>-->
+                                                    <!--<i class="fa fa-times" aria-hidden="true" ng-click="delImg(reply.replyComment.uploadData, $index)"></i>-->
+                                                <!--</div>-->
+                                            <!--</div>-->
+                                            <!--<div class="advance mg-t15">-->
+                                                <!--<a addface="reply.replyComment.content" bindeditor="{{'#' + reply.id}}"><i class="fa fa-smile-o"></i></a>-->
+                                                <!--<a ng-click="uploader(reply.replyComment.uploadData, selectFile)"><i class="fa fa-picture-o"></i></a>-->
+                                                <!--<upload-img upload="reply.replyComment.uploadData" select-file="selectFile"></upload-img>-->
+                                            <!--</div>-->
+
+                                            <!-- 楼中楼 输入框 -->
+                                            <editor-with-emoji style="border: none;"
+                                                               content="reply.replyComment.content"
+                                                               exceed="reply.exceed"
+                                                               config="{id: reply.id, limit: 150, style: {minHeight:80, overflow: 'auto'}, placeholder: getUserData(reply.replyTarget.usrId).nickname ? ('回复 ' + getUserData(reply.replyTarget.usrId).nickname) : '请输入内容'}"></editor-with-emoji>
+                                            <div class="up-img" ng-show="reply.replyComment.uploadData.img.length">
+                                                <div ng-repeat="img in reply.replyComment.uploadData.img track by $index">
+                                                    <ng-img c="{img:img}" class="img"></ng-img>
+                                                    <div class="close"></div>
+                                                    <i class="fa fa-times" aria-hidden="true" ng-click="delImg(reply.replyComment.uploadData, $index)"></i>
+                                                </div>
+                                            </div>
+                                            <div class="advance mg-t15" style="position:relative;">
+                                                <!-- emojiPicker 开关 -->
+                                                <button data-ng-click="reply.showEmojiPicker=!reply.showEmojiPicker;$event.stopPropagation();">
+                                                    <i class="fa fa-smile-o"></i></button>
+                                                <button ng-click="uploader(reply.replyComment.uploadData, selectFile)" ng-disabled="reply.replyComment.uploadData.status=='uploading'"><i class="fa fa-picture-o"></i></button>
+                                                <upload-img class="swf-up-35" upload="reply.replyComment.uploadData" select-file="selectFile" ></upload-img>
+                                            </div>
+
+                                            <div style="float: right; margin-top: 15px">
+                                                <button class="reply-comment-btn" ng-click="sendReply(reply.replyTarget.hasOwnProperty('id') ? reply.replyTarget : reply, 20, reply.replyComment.content, reply.replyComment.uploadData.img)" ng-disabled="!reply.replyComment.content.length || reply.exceed || isSending">回复</button>
+                                            </div>
+                                            <!-- 楼中楼 表情选择框 -->
+                                            <div style="position: relative;">
+                                                <editor-emoji-picker showed="reply.showEmojiPicker"
+                                                                     editor="'#'+reply.id+''"
+                                                                     style="top: 42px; left: 11px;"></editor-emoji-picker>
+                                            </div>
+                                            <div style="clear: both"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="no-login color-gray" ng-hide="hasLogin">
+                                        想要参与讨论？请先 <a ng-click="toLogin()">登录</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="reply-editor" ng-show="hasLogin">
+                <!--<dyeditor id="replyDiscussContent" model="replyDiscuss.content" exceed="exceed" config="{id:'send-reply',len:150,style:{minHeight:80,overflow:'auto'},placeholder:'请输入内容'}" style="padding: 5px; border: none"></dyeditor>-->
+                <!--<div class="up-img" ng-show="replyDiscuss.uploadData.img.length">-->
+                    <!--<div ng-repeat="img in replyDiscuss.uploadData.img track by $index">-->
+                        <!--<ng-img c="{img:img}" class="img"></ng-img>-->
+                        <!--<div class="close"></div>-->
+                        <!--<i class="fa fa-times" aria-hidden="true" ng-click="delImg(replyDiscuss.uploadData, $index)"></i>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="advance">-->
+                    <!--<a addface="replyDiscuss.content" bindeditor="#send-reply"><i class="fa fa-smile-o"></i></a>-->
+                    <!--<a ng-click="uploader(replyDiscuss.uploadData, uploadImgSelect)"><i class="fa fa-picture-o"></i></a>-->
+                    <!--<upload-img upload="replyDiscuss.upl oadData" select-file="uploadImgSelect"></upload-img>-->
+                <!--</div>-->
+
+                <!-- 评论 输入框 -->
+                <editor-with-emoji id="replyDiscussContent"
+                                   style="border: none;"
+                                   content="replyDiscuss.content"
+                                   exceed="exceed"
+                                   config="{id: 'send-reply', limit: 150, style: {minHeight:80, overflow: 'auto'}, placeholder: '请输入内容'}"></editor-with-emoji>
+                <div class="up-img" ng-show="replyDiscuss.uploadData.img.length">
+                    <div ng-repeat="img in replyDiscuss.uploadData.img track by $index">
+                        <ng-img c="{img:img}" class="img"></ng-img>
+                        <div class="close"></div>
+                        <i class="fa fa-times" aria-hidden="true" ng-click="delImg(replyDiscuss.uploadData, $index)"></i>
+                    </div>
+                </div>
+                <div class="advance" style="position:relative;">
+                    <!--<button add-target="'#send-reply'"><i class="fa fa-smile-o"></i></button>-->
+                    <button data-ng-click="replyDiscuss.emojiPickerShowed=!replyDiscuss.emojiPickerShowed;$event.stopPropagation();">
+                        <i class="fa fa-smile-o"></i></button>
+                    <button ng-click="uploader(replyDiscuss.uploadData, uploadImgSelect)" ng-disabled="replyDiscuss.uploadData.status=='uploading'"><i class="fa fa-picture-o"></i></button>
+                    <upload-img class="swf-up-35" upload="replyDiscuss.uploadData" select-file="uploadImgSelect"></upload-img>
+                </div>
+
+                <div class="reply">
+                    <!-- emojiPicker 开关 -->
+                    <button ng-click="sendReply(discussDetail, 20, replyDiscuss.content, replyDiscuss.uploadData.img)" ng-disabled="!replyDiscuss.content || exceed || isSending">回复</button>
+                </div>
+                <!-- 评论 表情选择框 -->
+                <div style="position: relative;">
+                    <editor-emoji-picker showed="replyDiscuss.emojiPickerShowed"
+                                         editor="'#send-reply'"
+                                         style="top: 35px; left: 11px;"></editor-emoji-picker>
+                </div>
+                <div style="clear: both;"></div>
+            </div>
+
+            <div class="reply-editor" ng-hide="hasLogin">
+                <div class="no-login color-gray">
+                    想要参与讨论？请先 <a ng-click="toLogin()">登录</a>
+                </div>
+            </div>
+
+            <div style="margin: 50px 0;">
+                <pagination class="page-bar s3 jump-hide" list="discussDetail.replies" pageargs="pageargs" pagefn="pagefn"></pagination>
+            </div>
+
+        </div>
+
+        <div class="problem-view mg-t20">
+            <div class="head">
+                常见问题
+                <!--<div style="float: right;">-->
+                    <!--<a>更多</a>-->
+                <!--</div>-->
+            </div>
+
+            <div class="problem-list">
+                <ul>
+                    <li ng-repeat="problem in problemList track by $index">
+                        <a ng-href="{{getDiscussUrl(problem.id)}}" title="{{problem.title}}" target="_blank">
+                            <span ng-bind="problem.title"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <tailnav></tailnav>
+
+    <!--已打包好的basic package-->
+    <script src="rcp-common/service/lib-default.min.js"></script>
+    <!--已打包好的basic package end-->
+
+    <!--build:js discuss-detail/discuss-detail.min.js-->
+    <!--project dependency-->
+    <script src="rcp-common/service/aid.js"></script>
+    <script src="rcp-common/service/jf-v1.0.js"></script>
+    <!--my controller-->
+    <script src="discuss-detail/discuss-detail.js"></script>
+    <script src="rcp-common/module/main/main-ctrl.js"></script>
+    <!--service-->
+    <script src="service/discuss.js"></script>
+    <!--customized unit-->
+    <script src="rcp-common/directive/placeholder-ie/placeholder-ie.js"></script>
+    <script src="rcp-common/directive/head-tail/head-tail-dir.js"></script>
+    <script src="rcp-common/directive/datetime/datetime-dir.js"></script>
+    <script src="rcp-common/directive/pagination/pagination.js"></script>
+    <script src="rcp-common/directive/dynamic/dynamicService.js"></script>
+    <script src="rcp-common/directive/image-slider/image-slider.js"></script>
+    <!-- upload -->
+    <script src="rcp-common/directive/upload/swfobject.js"></script>
+    <script src="rcp-common/directive/upload/upload-img.js"></script>
+    <!-- emoji data -->
+    <script src="js-emoji/lib/emoji.js"></script>
+    <!-- emoticon -->
+    <script src="rcp-common/filter/emoticon.js"></script>
+    <script src="rcp-common/directive/editor-with-emoji/editor-with-emoji.js"></script>
+    <!--endbuild-->
+    <script src="rcp-common/service/service.min.js"></script>
+    <!--<script src="rcp-common/filter/encode-html.js"></script>-->
+</body>
+</html>

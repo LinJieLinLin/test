@@ -1,0 +1,27 @@
+{
+    "name": "space",
+    "version": "0.0.1",
+    "authors": [
+        "linj"
+    ],
+    "license": "NO",
+    "description": "space",
+    "main": "index.html",
+    "moduleType": [],
+    "homepage": "index.html",
+    "ignore": [
+        "**/.*",
+        "*.cmd",
+        "test",
+        "node_modules",
+        "bower_components"
+    ],
+    "dependencies": {
+        "course": "https://w.gdy.io/dyf_w/course.git#buildDev",
+        "sso": "https://w.gdy.io/dyf_w/sso.git#buildDev",
+        "rcp-common": "https://w.gdy.io/dyf_w/dyf.git#buildDev"
+    },
+    "scripts": {
+        "postinstall": "gulp build"
+    }
+}

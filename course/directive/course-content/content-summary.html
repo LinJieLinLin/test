@@ -1,0 +1,15 @@
+<div class="intro-ctrl">
+    <div class="intro-loading" ng-show="loading">
+        <loader-ui></loader-ui>
+    </div>
+    <div class="intro-main" ng-show="!loading" ng-bind-html="intro" ng-class="{less: lessIntro}">
+    </div>
+
+    <div ng-show="longIntro && config.less" class="more-btn" >
+        <a href="" class="more-intro-btn" ng-click="lessIntro = false" ng-show="lessIntro"><img src="/rcp-common/imgs/icon/more-btn.png" alt=""></a>
+        <a href="" class="more-intro-btn" ng-click="lessIntro = true" ng-show="!lessIntro"><img src="/rcp-common/imgs/icon/less-btn.png" alt=""></a>
+    </div>
+    <div class="intro-empty ng-cloak" ng-show="emptyIntro" >
+        暂无课程介绍
+    </div>
+</div>

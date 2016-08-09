@@ -1,0 +1,177 @@
+<div class="course-swap">
+    <div class="nav-bar">
+        <div class="nav-list" ng-show="curTab == 0 || curTab == 1">
+            <span class="tab" ng-class="{'cur-tab': curTab == 0}" ng-click="changeTab(0)">我的课程</span>
+            <span  class="tab" ng-class="{'cur-tab': curTab == 1}" ng-click="changeTab(1)">我助教的课程</span>
+        </div>
+        <div class="nav-delete" ng-show="curTab == 2">
+            <a href="" ng-click="changeTab(0)">课程</a>
+            <span>&gt;&nbsp;回收箱</span>
+        </div>
+        <div class="btn-bar">
+            <span ng-show="curTab == 0 || curTab == 1" ng-click="createCourse()" class="new"><i class="image-course-manager-new-hover"></i>新建课程</span>
+            <!--<span ng-show="curTab == 0 || curTab == 1" ng-click="changeTab(2)"><i class="image-course-manager-delete"></i>课程回收箱</span>-->
+            <!--<span ng-show="curTab == 2"><i class="image-course-manager-reback"></i>全部恢复</span>-->
+            <!--<span ng-show="curTab == 2"><i class="image-course-manager-delete"></i>全部永久删除</span>-->
+        </div>
+        <div class="search-bar">
+            <input type="text" class="input" placeholder="搜索" ng-model="filterKey" ng-keydown="onkeydown($event)">
+            <i class="image-cm-search-btn" aria-hidden="true" ng-click="onkeydown({keyCode: 13})"></i>
+        </div>
+    </div>
+
+    <!--我的课程-->
+    <section ng-show="curTab == 0">
+        <div ng-show="!myCourseLoaded">
+            <loader-ui></loader-ui>
+        </div>
+        <div ng-show="myCourseLoaded">
+            <div ng-show="!myCourseList.length" class="empty">
+                <div class="empty-text">
+                    <img src="/course/imgs/empty.png" alt="empty">
+                    <span ng-bind="curEmptyTip"></span>
+                </div>
+            </div>
+            <div ng-show="myCourseList.length">
+                <ul>
+                    <li ng-repeat="item in myCourseList" class="course-list" id="cm-id-{{$index}}">
+                        <div class="inlineBlock left p-r">
+                            <a ng-href="{{item.detailUrl}}" target="_blank">
+                                <default-img src="item.imgUrl"></default-img>
+                            </a>
+                            <div class="p-a">
+                                <i ng-class="item.statusIcon" ng-show="!!item.statusIcon"></i>
+                            </div>
+                        </div>
+                        <div class="inlineBlock course-info left">
+                            <a ng-href="{{item.detailUrl}}"  target="_blank" title="{{item.title}}" class="title">{{item.title}}</a>
+                            <tips-tool ng-if="!!item.tips" data="item.tips" mode="2" mode-id="item.id" con-id="'#cm-id-' + $index"></tips-tool>
+
+                            <!--<p>课程简介：{{item.desc}}</p>-->
+                            <p>开课时间：{{item.start_time | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                            <p>结束时间：{{item.end_time | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                            <p><span class="light-green">{{item.joined}}</span>人参与</p>
+                            <p ng-show="item.maxPrice > 0">
+                                价格：￥{{item.maxPrice}}
+                            </p>
+                            <p ng-hide="item.maxPrice > 0">
+                                <span class="o-button free-btn">免费</span>
+                            </p>
+                        </div>
+                        <div class="right t-c">
+                            <a ng-repeat="operation in item.operationList" ng-class="operation.style + ' btn-box'" ng-href="{{operation.getUrl && operation.getUrl(item.id)}}" target="_blank" ng-click="operation.onclick && operation.onclick(item)">{{operation.name}}</a>
+                        </div>
+                    </li>
+                </ul>
+                <pagination list="myCourseList" pagefn="myCrsPageFn" pageargs="myCrsArgs" class="page-bar s3 jump-hide"></pagination>
+            </div>
+        </div>
+    </section>
+
+    <!--我助教的课程-->
+    <section ng-show="curTab == 1">
+        <div ng-show="!guideCourseLoaded">
+            <loader-ui></loader-ui>
+        </div>
+        <div ng-show="guideCourseLoaded">
+            <div ng-show="!guideCourseList.length" class="empty">
+                <div class="empty-text">
+                    <img src="/course/imgs/empty.png" alt="empty">
+                    <span ng-bind="curEmptyTip"></span>
+                </div>
+            </div>
+            <div ng-show="guideCourseList.length">
+                <ul>
+                    <li ng-repeat="item in guideCourseList" class="course-list">
+                        <div class="inlineBlock left p-r">
+                            <a ng-href="{{item.detailUrl}}" target="_blank">
+                                <default-img src="item.imgUrl"></default-img>
+                            </a>
+                            <div class="p-a">
+                                <i ng-class="item.statusIcon" ng-show="!!item.statusIcon"></i>
+                            </div>
+                        </div>
+                        <div class="inlineBlock course-info left">
+                            <span class="guide-icon">助</span>
+                            <a ng-href="{{item.detailUrl}}"  target="_blank" title="{{item.title}}" class="title">{{item.title}}</a>
+
+                            <!--<p>课程简介：{{item.desc}}</p>-->
+                            <p>开课时间：{{item.start_time | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                            <p>结束时间：{{item.end_time | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                            <p><span class="light-green">{{item.joined}}</span>人参与</p>
+                            <p ng-show="item.maxPrice > 0">
+                                价格：￥{{item.maxPrice}}
+                            </p>
+                            <p ng-hide="item.maxPrice > 0">
+                                <span class="o-button free-btn">免费</span>
+                            </p>
+                        </div>
+                        <div class="right t-c">
+                            <a ng-repeat="operation in item.operationList" ng-class="operation.style + ' btn-box'" ng-href="{{operation.getUrl && operation.getUrl(item.id)}}" target="_blank" ng-click="operation.onclick && operation.onclick(item)">{{operation.name}}</a>
+                        </div>
+                    </li>
+                </ul>
+                <pagination list="guideCourseList" pagefn="guideCrsPageFn" pageargs="guideCrsArgs" class="page-bar s3 jump-hide"></pagination>
+            </div>
+        </div>
+    </section>
+
+    <!--回收箱的课程-->
+    <section ng-show="curTab == 2">
+        <div ng-show="!deleteCourseLoaded">
+            <loader-ui></loader-ui>
+        </div>
+        <div ng-show="deleteCourseLoaded">
+            <div ng-show="!deleteCourseList.length" class="empty">
+                <div class="empty-text">
+                    <img src="/course/imgs/empty.png" alt="empty">
+                    <span ng-bind="curEmptyTip"></span>
+                </div>
+            </div>
+            <div ng-show="deleteCourseList.length">
+                <ul>
+                    <li ng-repeat="item in deleteCourseList" class="course-list">
+                        <div class="inlineBlock left p-r">
+                            <a ng-href="{{item.detailUrl}}" target="_blank">
+                                <default-img src="item.imgUrl"></default-img>
+                            </a>
+                            <div class="p-a">
+                                <i ng-class="item.statusIcon" ng-show="!!item.statusIcon"></i>
+                            </div>
+                        </div>
+                        <div class="inlineBlock course-info left">
+                            <a ng-href="{{item.detailUrl}}"  target="_blank" title="{{item.title}}" class="title">{{item.title}}</a>
+
+                            <!--<p>课程简介：{{item.desc}}</p>-->
+                            <p>开课时间：{{item.start_time | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                            <p>结束时间：{{item.end_time | date:'yyyy-MM-dd HH:mm:ss'}}</p>
+                            <p><span class="light-green">{{item.joined}}</span>人参与</p>
+                            <p ng-show="item.maxPrice > 0">
+                                价格：￥{{item.maxPrice}}
+                            </p>
+                            <p ng-hide="item.maxPrice > 0">
+                                <span class="o-button free-btn">免费</span>
+                            </p>
+                        </div>
+                        <div class="right t-c">
+                            <a ng-repeat="operation in item.operationList" ng-class="operation.style + ' btn-box'" ng-href="{{operation.getUrl && operation.getUrl(item.id)}}" target="_blank" ng-click="operation.onclick && operation.onclick(item)">{{operation.name}}</a>
+                        </div>
+                    </li>
+                </ul>
+                <pagination list="deleteCourseList" pagefn="deleteCrsPageFn" pageargs="deleteCrsArgs" class="page-bar s3 jump-hide"></pagination>
+            </div>
+        </div>
+    </section>
+
+    <confirm-modal dialog="closeDialog">
+        下架的课程将不能被购买！
+    </confirm-modal>
+
+    <confirm-modal dialog="deleteDialog">
+        你确定删除<span class="cm-text-blue" ng-bind="'《' + deleteDialog.course + '》'"></span>吗？永久删除后，您将无法恢复！
+    </confirm-modal>
+
+    <confirm-modal dialog="quitDialog">
+        确定退出课程<span class="cm-text-blue" ng-bind="'《' + quitDialog.course + '》'"></span>教师团队？
+    </confirm-modal>
+</div>

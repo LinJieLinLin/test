@@ -1,0 +1,211 @@
+<div class="team-manager">
+    <div class="nav-bar">
+        <!--<span class="nav-title">教师团队</span>-->
+        <h2>教师团队</h2>
+        <div class="tm-btn-bar" ng-show="isAdmin">
+            <p ng-click="toAddAccount();" ng-mouseover="btnNew = 1;" ng-mouseleave="btnNew = 0;"><i ng-class="{'image-team-xjzh': !btnNew, 'image-team-xjzh-d': btnNew}"></i><span>新建账号</span></p>
+            <p ng-click="toAddAdmin();" ng-mouseover="btnAdd = 1;" ng-mouseleave="btnAdd = 0;"><i ng-class="{'image-team-pttj': !btnAdd, 'image-team-pttj-d': btnAdd}"></i><span>从平台添加</span></p>
+        </div>
+    </div>
+
+    <!--人员列表-->
+    <section class="tm-person-list">
+        <table class="tm-table" border="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th>昵称</th>
+                <th>手机号</th>
+                <th>权限</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody ng-show="personLoaded && personList.length">
+            <tr ng-repeat="item in personList">
+                <td ng-bind="item.name" title="{{item.name}}"></td>
+                <td ng-bind="item.phone"></td>
+                <td ng-bind="(item.levelText || []).join('、');"></td>
+                <td ng-bind="item.statusText" ng-class="{'text-shallow-green': item.status === 'AGREED', 'text-red': item.status === 'REFUSED', 'text-blue': item.status === 'WAITING', 'text-green': item.status === 'CANCEL'}"></td>
+                <td>
+                    <div class="operation text-gray" ng-show="item.isAdmin">-&nbsp;-</div>
+                    <div class="operation" ng-show="!item.isAdmin && isAdmin">
+                        <a ng-click="manageAdmin(item);" ng-show="item.status == 'NORMAL' || item.status == 'AGREED'">设置权限</a>
+                        <a ng-click="cancelAdmin(item)" ng-show="item.status == 'WAITING'">撤销邀请</a>
+                        <a class="m-l-30" ng-click="removeAdmin(item);">移除</a>
+                        <a class="m-l-30" ng-click="lookDetail(item)">查看详情</a>
+                    </div>
+                    <div class="operation" ng-show="!item.isAdmin && !isAdmin">
+                        <a ng-show="item.isSelf && (item.status == 'NORMAL' || item.status == 'AGREED')" ng-click="quit(item);">退出</a>
+                        <a ng-class="{'m-l-30': item.isSelf && (item.status == 'NORMAL' || item.status == 'AGREED')}" ng-click="lookDetail(item)">查看详情</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <loader-ui show="personLoaded"></loader-ui>
+        <empty-tip ng-show="personLoaded && !personList.length"></empty-tip>
+        <pagination ng-hide="!personLoaded || !personList.length" list="personList" pagefn="personLoadFn" pageargs="personPageArgs" class="s3 jump-hide"></pagination>
+    </section>
+
+    <!--详情框-->
+    <section ng-show="detailData.show">
+        <div class="bg"></div>
+        <div class="tm-detail-modal" >
+            <div class="dialog-title">
+                <span class="title" ng-bind="detailData.title"></span>
+                <a class="close" ng-click="detailData.show = false;">×</a>
+            </div>
+
+            <div class="label" ng-show="detailData.type == 0">
+                <p class="guide"><span>*</span>手机号</p>
+                <span class="frame" ng-bind="detailData.phone"></span>
+            </div>
+            <div class="label" ng-show="detailData.type == 0">
+                <p class="guide"><span>*</span>昵称</p>
+                <span class="frame" ng-bind="detailData.nickName"></span>
+            </div>
+            <div class="label" ng-show="detailData.type == 0">
+                <p class="guide"><span>*</span>密码</p>
+                <span class="frame">******</span>
+            </div>
+            <div class="label" ng-show="detailData.type == 0">
+                <p class="guide"><span>*</span>确认密码</p>
+                <span class="frame">******</span>
+            </div>
+
+            <div class="label" ng-show="detailData.type == 1">
+                <p class="guide"><span>*</span>用户</p>
+                <span class="frame" ng-bind="detailData.user"></span>
+            </div>
+            <div class="label">
+                <p class="guide"><span>*</span>权限</p>
+                <div class="checkbox">
+                    <label for="detail-data-50"><input id="detail-data-50" type="checkbox" ng-model="detailData.level[50]" disabled="disabled"><span>课程编辑</span></label>
+                    <label for="detail-data-60"><input id="detail-data-60" type="checkbox" ng-model="detailData.level[60]" disabled="disabled"><span>教学管理</span></label>
+                </div>
+            </div>
+
+            <div class="label" ng-show="detailData.type == 1">
+                <p class="guide"><span>&nbsp;&nbsp;</span>备注</p>
+                <span class="remark remark-show" ng-bind="detailData.remark"></span>
+            </div>
+            <div class="modal-info" ng-show="detailData.type == 1">
+                <span ng-show="detailData.status == 'WAITING'" class="text-blue">邀请中...</span>
+                <span ng-show="detailData.status == 'AGREED'" class="text-blue">已加入团队</span>
+                <span ng-show="detailData.status == 'REFUSED'" class="text-red">已拒绝邀请</span>
+                <span ng-show="detailData.status == 'CANCEL'" class="text-red">已取消邀请</span>
+            </div>
+            <div class="modal-btn">
+                <button class="m-btn" ng-click="detailData.show = false;">取消</button>
+            </div>
+        </div>
+    </section>
+
+    <!--设置或输入框-->
+    <section ng-show="editData.show">
+        <div class="bg"></div>
+        <div class="tm-detail-modal">
+            <div class="dialog-title">
+                <span class="title" ng-bind="(['新建账号', '设置权限', '从平台添加账号'])[editData.type]"></span>
+                <a class="close" ng-click="editData.show = false;">×</a>
+            </div>
+
+            <form name="u" ng-show="editData.type == 0">
+                <div class="label p-r">
+                    <p class="guide"><span>*</span>手机号</p>
+                    <input id="edit-data-phone" name="phone" type="text" class="input" placeholder="请填写11位有效数字" maxlength="11" ng-model="editData.phone" ng-focus="editData._phone = 1;" ng-blur="editData._phone = -1;" ng-pattern="editData.regExp.phone" required
+                            ng-class="{'input-red': editData._phone == -1 && (u.phone.$error.pattern == true || !editData.phone) || editData._phone == -1 && editData.phone && u.phone.$error.pattern == false && editData.userExist}">
+                    <div class="input-tip">
+                        <div>
+                            <span ng-show="editData._phone == 1" class="blue"><i class="fa fa-info-circle"></i>{{editData.userExist ? '该账号已存在' : '请输入11位数字'}}</span>
+                            <span ng-show="editData._phone == -1 && (u.phone.$error.pattern == true || !editData.phone)" class="red"><i class="fa fa-exclamation-circle"></i>{{u.phone.$error.pattern == true ? '请正确填写' : '不能为空' }}</span>
+                            <span ng-show="editData._phone == -1 && editData.phone && u.phone.$error.pattern == false && editData.userExist" class="red"><i class="fa fa-exclamation-circle"></i>该账号已存在</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="label p-r">
+                    <p class="guide"><span>*</span>验证码</p>
+                    <input name="verification" type="text" class="input ver-w" placeholder="请填写有效验证码" ng-model="editData.verification" ng-focus="editData._verification = 1;" ng-blur="editData._verification = -1;" ng-pattern="editData.regExp.verification" required
+                            ng-class="{'input-red': editData._verification == -1 && (u.verification.$error.pattern == true || !editData.verification)}">
+                    <span class="verification" ng-click="editData.phone && editData.verify(editData.phone);"  ng-class="{'orange-bg': editData.phone && !editData.userExist && !editData.isTime, 'gray-bg': editData.phone && !editData.userExist && editData.isTime, 'c-p': editData.phone && !editData.userExist && !editData.isTime, 'disabled': !editData.phone || editData.userExist}">{{editData.isTime ? editData.time + 's' : '获取验证码'}}</span>
+                    <div class="input-tip">
+                        <div>
+                            <span ng-show="editData._verification == 1" class="blue"><i class="fa fa-info-circle"></i>请输入有效验证码</span>
+                            <span ng-show="editData._verification == -1 && (u.verification.$error.pattern == true || !editData.verification)" class="red"><i class="fa fa-exclamation-circle"></i>{{u.verification.$error.pattern == true ? '请正确填写' : '不能为空' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="label p-r">
+                    <p class="guide"><span>*</span>昵称</p>
+                    <input name="nickName" type="text" class="input" placeholder="请填写有效字符串" maxlength="12" ng-model="editData.nickName" ng-focus="editData._nickName = 1;" ng-blur="editData._nickName = -1;" ng-pattern="editData.regExp.nickName" required
+                            ng-class="{'input-red': editData._nickName == -1 && (u.nickName.$error.pattern == true || !editData.nickName)}">
+                    <div class="input-tip">
+                        <div>
+                            <span ng-show="editData._nickName == 1" class="blue"><i class="fa fa-info-circle"></i>请输入有效字符串</span>
+                            <span ng-show="editData._nickName == -1 && (u.nickName.$error.pattern == true || !editData.nickName)" class="red"><i class="fa fa-exclamation-circle"></i>{{u.nickName.$error.pattern == true ? '请正确填写' : '不能为空' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="label p-r">
+                    <p class="guide"><span>*</span>密码</p>
+                    <input name="password1" type="password" class="input" placeholder="请填写有效字符串" ng-model="editData.password1" ng-focus="editData._password1 = 1;" ng-blur="editData._password1 = -1;" ng-pattern="editData.regExp.password" required
+                            ng-class="{'input-red': editData._password1 == -1 && (u.password1.$error.pattern == true || !editData.password1)}">
+                    <div class="input-tip">
+                        <div>
+                            <span ng-show="editData._password1 == 1" class="blue"><i class="fa fa-info-circle"></i>请输入6-15位密码</span>
+                            <span ng-show="editData._password1 == -1 && (u.password1.$error.pattern == true || !editData.password1)" class="red"><i class="fa fa-exclamation-circle"></i>{{u.password1.$error.pattern == true ? '请正确填写' : '不能为空' }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="label p-r">
+                    <p class="guide"><span>*</span>确认密码</p>
+                    <input name="password2" type="password" class="input" placeholder="请填写有效字符串" ng-model="editData.password2" ng-focus="editData._password2 = 1;" ng-blur="editData._password2 = -1;" ng-pattern="editData.regExp.password" required
+                            ng-class="{'input-red': editData._password2 == -1 && (u.password2.$error.pattern == true || !editData.password2) || editData._password2 == -1 && editData.password1 && editData.password2 && editData.password1 != editData.password2}">
+                    <div class="input-tip">
+                        <div>
+                            <span ng-show="editData._password2 == 1" class="blue"><i class="fa fa-info-circle"></i>请输入6-15位密码</span>
+                            <span ng-show="editData._password2 == -1 && (u.password2.$error.pattern == true || !editData.password2)" class="red"><i class="fa fa-exclamation-circle"></i>{{u.password2.$error.pattern == true ? '请正确填写' : '不能为空' }}</span>
+                            <span ng-show="editData._password2 == -1 && editData.password1 && editData.password2 && editData.password1 != editData.password2" class="red"><i class="fa fa-exclamation-circle"></i>密码不一致</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="label" ng-show="editData.type == 1">
+                <p class="guide"><span>*</span>用户</p>
+                <span class="frame  white-bg" title="{{editData.user}}" ng-bind="editData.user"></span>
+            </div>
+            <div class="label" ng-show="editData.type == 2">
+                <p class="guide"><span>*</span>用户</p>
+                <search-user export="editData"></search-user>
+            </div>
+            <div class="label">
+                <p class="guide"><span>*</span>权限</p>
+                <div class="checkbox">
+                    <label for="edit-data-50"><input id="edit-data-50" type="checkbox" ng-model="editData.level[50]"><span>课程编辑</span></label>
+                    <label for="edit-data-60"><input id="edit-data-60" type="checkbox" ng-model="editData.level[60]"><span>教学管理</span></label>
+                </div>
+            </div>
+            <div class="label" ng-show="editData.type == 2">
+                <p class="guide"><span>&nbsp;&nbsp;</span>备注</p>
+                <textarea class="remark textarea" ng-model="editData.remark"></textarea>
+            </div>
+
+            <div class="modal-btn">
+                <button class="m-btn"
+                        ng-disabled="editData.type == 2 && !editData.searchUser || (!editData.level[50] && !editData.level[60]) || editData.type == 0 && (!u.$valid || editData.password1 != editData.password2 || editData.userExist)"
+                        ng-click="editData.resolve && editData.resolve();"
+                        ng-bind="(['创建', '确定', '添加'])[editData.type]"></button>
+                <button class="m-btn" ng-click="editData.reject && editData.reject(); ">取消</button>
+            </div>
+        </div>
+    </section>
+
+    <!--确认框-->
+    <confirm-modal dialog="removeDialog">
+        确定将用户 <span class="tm-text-blue" ng-bind="removeDialog.user"></span> 从教学团队中移除？（移除无法恢复）
+    </confirm-modal>
+    <confirm-modal dialog="quitDialog">
+        确定退出课程<span class="tm-text-blue" ng-bind="'《' + quitDialog.course + '》'"></span>教师团队？
+    </confirm-modal>
+</div>

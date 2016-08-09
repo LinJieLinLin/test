@@ -1,0 +1,21 @@
+<style>
+.to-top {
+    position: fixed;
+    bottom: 105px;
+    left: 50%;
+    margin-left: 610px;
+}
+.top-wrapper {
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    background: url(img/7_01.png) no-repeat center;
+}
+.top-wrapper:hover {
+    background-image: url(img/7_05.png);
+}
+</style>
+<div class="to-top" ng-show="showToTop">
+    <div class="top-wrapper" ng-click="scrollToTop()">
+    </div>
+</div>

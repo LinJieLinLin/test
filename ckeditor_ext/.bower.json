@@ -1,0 +1,12 @@
+{
+  "name": "ckeditor_ext",
+  "_release": "1d30848c91",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "1d30848c9159958aa844af0138f12e30688059a2"
+  },
+  "_source": "https://w.gdy.io/dyf_w/ckeditor_ext.git",
+  "_target": "*",
+  "_originalSource": "https://w.gdy.io/dyf_w/ckeditor_ext.git"
+}

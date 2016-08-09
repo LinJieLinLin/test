@@ -1,0 +1,281 @@
+<div class="breadcrumb">
+    举报管理 >
+    <span class="color-bc-blue-c" belong-to="#/manage-report">举报管理</span>
+</div>
+
+<div style="padding: 0 15px; margin-bottom: 50px">
+    <!--report tab-->
+    <div id="report-menu" class="report-menu">
+        <div class="report-list">
+            <ul>
+                <li ng-click="switchTab(reportType.DISCUSS)" class="report-tab-active">帖子<span ng-if="allCount && currentTab == reportType.DISCUSS" ng-bind="'(' + allCount + ')'"></span></li>
+                <li class="split">|</li>
+                <li ng-click="switchTab(reportType.USER)">个人聊天<span ng-if="allCount && currentTab == reportType.USER" ng-bind="'(' + allCount + ')'"></span></li>
+                <li class="split">|</li>
+                <li ng-click="switchTab(reportType.GROUP)">群组聊天<span ng-if="allCount && currentTab == reportType.GROUP" ng-bind="'(' + allCount + ')'"></span></li>
+            </ul>
+        </div>
+    </div>
+    <!--report tab end-->
+
+    <!--DISCUSS view-->
+    <div class="report-view" ng-if="currentTab==reportType.DISCUSS && !showLoading">
+        <!--filter-->
+        <div style="padding:20px 10px;font-size:12px;">
+            <label>
+                所属板块：
+                <select class="report-select" ng-model="currentSite" ng-change="changeSite(currentSite)">
+                    <option value="全部">全部</option>
+                    <option value="学习圈">学习圈</option>
+                    <option value="我要吐槽(酷校)">我要吐槽(酷校)</option>
+                    <option value="我要吐槽(爱科学)">我要吐槽(爱科学)</option>
+                </select>
+            </label>
+            <label>
+                处理状态：
+                <select class="report-select" ng-model="currentStatus" ng-change="changeStatus(currentStatus)">
+                    <option value="全部">全部</option>
+                    <option value="已处理">已处理</option>
+                    <option value="未处理">未处理</option>
+                    <option value="已忽略">已忽略</option>
+                </select>
+            </label>
+        </div>
+        <!--filter end-->
+        <div class="report-lists report-discuss" style="min-height: 322px;">
+            <table class="report-lists">
+                <thead>
+                    <tr>
+                        <th style="padding-left:10px;">帖子详情</th>
+                        <th style="width:160px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="report in reportList track by $index">
+                        <td style="padding-left:10px">
+                            <ng-img c="{img:getDiscuss(report.tid).userImg,divClass:'img-user',imgClass:'img-user'}"></ng-img>
+                            <div style="display:inline-block;margin-left:4px;">
+                                <h3 ng-bind="getDiscuss(report.tid).discussName+'('+getDiscuss(report.tid).discussId+')'"></h3>
+                                <p style="font-size:12px;" ng-bind="report.ctime | date:'yyyy-MM-dd HH:mm'"></p>
+                            </div>
+                            <div ng-class="{true:'color-gray discuss-text',false:'discuss-text'}[report.status ==2]">
+                                <p class="text" ng-bind-html="getDiscuss(report.tid).discussText | encodeHtml | emojiUnifiedToCss | html"></p>
+                                <image-slider images="getDiscuss(report.tid).discussImg"></image-slider>
+                            </div>
+                            <div class="discuss-info">
+                                举报人：
+                                <span class="report-user" title="{{getUserName(report.uid)}}" ng-bind="getUserName(report.uid)"></span>
+                                举报原因：
+                                <span class="color-red" ng-bind="report.text"></span>
+                                所属板块：
+                                <div class="discuss-panel">
+                                    <a title="{{getDiscussUrl(report.ext.scopes[0]).panelName}}" ng-href="{{getDiscussUrl(report.ext.scopes[0]).panelUrl}}" target="_blank" ng-bind="getDiscussUrl(report.ext.scopes[0]).panelName"></a>
+                                </div>
+                                帖子状态：
+                                <div style="display:inline-block;" ng-switch="report.status">
+                                    <span ng-switch-when="0">未处理</span>
+                                    <span ng-switch-when="1">已忽略</span>
+                                    <span ng-switch-when="2">已处理</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="vertical-align: top" ng-switch="report.status">
+                            <a target="_blank"  ng-href="{{getDiscussUrl(report.ext.scopes[0],report.tid).discussUrl}}" title="">查看详情</a>
+                            <span style="vertical-align:middle;margin: 0 3px;color:#41bff4;">|</span>
+                            <a ng-switch-when="0" ng-href="" ng-click=handleReport(report._id,2)>关闭帖子</a>
+                            <span ng-if="report.status == 0" style="vertical-align:middle;margin: 0 3px;color:#41bff4;">|</span>
+                            <a ng-switch-when="0" ng-href="" ng-click=handleReport(report._id,1)>忽略</a>
+                            <a ng-switch-when="1" ng-href="" ng-click=handleReport(report._id,2)>关闭帖子</a>
+                            <a ng-switch-when="2" ng-href="" ng-click=handleReport(report._id,1)>恢复帖子</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; padding: 15px 0;" ng-show="!reportList.length || reportList.length==0">
+                <div style="margin-left: auto; margin-right: auto;">
+                    <img src="../../course/imgs/icon-cloud.png" />
+                </div>
+                <div class="pd-t10">暂无数据</div>
+            </div>
+        </div>
+    </div>
+    <!--DISCUSS view end-->
+
+    <!--USER view-->
+    <div class="report-view" ng-if="currentTab==reportType.USER && !showLoading">
+        <div class="report-lists" style="min-height: 322px">
+            <table class="report-lists">
+                <thead>
+                <tr>
+                    <th style="width:100px;padding-left:10px">原因</th>
+                    <th style="min-width:100px">举报人</th>
+                    <th style="min-width:100px">被举报对象</th>
+                    <th>举报时间</th>
+                    <th>
+                        <label>
+                            <select ng-model="currentStatus" ng-change="changeStatus(currentStatus)">
+                                <option value="全部">全部</option>
+                                <option value="已处理">已处理</option>
+                                <option value="未处理">未处理</option>
+                                <option value="已忽略">已忽略</option>
+                            </select>
+                        </label>
+                    </th>
+                    <th style="min-width:60px;text-align:center">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="report in reportList track by $index">
+                        <td style="padding-left:10px" ng-bind="report.text"></td>
+                        <td>
+                            <a>
+                                <span title="{{getUserName(report.uid)}}" ng-bind="getUserName(report.uid)"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a>
+                                <span title="{{getUserName(report.tid)}}" ng-bind="getUserName(report.tid)"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="info" ng-bind="report.ctime | date:'yyyy-MM-dd HH:mm'"></div>
+                        </td>
+                        <td ng-switch="report.status">
+                            <span ng-switch-when="0">未处理</span>
+                            <span ng-switch-when="1">已忽略</span>
+                            <span ng-switch-when="2">已处理</span>
+                        </td>
+                        <td style="text-align:center">
+                            <a ng-click="loadDialog(report)">查看详情</a>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; padding: 15px 0;" ng-show="!reportList.length || reportList.length==0">
+                <div style="margin-left: auto; margin-right: auto;">
+                    <img src="../../course/imgs/icon-cloud.png" />
+                </div>
+                <div class="pd-t10">暂无数据</div>
+            </div>
+        </div>
+    </div>
+    <!--USER view end-->
+
+    <!--GROUP view-->
+    <div class="report-view" ng-if="currentTab==reportType.GROUP && !showLoading">
+        <div class="report-lists" style="min-height: 322px">
+            <table class="report-lists">
+                <thead>
+                <tr>
+                    <th style="width:100px;padding-left:10px">原因</th>
+                    <th style="min-width:100px">举报人</th>
+                    <th style="min-width:135px">被举报对象</th>
+                    <th>举报时间</th>
+                    <th>
+                        <label>
+                            <select ng-model="currentStatus" ng-change="changeStatus(currentStatus)">
+                                <option value="全部">全部</option>
+                                <option value="已处理">已处理</option>
+                                <option value="未处理">未处理</option>
+                                <option value="已忽略">已忽略</option>
+                            </select>
+                        </label>
+                    </th>
+                    <th style="min-width:60px;text-align:center">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="report in reportList track by $index">
+                        <td style="padding-left:10px" ng-bind="report.text"></td>
+                        <td>
+                            <a>
+                                <span title="{{getUserName(report.uid)}}" ng-bind="getUserName(report.uid)"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <a>
+                                <span title="{{getGroupName(report.tid)+'群组'}}" class="group-chat" ng-bind="getGroupName(report.tid)+'群组'"></span>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="info" ng-bind="report.ctime | date:'yyyy-MM-dd HH:mm'"></div>
+                        </td>
+                        <td ng-switch="report.status">
+                            <span ng-switch-when="0">未处理</span>
+                            <span ng-switch-when="1">已忽略</span>
+                            <span ng-switch-when="2">已处理</span>
+                        </td>
+                        <td style="text-align:center">
+                            <a ng-click="loadDialog(report)">查看详情</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; padding: 15px 0;" ng-show="!reportList.length || reportList.length==0">
+                <div style="margin-left: auto; margin-right: auto;">
+                    <img src="../../course/imgs/icon-cloud.png" />
+                </div>
+                <div class="pd-t10">暂无数据</div>
+            </div>
+        </div>
+    </div>
+    <!--GROUP view  end-->
+
+    <div class="loader-ui-style" ng-show="showLoading">
+        <loader-ui></loader-ui>
+    </div>
+    <div ng-show="!showLoading">
+        <pagination class="page-bar s2 mg-t20" list="reportList" pageargs="pageargs" pagefn="pagefn"></pagination>
+    </div>
+
+    <!--dialog view -->
+    <div class="report-mask"></div>
+    <div class="r-dialog-body fadeOut">
+        <div class="r-dialog-header">
+            <div class="r-dialog-title" ng-if="currentReport.type =='user'">
+                <span title="{{getUserName(currentReport.tid)}}" ng-bind="currentReport && getUserName(currentReport.tid)"></span>&nbsp;与&nbsp;
+                <span title="{{getUserName(currentReport.uid)}}" ng-bind="currentReport && getUserName(currentReport.uid)"></span>&nbsp;最近10条聊天信息
+            </div>
+            <div class="r-dialog-title" ng-if="currentReport.type =='group'">
+                <span title="{{getGroupName(currentReport.tid)}}" ng-bind="currentReport && getGroupName(currentReport.tid)"></span>群组&nbsp;最近10条聊天信息
+            </div>
+            <i class="close" ng-click="closeReportDialog()">×</i>
+            <span ng-bind="currentReport.ctime | date:'yyyy-MM-dd HH:mm'"></span>
+        </div>
+        <div class="r-dialog-content">
+            <ul class="r-dialog-list">
+                <li class="r-dialog-item" ng-repeat="item in items track by $index">
+                    <div class="img-div">
+                        <img ng-src="{{item.userImg}}" style="width:42px;height:42px;" alt=""/>
+                    </div>
+                    <div class="title">
+                        <span ng-if="!item.chatType" ng-bind-html="item.content | encodeHtml | emojiUnifiedToCss | html"></span>
+                        <a ng-if="item.chatType" ng-href="{{item.content}}" target="_blank">
+                            <img ng-src="{{item.content}}" alt=""/>
+                        </a>
+                    </div>
+                    <!--<span class="chat-num"></span>-->
+                </li>
+            </ul>
+        </div>
+        <div class="r-dialog-footer">
+            <input type="button" class="disabled-user" ng-disabled="currentReport.status !== 0" value="{{currentReport.type =='user' ? '禁用用户':'禁言该群'}}" ng-click="closeReportDialog(currentReport._id,2)" />
+            <input type="button" class="reject-report" ng-disabled="currentReport.status !== 0" value="驳回举报" ng-click="closeReportDialog(currentReport._id,1)" />
+        </div>
+    </div>
+    <!--dialog view end-->
+
+</div>
+
+<script type="application/javascript">
+    $('.tab li:not(.li-head)').removeClass('li-active');
+    $("[href='" + $('[belong-to]').attr('belong-to') + "']").parent().addClass('li-active');
+
+    var reportTab = $('.report-menu li:even');
+    reportTab.each(function (index) {
+        $(this).click(function () {
+            $('.report-menu li:even').removeClass('report-tab-active').eq(index).addClass('report-tab-active');
+        });
+    });
+</script>

@@ -1,0 +1,34 @@
+{
+  "name": "space",
+  "authors": [
+    "linj"
+  ],
+  "license": "NO",
+  "description": "space",
+  "main": "index.html",
+  "moduleType": [],
+  "homepage": "index.html",
+  "ignore": [
+    "**/.*",
+    "*.cmd",
+    "test",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "course": "https://w.gdy.io/dyf_w/course.git#buildDev",
+    "rcp-common": "https://w.gdy.io/dyf_w/dyf.git#buildDev"
+  },
+  "scripts": {
+    "postinstall": "gulp build"
+  },
+  "_release": "5047a8dc39",
+  "_resolution": {
+    "type": "branch",
+    "branch": "buildDev",
+    "commit": "5047a8dc39e034bbcc131f5569dc5ae081f14eb9"
+  },
+  "_source": "https://w.gdy.io/dyf_w/space.git",
+  "_target": "buildDev",
+  "_originalSource": "https://w.gdy.io/dyf_w/space.git"
+}

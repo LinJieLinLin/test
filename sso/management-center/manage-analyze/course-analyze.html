@@ -1,0 +1,110 @@
+<div class="breadcrumb" ng-show="showPage === 0">
+    学情统计 &gt;
+    <span class="color-bc-blue-c">课程统计</span>
+</div>
+<div class="breadcrumb" ng-show="showPage === 1">
+    学情统计 &gt;
+    <a class="back-link" ng-click="showPage = 0;">课程统计</a>
+    &gt;
+    <span class="color-bc-blue-g">课程详情</span>
+    <div class="la-search la-search-adj">
+        <input type="text" placeholder="请输入关键字搜索" ng-model="detailSearch" ng-keydown="keydown($event, reLoadStudentList);">
+        <span></span>
+        <i class="fa fa-search" aria-hidden="true" ng-click="reLoadStudentList();"></i>
+    </div>
+</div>
+<section ng-show="showPage === 0">
+    <div class="manage-analyze">
+        <div ng-show="loading">
+            <loader-ui></loader-ui>
+        </div>
+        <div ng-show="!loading && !collegeList.length">
+            <empty-tip></empty-tip>
+        </div>
+        <div class="list-analyze" ng-show="!loading && collegeList.length">
+            <!--<p class="la-title">课程统计</p>-->
+            <div class="la-org">
+                <span>学校：</span>
+                <div>
+                    <p class="la-college" ng-repeat="item in collegeList" ng-class="{'la-action': curCollegeIndex === $index}" ng-click="collegeClick(item, $index)">{{item.name + (item.num >= 0 ? '（' : '')}}<span ng-class="{'la-text-white': curCollegeIndex === $index}" class="la-text-blue" ng-show="item.num >= 0" ng-bind="item.num"></span>{{item.num >= 0 ? '）' : ''}}</p>
+                </div>
+            </div>
+            <div class="la-count">
+                <span ng-bind="'课程数：' + count.course"></span>
+                <span ng-bind="'教师人数：' + count.teacher"></span>
+                <span ng-bind="'学生人数：' + count.student"></span>
+                <div class="la-search">
+                    <input type="text" placeholder="请输入关键字搜索" ng-model="courseSearch"  ng-keydown="keydown($event, reLoadCourseList);">
+                    <span></span>
+                    <i class="fa fa-search" aria-hidden="true" ng-click="reLoadCourseList();"></i>
+                </div>
+            </div>
+            <div class="la-table">
+                <table border="0" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th>课程名称</th><th>老师</th><th>学校</th><th>本校参与学生</th><th>外校参与学生</th><th>社会参与学生</th><th class="tb-width-10">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody ng-show="!courseLoading && courseList.length">
+                    <tr ng-repeat="item in courseList">
+                        <td title="{{item.title}}" ng-bind="item.title"></td><td ng-bind="item.teacher"></td><td ng-bind="item.college"></td><td ng-bind="item.inStu"></td><td ng-bind="item.outStu"></td><td ng-bind="item.societyStu"></td><td><a class="operation" href="" ng-click="lookDetail(item)">查看</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div ng-show="courseLoading">
+                    <loader-ui></loader-ui>
+                </div>
+                <div ng-show="courseLoading || courseList.length">
+                    <pagination list="collegeList" pagefn="loadDataFn" pageargs="pageArgs" class="page-bar s3 jump-hide"></pagination>
+                </div>
+                <div ng-show="!courseLoading && !courseList.length">
+                    <empty-tip></empty-tip>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="manage-analyze ma-course-detail" ng-show="showPage === 1">
+    <div class="spe"></div>
+    <div ng-show="!studentLoading && studentList.length">
+        <div class="show-info">
+            <p>最高得分：<span class="si-t-green" ng-bind="scoreNum.maxScore + '分'"></span></p>
+            <p>最低得分：<span class="si-t-red" ng-bind="scoreNum.minScore + '分'"></span></p>
+            <p>平均分：<span class="si-t-green" ng-bind="scoreNum.avgScore + '分'"></span></p>
+            <p>获得学分人数：<span class="si-t-blue" ng-bind="scoreNum.creditNum + '人'"></span></p>
+            <p>总人数：<span class="si-t-blue" ng-bind="scoreNum.totalNum + '人'"></span></p>
+            <div class="la-time">
+                <input type="text" class="la-time-date" plug-style="all time" readonly placeholder="请选择开始时间" id="startTime">
+                <span>-</span>
+                <input type="text" class="la-time-date" plug-style="all time" readonly placeholder="请选择结束时间" id="endTime">
+                <button class="search-button" ng-click="searchCourse()">确定</button>
+            </div>
+        </div>
+        <div class="list-analyze">
+            <div class="la-table">
+                <table border="0" cellspacing="0">
+                    <thead>
+                    <tr>
+                        <th class="tb-width-15">姓名</th><th>所属学校</th><th>获得学分</th><th>成绩总分</th><th class="tb-width-20">在线时长</th><th class="tb-width-20">学习时长</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="item in studentList">
+                        <td class="tb-width-15" ng-bind="item.teacher"></td><td ng-bind="item.college"></td><td ng-bind="item.credit"></td><td ng-bind="item.totalScore"></td><td class="tb-width-20" ng-bind="item.onlineTime"></td><td class="tb-width-20" ng-bind="item.studyTime"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div ng-show="studentLoading || studentList.length">
+                    <pagination list="studentList" pagefn="loadStudentDataFn" pageargs="studentPageArgs" class="page-bar s3 jump-hide"></pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-show="studentLoading">
+        <loader-ui></loader-ui>
+    </div>
+    <div ng-show="!studentLoading && !studentList.length">
+        <empty-tip></empty-tip>
+    </div>
+</section>

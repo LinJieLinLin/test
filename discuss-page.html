@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <title>我要吐槽</title>
+    <script src="config-dy/config-dy.js"></script>
+
+    <!--build:css discuss-page/discuss-page.min.css-->
+    <link rel="stylesheet" href="rcp-common/styles/common.css"/>
+    <link rel="stylesheet" href="rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="rcp-common/directive/common/common-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/chat/chat-directive.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/datetime/datetime-dir.css"/>
+    <link rel="stylesheet" href="rcp-common/directive/dynamic/dynamicService.css" />
+    <link rel="stylesheet" href="rcp-common/directive/emotion-editor/emotion-editor.css" />
+    <!-- emoticon -->
+    <link rel="stylesheet" href="rcp-common/directive/editor-with-emoji/editor-with-emoji.css">
+    <link rel="stylesheet" href="rcp-common/styles/emoticon.css">
+    <!--my stylesheet-->
+    <link rel="stylesheet" href="discuss-page/discuss-page.css" />
+    <!--endbuild-->
+
+</head>
+<body ng-controller="mainCtrl">
+
+    <headnav item-list="itemList" user="user"></headnav>
+
+    <div class="g-m-w">
+        <div class="main-view mg-t20 mg-b20">
+            <div class="switch-tab-list">
+                <ul>
+                    <li>
+                        <a href="#/all-discuss">大家都在说</a>
+                    </li>
+                    <li class="split">|</li>
+                    <li>
+                        <a href="#/my-discuss">我来说一下</a>
+                    </li>
+                </ul>
+            </div>
+
+            <div ng-view></div>
+
+        </div>
+
+        <div class="problem-view mg-t20" ng-controller="dpCtrl">
+            <div class="head">
+                常见问题
+                <!--<div style="float: right;">-->
+                    <!--<a>更多</a>-->
+                <!--</div>-->
+            </div>
+
+            <div class="problem-list">
+                <ul>
+                    <li ng-repeat="problem in problemList track by $index">
+                        <a ng-href="{{getDiscussUrl(problem.id)}}" title="{{problem.title}}" target="_blank">
+                            <span ng-bind="problem.title"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <tailnav></tailnav>
+
+    <!--已打包好的basic package-->
+    <script src="rcp-common/service/lib-default.min.js"></script>
+    <!--已打包好的basic package end-->
+
+    <!--build:js discuss-page/discuss-page.min.js-->
+    <!--project dependency-->
+    <script src="rcp-common/service/aid.js"></script>
+    <script src="rcp-common/service/jf-v1.0.js"></script>
+    <!-- emoji data -->
+    <script src="js-emoji/lib/emoji.js"></script>
+    <!--my controller-->
+    <script src="discuss-page/discuss-page.js"></script>
+    <script src="rcp-common/module/main/main-ctrl.js"></script>
+    <!--service-->
+    <script src="service/discuss.js"></script>
+    <script src="discuss-page/all-discuss/all-discuss.js"></script>
+    <script src="discuss-page/my-discuss/my-discuss.js"></script>
+    <!-- upload -->
+    <script src="rcp-common/directive/upload/swfobject.js"></script>
+    <script src="rcp-common/directive/upload/upload-img.js"></script>
+    <!--<script src="jsupload/lib/jsup.js"></script>-->
+    <!--customized unit-->
+    <script src="rcp-common/directive/placeholder-ie/placeholder-ie.js"></script>
+    <script src="rcp-common/directive/head-tail/head-tail-dir.js"></script>
+    <script src="rcp-common/directive/datetime/datetime-dir.js"></script>
+    <script src="rcp-common/directive/pagination/pagination.js"></script>
+    <script src="rcp-common/directive/dynamic/dynamicService.js"></script>
+    <script src="rcp-common/directive/emotion-editor/emotion-editor.js"></script>
+    <!-- emoticon -->
+    <script src="rcp-common/filter/emoticon.js"></script>
+    <script src="rcp-common/directive/editor-with-emoji/editor-with-emoji.js"></script>
+    <!--filter-->
+    <!--endbuild-->
+    <script src="rcp-common/service/service.min.js"></script>
+    <!--<script src="rcp-common/filter/encode-html.js"></script>-->
+</body>
+</html>

@@ -1,0 +1,48 @@
+<div class="study-circle">
+    <div class="">
+        <h3 class="content-section-head">
+            圈子
+        </h3>
+        <div class="content-section-body" >
+            <div class="no-data" ng-hide="hasData">
+                暂无圈子
+            </div>
+            <div ng-show="hasData">
+                <ul class="circle-detail">
+                    <li class="inline" ng-repeat="c in circleList track by $index">
+                        <div class="user-info">
+                            <img ng-src="{{ usrList[c.root.ownerId].attrs.basic.avatar || '../study-circle/imgs/d-face-1.png'}}" alt="">
+                            <p class="text-hide" ng-bind="usrList[c.root.ownerId].attrs.basic.nickName"></p>
+                        </div>
+                        <div class="detail">
+                            <a ng-href="{{toDetailCircle}}" ng-click="toDetail(c)" target="_blank" style="color:#a6a6a6;">
+                                <div  ng-bind-html="c.root.content | encodeHtml | emojiUnifiedToCss | html"></div>
+                            </a>
+                            <div ng-bind="c.root.createTime| date:'MM-dd HH:mm'">
+                                00-00 00:00
+                            </div>
+                            <image-slider images="c.root.files.IMG" class="self-image-slider"></image-slider>
+                            <p class="desc">
+                                <span class="last-comment text-hide" ng-show="c.replys.length" ng-bind="usrList[c.replys[0].ownerId].usr[0]+' 最后回复于 '+(c.replys[0].createTime| date:'MM-dd HH:mm')"> 最后回复于 00-00 00:00</span>
+                                <span class="vote">
+                                <button ng-click="sendLike(c.root,$event,$index)">
+                                    <i class="fa fa-thumbs-o-up" ng-show="c.root.isLiked" style="color:#fe8811"></i>
+                                    <i class="fa fa-thumbs-o-up" ng-hide="c.root.isLiked"></i>
+                                    <span ng-bind="c.root.count.likeCount">0</span>
+                                </button>
+                                 <a ng-href="{{toDetailCircle}}" ng-click="toDetail(c)" target="_blank"><i class="fa fa-commenting-o"></i> <span ng-bind="c.root.count.replyCount">0</span></a>
+                                </span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+                <div class="more-comment" ng-hide="c.showTotal">
+                    <a ng-href="{{toTotalCircle}}" target="_blank" >查看全部圈子 &gt;</a>
+                </div>
+                <div ng-show="c.showTotal">
+                    <pagination  class="study-circle-pagination" list="circleList" pageargs="pageargs" pagefn="pagefn" ></pagination>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

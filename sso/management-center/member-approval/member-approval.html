@@ -1,0 +1,100 @@
+<div class="breadcrumb">
+    认证管理 >
+    <span class="color-bc-blue-c" belong-to="#/member-approval">实名认证</span>
+</div>
+
+<div style="padding: 0 15px; margin-bottom: 50px">
+    <!--search-->
+    <div style="padding: 10px; margin-bottom: 20px">
+        <div style="float: left;">
+            <div class="member-approval-search-bar">
+                <select-ui class="s-sort" option="kwSelect" value="kwSelectValue"></select-ui>
+                <input type="text" class="search-input" ng-model="searchKw" placeholder="输入关键字进行搜索"  ng-keydown="onKeyDown($event)" />
+            </div>
+
+        </div>
+
+        <div style="float: right">
+            提交时间：
+            <input type="text" class="jf-date date-time-input" plug-style="all time" readonly ng-model="start_time" placeholder="请选择时间范围的起始" id="startTime" />
+            -
+            <input type="text" class="jf-date date-time-input" plug-style="all time" readonly ng-model="end_time" placeholder="请选择时间范围的结束" id="endTime" />
+            <button class="search-button" ng-click="searchMember()">搜索</button>
+            <a ng-click="reset()">重置</a>
+        </div>
+    </div>
+    <!--search end-->
+    <!--user list-->
+    <div class="cert-view" ng-if="!showLoading">
+        <table class="cert-list">
+            <thead>
+            <tr>
+                <th>用户账号</th>
+                <th>用户姓名</th>
+                <th>手机号码</th>
+                <th>提交时间</th>
+                <!--todo select-ui-->
+                <!--<th class="status-select">-->
+                    <!---->
+                    <!--&lt;!&ndash;<div style="margin: 0 auto; width: 93px">&ndash;&gt;-->
+                        <!--&lt;!&ndash;<select-ui class="s-sort" option="statusSelect" value="statusSelectValue"></select-ui>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--</th>-->
+                <th>
+                    <label>
+                        <select ng-model="currentStatus" ng-change="changeStatus(currentStatus)">
+                            <option value="全部状态">全部状态</option>
+                            <option value="待审核">待审核</option>
+                            <option value="认证通过">认证通过</option>
+                            <option value="不通过">不通过</option>
+                        </select>
+                    </label>
+                </th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="cert in certList track by $index">
+                <td ng-bind="cert.accountList[cert.accountList.length - 1]"></td>
+                <td ng-bind="cert.name"></td>
+                <td ng-bind="cert.phoneNum"></td>
+                <td ng-bind="cert.subTime | date: 'yyyy-MM-dd HH:mm'"></td>
+                <td ng-switch="cert.status">
+                    <span ng-switch-when="1" class="color-bc-blue-c">待审核</span>
+                    <span ng-switch-when="2" class="color-red">不通过</span>
+                    <span ng-switch-when="3" class="color-green">认证通过</span>
+                </td>
+                <td ng-switch="cert.status">
+                    <a class="cert-button" ng-switch-when="1" ng-href="{{'#/member-detail/' + cert.accountList[0]}}">审核</a>
+                    <a ng-switch-when="2" ng-href="{{'#/member-detail/' + cert.accountList[0]}}" style="padding: 3px 10px;">查看</a>
+                    <a ng-switch-when="3" ng-href="{{'#/member-detail/' + cert.accountList[0]}}" style="padding: 3px 10px;">查看</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div style="text-align: center; padding: 15px 0;" ng-hide="certList || certList.length">
+            <div style="margin-left: auto; margin-right: auto;">
+                <img src="../../course/imgs/icon-cloud.png" />
+            </div>
+            <div class="pd-t10">暂无数据</div>
+        </div>
+    </div>
+    <!--user list end-->
+    <div class="loader-ui-style" ng-show="showLoading">
+        <loader-ui></loader-ui>
+    </div>
+    <div ng-show="!showLoading">
+        <pagination class="page-bar s2 mg-t20" list="certList" pageargs="pageargs" pagefn="pagefn"></pagination>
+    </div>
+</div>
+
+<script type="application/javascript">
+    $('.tab li:not(.li-head)').removeClass('li-active')
+    $("[href='" + $('[belong-to]').attr('belong-to') + "']").parent().addClass('li-active');
+
+    $(function (){
+        $('.jf-date').each(function(index, element) {
+            $(this).date();
+        });
+    });
+</script>

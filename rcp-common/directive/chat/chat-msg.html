@@ -1,0 +1,14 @@
+<li class="chat-item" ng-class="{'chat-mine': msg.isMine, 'chat-others': !msg.isMine}" ng-if="msg.fileType!==-1">
+    <p class="chat-time"><span ng-show="showDate">{{msg.day}}</span> <span ng-show="showTime">{{msg.time}}</span></p>
+    <img class="chat-avatar" ng-src="{{msg.sender.img}}" alt="">
+    <span ng-show="chatType=='group' && !msg.isMine" class="chat-msg-sender">{{msg.sender.name}}</span>
+    <div class="chat-msg" ng-bind-html="msg.msg|html" ng-hide="msg.uploadingMsg || msg.fileType===2" >
+    </div>
+    <div class="chat-msg chat-upload-status" ng-show="msg.uploadingMsg">
+        
+    </div>
+    <div class="chat-msg" ng-if="msg.fileType===2" msg-img="msg"></div>    
+</li>
+<li ng-if="msg.fileType===-1" class="chat-msg-history-tips">
+    <span>以上是历史消息</span>
+</li>

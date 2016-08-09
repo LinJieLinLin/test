@@ -1,0 +1,44 @@
+<section class="login-sso">
+    <style type="text/css">.login-sso .btn-full,.login-sso i{display:inline-block}body{font-family:"Microsoft YaHei"}.login-sso{background-color:#fff;width:430px;height:258px}.login-sso .f-l{float:left}.login-sso .f-r{float:right}.login-sso .clear{clear:both}.login-sso div{position:relative}.login-sso .b-gray,.login-sso .input{border:1px solid #ccc}.login-sso .b-red{border:1px solid red}.login-sso .b-blue{border:1px solid #57a2d8}.login-sso .b-err,.login-sso .tip.tip-err-1{border:1px solid #ffb2b2}.login-sso .blue-c{color:#0095CE}.login-sso .fs-14{font-size:14px}.login-sso .f-gray{color:#cacaca}.login-sso .f-666{color:#666}.login-sso .input{height:40px;margin-top:10px;margin-bottom:30px;width:auto;box-shadow:none;border-radius:2px}.login-sso .input .l-icon{position:absolute;top:7px;left:12px}.login-sso .main{margin:0 auto;width:auto;padding:0 50px}.login-sso .main input{width:80%;height:30px;line-height:30px;font-size:15px;border:0;padding:0;position:absolute;left:42px;top:5px;box-shadow:none;outline:0}.login-sso .btn{background:#348df1;background:-moz-linear-gradient(left,#1e71ce,#389eed);background:-o-linear-gradient(left,#1e71ce,#389eed);background:linear-gradient(90deg,#1e71ce,#389eed);color:#fff;box-shadow:none;text-decoration:none;border-radius:3px;text-align:center;cursor:pointer}.login-sso .btn:hover{background:-moz-linear-gradient(left,#297bd6,#31a5f2);background:-o-linear-gradient(left,#297bd6,#31a5f2);background:linear-gradient(90deg,#297bd6,#31a5f2)}.login-sso .input-icon .icon-err,.login-sso .input-icon .icon-su{background-image:url(/sso/imgs/common_icon.png);background-repeat:no-repeat}.login-sso .btn-full{width:100%;height:45px;font-size:23px;line-height:45px}.login-sso .list{line-height:40px}.login-sso .tip{left:0;position:absolute;top:100%;height:85%;margin-left:-1px;width:100%;white-space:normal;z-index:10}.login-sso .tip span{position:absolute;top:50%;left:0;-webkit-transform:translate(0,-50%);-moz-transform:translate(0,-50%);-ms-transform:translate(0,-50%);-o-transform:translate(0,-50%);transform:translate(0,-50%)}.login-sso .tip.tip-top{left:0;top:-85%}.login-sso .tip.tip-right{left:103%;top:-1px;height:100%}.login-sso .tip.tip-bottom{left:0;top:100%}.login-sso .tip.tip-left{left:-103%;top:0;height:100%}.login-sso .input-icon,.login-sso .input-icon em{width:18px;height:18px;overflow:hidden;display:block}.login-sso .tip.tip-left span{left:initial;right:0}.login-sso .tip.tip-err,.login-sso .tip.tip-err-1{color:#f33}.login-sso .tip.tip-err-1{background-color:#fff2f2}.login-sso .input-icon{position:absolute;right:7px;top:5px;z-index:20}.login-sso .input-icon .icon-su{background-position:0 -1168px}.login-sso .input-icon .icon-err{background-position:0 -1209px}.login-dialog{width:100%;height:100%}.login-dialog .main{padding:3% 7%}.v-b{vertical-align:baseline}@media screen and (max-width:1240px){.login-sso{width:430px}.login-dialog{width:100%;height:100%}.login-dialog .main{padding:3% 7%}}</style>
+    <div class="main">
+        <div>
+            <form name="login" ng-keydown="keydown($event)">
+                <label for="account">
+                    <div>
+                        <div class="f-l f-666">登录大洋通行证</div>
+                        <!-- <div class="f-r fs-14">
+                            <span class="f-gray">还没有账号？</span>
+                            <a class="blue-c v-b" href="javascript:;" id="register" ng-href="{{register()}}" target="_top">免费注册</a>
+                        </div> -->
+                        <div class="clear"></div>
+                    </div>
+                    <div class="input" ng-class="{'b-blue':focus.account==1||(!msg.account&&!focus.account),'b-red':msg.account&&!focus.account}">
+                        <div class="l-icon"><i class="image-sso-user"></i></div>
+                        <input type="text" placeholder="请输入用户名/手机号" id="account" value="" maxlength="20" ng-model="lData.account" ng-focus="checkFocus('account')" ng-blur="checkLoginSso(lData,'account')" autofocus required>
+                        <div class="tip tip-err" ng-class="c.tip.class" ng-show="msg.account&&!focus.account">
+                            <span ng-bind="msg.account"></span>
+                        </div>
+                    </div>
+                </label>
+                <label for="pwd">
+                    <div class="input" ng-class="{'b-blue':focus.password==1||(!msg.password&&lData.password.length>5),'b-red':msg.password&&!focus.password}">
+                        <div class="l-icon"><i class="image-sso-pwd"></i></div>
+                        <input type="password" placeholder="请输入密码" id="pwd" maxlength="20" ng-model="lData.password" ng-focus="checkFocus('password')" ng-blur="checkLoginSso(lData,'password')" required>
+                        <div class="tip tip-err" ng-class="c.tip.class" ng-show="msg.password&&!focus.password">
+                            <span ng-bind="msg.password"></span>
+                        </div>
+                    </div>
+                </label>
+            </form>            
+            <div>
+                <a class="btn btn-full" id="login" ng-mouseover="checkLoginSso(lData,'')" ng-click="loginSso()" ng-bind="loginText"></a>
+            </div>
+            <div class="list">
+                <!-- <div class="f-l f-gray">如登录出现异常，<a href="" class="v-b">联系客服</a></div> -->
+                <a class="blue-c v-b f-l" href="javascript:;" id="register" ng-href="{{register()}}" target="_top">免费注册</a>
+                <a class="blue-c f-r" id="find-password" ng-href="{{getPassword}}" target="_top">忘记密码?</a>
+                <div class="clean"></div>
+            </div>
+        </div>
+    </div>
+</section>

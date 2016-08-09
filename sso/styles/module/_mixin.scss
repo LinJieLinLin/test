@@ -1,0 +1,106 @@
+/**
+ * [btnBgColor 设置btn背景加hover时变亮]
+ * @param  {[type]} $color:gray [颜色]
+ * @param  {[type]} $p:2        [增亮/变暗百分比]
+ * @param  {[type]} $type:1     [>1增亮<1变暗]
+ * @return {[type]}             [description]
+ */
+@mixin btnBgColor($color:gray, $p:2, $type:1) {
+    background-color: $color;
+    &:hover {
+        @if $type>0 {
+            background-color: lighten($color, $p)
+        }
+        @else {
+            background-color: darken($color, $p)
+        }
+    }
+}
+
+//设置border
+
+@mixin border ($color, $position:null, $size:1px) {
+    @if $position {
+        border-#{$position}: $size solid $color;
+    }
+    @else {
+        border: $size solid $color;
+    }
+}
+
+
+/**
+ * [pdMgSet 设置10到40的padding margin]
+ * @param  {[type]} $max:4  [基数]
+ * @param  {[type]} $mul:10 [倍数：2 5 10]
+ * @return {[type]}         [description]
+ */
+
+@mixin pdMgSet($max:4, $mul:10) {
+    @for $padding-size from 1 through $max {
+        .pd-f#{$padding-size*$mul} {
+            padding: $padding-size * $mul+px;
+        }
+        .pd-x#{$padding-size*$mul} {
+            padding: 0 $padding-size * $mul+px;
+        }
+        .pd-y#{$padding-size*$mul} {
+            padding: $padding-size * $mul+px 0;
+        }
+        .pd-t#{$padding-size*$mul} {
+            padding-top: $padding-size * $mul+px;
+        }
+        .pd-b#{$padding-size*$mul} {
+            padding-bottom: $padding-size * $mul+px;
+        }
+        .pd-l#{$padding-size*$mul} {
+            padding-left: $padding-size * $mul+px;
+        }
+        .pd-r#{$padding-size*$mul} {
+            padding-right: $padding-size * $mul+px;
+        }
+        .mg-f#{$padding-size*$mul} {
+            margin: $padding-size * $mul+px;
+        }
+        .mg-x#{$padding-size*$mul} {
+            margin: 0 $padding-size * $mul+px;
+        }
+        .mg-y#{$padding-size*$mul} {
+            margin: $padding-size * $mul+px 0;
+        }
+        .mg-t#{$padding-size*$mul} {
+            margin-top: $padding-size * $mul+px;
+        }
+        .mg-b#{$padding-size*$mul} {
+            margin-bottom: $padding-size * $mul+px;
+        }
+        .mg-l#{$padding-size*$mul} {
+            margin-left: $padding-size * $mul+px;
+        }
+        .mg-r#{$padding-size*$mul} {
+            margin-right: $padding-size * $mul+px;
+        }
+    }
+}
+
+
+/**
+ * [fsSet 设置12到20px 的字体大小]
+ * @param  {[type]} $max:10 [基数]
+ * @param  {[type]} $mul:2  [倍数]
+ * @return {[type]}         [description]
+ */
+
+@mixin fsSet($max:10, $mul:2) {
+    @for $fs from 6 through $max {
+        .fs-#{$fs*2} {
+            font-size: $fs * $mul+px;
+        }
+    }
+}
+
+//初始化common样式
+@mixin initCommon() {
+    @include fsSet();
+    @include pdMgSet();
+}

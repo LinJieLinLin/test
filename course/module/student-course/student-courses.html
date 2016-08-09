@@ -1,0 +1,146 @@
+<div class="my-course">
+    <div class="nav">
+        <!--<div class="nav-tabs1" ng-init="tabStatus = 1">我的课程</div>-->
+        <h2>我的课程</h2>
+    </div>
+    <div class="manager-btn" ng-show="resourceList && resourceList.length">
+        <span ng-click="showManager = true;" ng-show="!showManager"><i class="fa fa-cog" aria-hidden="true"></i>管理课程</span>
+        <span ng-click="showManager = false;" ng-show="showManager"><i class="fa fa-times" aria-hidden="true"></i>取消管理</span>
+    </div>
+    <div class="search-box">
+        <span class="search">
+            <input type="text" class="input" placeholder="请输入关键字搜索" ng-model="filterKey" id="myTestInput" ng-keydown="onkeydown($event)">
+            <a href="javascript:;" class="submit-btn" ng-click="getResList()"><i class="image-head-search"></i></a>
+        </span>
+    </div>
+    <loader-ui ng-show="loading"></loader-ui>
+    <div ng-hide="loading">
+        <div ng-hide="isEmpty" class="full-w">
+            <div class="course-list">
+                <ul>
+                    <li class="item" ng-repeat="resource in resourceList track by $index">
+                        <!--<div class="img">-->
+                            <!--<a ng-click="goToResource(resource)" target="_blank" title="{{resource.title}}"><img ng-src="{{resource.imgUrl}}"></a>-->
+                        <!--</div>-->
+                        <div class="sc-cover">
+                            <a href=""  ng-href="{{resource.detailUrl}}" target="_blank" ng-class="{'c-r-d': !resource.detailUrl}">
+                                <default-img class="img" src="resource.imgUrl"></default-img>
+                            </a>
+                            <div class="sc-score-bg"  ng-show="resource.totalScore !== undefined || resource.obtainCredit !== undefined"></div>
+                            <p class="student-score"  ng-show="resource.totalScore !== undefined || resource.obtainCredit !== undefined">
+                                <span ng-show="resource.totalScore !== undefined" ng-bind="'已获成绩：' + resource.totalScore + '分'"></span>
+                                <span class="spe" ng-show="resource.totalScore !== undefined && resource.obtainCredit !== undefined"></span>
+                                <span ng-show="resource.obtainCredit !== undefined" ng-bind="'已获学分：' + resource.obtainCredit + '分'"></span>
+                            </p>
+                        </div>
+                        <div class="c-content">
+                            <div class="title">
+                                <a  ng-class="{'c-r-d': !resource.detailUrl}" ng-href="{{resource.detailUrl}}" target="_blank" title="{{resource.title}}" class="gray-c">{{resource.title}}</a>
+                                <div class="auth" ng-show="resource.hadAuth" ng-mouseenter="resource._authtip = 1;" ng-mouseleave="resource._authtip = 0;">
+                                    <p><i class="image-sc-course-auth"></i><span ng-bind="'已认证' + (resource.hadAuth.length > 1 ? '（' + resource.hadAuth.length + '）' : '')"></span></p>
+                                    <div class="ha-tips" ng-show="resource._authtip" ng-class="{one: resource.hadAuth.length <= 1}">
+                                        <span>已认证机构：</span>
+                                        <p ng-bind="resource.hadAuth.join('、')"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--<div class="intro">-->
+                                <!--课程简介：{{resource.desc || '无'}}-->
+                            <!--</div>-->
+                            <div class="score" ng-show="resource.credit">
+                                <!--参与人数：{{resource.joined || 0}}-->
+                                 课程学分：<span class="bule">{{resource.credit}}</span>&nbsp;分
+                            </div>
+                            <div class="start-time">
+                                开课时间：{{resource.start_time | date:'yyyy-MM-dd HH:mm:ss'}}
+                            </div>
+                            <div class="stop-time">
+                                结束时间：{{resource.end_time | date:'yyyy-MM-dd HH:mm:ss'}}
+                            </div>
+                            <div class="learn-prog">
+                                <div class="progr-bar">
+                                    <div class="p-bar-inner" ng-style="{'width': resource.step + '%'}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="c-r">
+                            <div class="c-c">
+                                <div class="r-first">
+                                    <a target="_blank" class="enter-learning" ng-show="!showManager && resource.status == 100" ng-href="{{resource.studyUrl}}">开始学习</a>
+                                    <a target="_blank" class="enter-learning learning-disable" ng-show="!showManager && resource.status == 200">课程审核中</a>
+                                    <a target="_blank" class="enter-learning learning-disable" ng-show="!showManager && resource.status == 20">尚未开课</a>
+                                    <a target="_blank" class="enter-learning learning-disable" ng-show="!showManager && resource.status == 400">课程已禁用</a>
+                                    <a target="_blank" class="enter-learning learning-disable" ng-show="!showManager && (resource.status == 300 || resource.status == 500)">课程已下架</a>
+                                    <a class="out-learning" ng-show="showManager" ng-click="outLearning(resource);">放弃学习</a>
+                                </div>
+                                <div class="r-second">
+                                    <ul>
+                                        <!--400 课程已禁用，禁用的课程学生无法查看学习痕迹-->
+                                        <li ng-show="resource.status != 400"><a ng-href="{{resource.studyDetailUrl}}" target="_blank">学习详情</a></li>
+                                        <!--400 课程已禁用，禁用的课程学生无法评价或查看评价-->
+                                        <li ng-show="resource.status != 400">
+                                            <a data-ng-if="!resource.appraisal.text" ng-click="commentClickHandler(resource)" href="javascript:;">我要评价</a>
+                                            <my-appraisal-tip data-ng-if="resource.appraisal.text" grade="resource.appraisal.grade"
+                                                              config="{ viewStyle: {top: '.5em'} }"
+                                                              text="resource.appraisal.text">
+                                                <a href="javascript:;">我的评价</a>
+                                            </my-appraisal-tip>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="fn r">
+                <pagination list="resourceList" pagefn="pagefn" pageargs="pageargs" class="page-bar s3 jump-hide right ng-isolate-scope"></pagination>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div ng-show="isEmpty">
+            <empty-tip ng-show="emptyType"></empty-tip>
+            <div class="no-course" ng-show="!emptyType">
+                <img src="/course/imgs/student-course.png" alt="">
+                <p><a href="/">开启学霸之旅吧！</a></p>
+            </div>
+        </div>
+
+        <!-- 我要评论弹出框 -->
+        <div class="dialog" ng-show="showDialog">
+            <div class="bg"></div>
+            <div class="frame-dialog">
+                <a class="close" ng-click="hideCommentDialog()">×</a>
+                <div class="dialog-body">
+                    <p class="title" title="{{beEvaluatedCourse.title||''}}" ng-bind="beEvaluatedCourse.title||''"></p>
+                    <div class="comment-grade">
+                        <div class="grade_h">
+                            <div ng-click="selectAppraisalGrade(0)" ng-class="gradeSelected==0 ? 'selected': 'unselected-color' " class="grade_v good"><span class="icon">赞</span><span>（点个赞）</span></div>
+                            <div ng-click="selectAppraisalGrade(1)" ng-class="gradeSelected==1 ? 'selected': 'unselected-color' " class="grade_v ordinary"><span class="icon">一般</span><span>（一般般）</span></div>
+                            <div ng-click="selectAppraisalGrade(2)" ng-class="gradeSelected==2 ? 'selected': 'unselected-color' " class="grade_v bad"><span class="icon">踩</span><span>（点个踩）</span></div>
+                        </div>
+                    </div>
+                    <div class="editor-space">
+                        <textarea class="editor"
+                                  ng-model="commentDialogContent"
+                                  placeholder="写点评价吧，同班同学可以看到哦！"
+                                  ng-trim="false"
+                                  maxlength="100"
+                                  max-length-limit="100"
+                                  ng-readonly="appraised&&commentEdited"></textarea>
+                        <span class="measure" ng-bind="commentDialogContent.length + '/100'"></span>
+                    </div>
+                    <div class="btn-bar">
+                        <div ng-click="!commentEdited && submitAppraisal(beEvaluatedCourse.id)" class="submit" ng-class="{'disable': commentEdited}">提交</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <confirm-modal class="out-dialog" dialog="outDialog">
+        <label><input type="checkbox" class="checkbox" ng-model="outDialog.checkbox"><span class="tips-text">同时退出课程群组</span></label>
+    </confirm-modal>
+</div>

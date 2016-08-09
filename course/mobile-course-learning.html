@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>酷校·让学习更Cool</title>
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css course-learning/mobile-course-learning.min.css -->
+    <link rel="stylesheet" href="../font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="directive/course-content/content-view.css">
+    <link rel="stylesheet" href="course-learning/mobile-course-learning.css">
+    <link rel="stylesheet" href="../rcp-common/directive/empty-tip/empty-tip.css" />
+    <!-- endbuild -->
+</head>
+
+<body ng-controller="mainCtrl">
+    <div class="loading-layer" id="loading-layer"><span class="loading-circle loading-amit-spin"></span></div>
+    <div ng-controller="contentCtr">
+        <div ng-show="currentUser.uid">
+            <empty-tip ng-show="sectionLoadingReady&&!readPermissions" c="{msg:'请先参与课程'}" config="{boxStyle:{padding:'50px 0'},imgStyle:{maxWidth:'300px',width:'80%'}}"></empty-tip>
+            <empty-tip ng-show="isNullContent" config="{boxStyle:{padding:'50px 0'},imgStyle:{maxWidth:'300px',width:'80%'}}"></empty-tip>
+            <!-- wcms content view start -->
+            <div ng-show="contentLoadingReady&&readPermissions&&getRecordReady">
+                <content-view></content-view>
+                <cv-dialog></cv-dialog>
+            </div>
+        </div>
+        <!-- 继续学习弹出窗 start -->
+        <div class="win-wrap s-p-win" id="learning-dialog-win" style="width:80%;">
+            <div class="win-bd"></div>
+            <div class="my-wrap jf-drag">
+                <div class="my-main">
+                    <div class="win-hd" style="background:#02c0b9;color:white;">
+                        <span>提示</span>
+                    </div>
+                    <div class="inner" style="text-align:center;padding:50px 30px;font-size:12px;" ng-bind="learningDialog.text"></div>
+                    <div class="full-w" style="text-align:center;padding:12px 0;border-top:1px solid #dfdfdf;font-size:12px;">
+                        <a href="javascript:;" class="blue-button" style="padding:10px 20px;display:inline-block;" ng-click="continueLearning($event)" ng-hide="learningDialog.type">继续学习</a>
+                        <a href="javascript:;" class="blue-button" style="padding:10px 15px;display:inline-block;margin:0 5px;" ng-click="continueLearning($event)" ng-show="learningDialog.type">已完成做题</a>
+                        <a href="javascript:;" class="white-button" style="padding:9px 15px;display:inline-block;margin:0 5px;" ng-click="continueLearning($event)" ng-show="learningDialog.type">未完成做题</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 继续学习弹出窗 end -->
+    </div>
+    <!-- lib -->
+    <script src="../rcp-common/service/lib-default.min.js"></script>
+    <!-- lib end -->
+    <!-- build:js course-learning/mobile-course-learnint.min.js -->
+    <script src="course-learning/mobile-course-learning.js"></script>
+    <script src="service/course.js"></script>
+    <script src="../rcp-common/directive/empty-tip/empty-tip.js"></script>
+    <script src="../wcms/www/js/wcms.js"></script>
+    <script src="service/content.js"></script>
+    <script src="service/exam.js"></script>
+    <script src="directive/course-content/content-view.js"></script>
+    <!-- endbuild-->
+    <script src="../rcp-common/service/service.min.js"></script>
+</body>
+
+</html>

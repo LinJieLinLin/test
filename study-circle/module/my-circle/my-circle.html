@@ -1,0 +1,76 @@
+<h2 class="my-circle-title m-l-25">我的圈子</h2>
+<div class="my-circle-btn m-l-25">
+    <span class="btn" ng-click="curTab = 0;" ng-class="{active: curTab == 0}">我的圈子(&nbsp;{{num.circle}}&nbsp;)</span>
+    <span class="btn" ng-click="curTab = 1;" ng-class="{active: curTab == 1}">我的回复(&nbsp;{{num.reply}}&nbsp;)</span>
+</div>
+<div class="m-l-25">
+    <!--我的圈子-->
+    <section ng-show="curTab == 0">
+        <div class="my-circle" ng-show="!loading.circle && circleList.length">
+            <ul class="circle-detail">
+                <li class="li-item" ng-repeat="c in circleList">
+                    <div class="user-info">
+                        <img ng-src="{{c.avatar || '../rcp-common/imgs/face/d-face-1.png'}}" alt="">
+                        <p class="text-hide" title="{{c.nickName}}" ng-bind="c.nickName"></p>
+                    </div>
+                    <div class="detail">
+                        <div class="content" ng-class="{'zero-height': !c.content}">
+                            <a ng-href="{{c.detailUrl}}" target="_blank" ng-click="readAdd(c.id);">
+                                <div ng-bind-html="c.content | encodeHtml | emojiUnifiedToCss | html"></div>
+                            </a>
+                            <span ng-bind="'发表于 ' + (c.createTime| date:'MM-dd HH:mm')">发表于&nbsp;00-00 00:00</span>
+                        </div>
+                        <image-slider images="c.images" class="self-image-slider"></image-slider>
+                        <div class="desc" ng-class="{'m-t-small': c.images.length > 0, 'm-t-big': !c.content && !c.images.length}">
+                            <span class="last-comment text-hide" ng-show="c.lastReply"
+                                  ng-bind="c.lastReply.user + ' 最后回复于 '+(c.lastReply.time| date:'MM-dd HH:mm')"> 最后回复于&nbsp;00-00 00:00</span>
+                            <div class="vote">
+                                <span ng-show="c.course">《</span>
+                                <a ng-show="c.course" title="{{c.course}}" ng-href="{{c.allScopeUrl}}" target="_blank" ng-bind="c.course" class="text-of course"></a>
+                                <span ng-show="c.course" class="m-r">》</span>
+                                <button ng-click="sendLike(c,$event)">
+                                    <i class="fa fa-thumbs-o-up" ng-show="c.isLiked"></i>
+                                    <i class="fa fa-thumbs-o-up" ng-hide="c.isLiked"></i>
+                                    <span ng-bind="c.likeCount">0</span>
+                                </button>
+                                <a ng-href="{{c.detailUrl}}" target="_blank">
+                                    <i class="fa fa-commenting-o"></i>
+                                    <span ng-bind="c.replyCount">0</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <pagination list="circleList" pagefn="circlePaginationCb" pageargs="circlePaginationArgs"
+                        class="page-bar s3 jump-hide right ng-isolate-scope"></pagination>
+        </div>
+        <empty-tip ng-show="!loading.circle && !circleList.length"></empty-tip>
+        <loader-ui show="!loading.circle"></loader-ui>
+    </section>
+    <!--我的回复-->
+    <section ng-show="curTab == 1">
+        <div class="my-reply" ng-show="!loading.reply && replyList.length">
+            <ul class="reply-detail">
+                <li class="li-item" ng-repeat="r in replyList">
+                    <a class="reply" ng-href="{{r.detailUrl}}" target="_blank" ng-click="readAdd(r.circleId);">
+                        <span ng-bind-html="r.reply | encodeHtml | emojiUnifiedToCss | html"></span>
+                    </a>
+                    <image-slider images="r.images" class="self-image-slider"></image-slider>
+                    <div class="origin">
+                        <a ng-href="{{r.detailUrl}}" target="_blank" ng-click="readAdd(r.circleId);">
+                            <span>来自：</span>
+                            <span ng-show="r.course" ng-bind="'《' + r.course + '》'"></span>
+                            <span ng-bind-html="r.circle ? (r.circle | encodeHtml | emojiUnifiedToCss | html) : '&nbsp;'"></span>
+                        </a>
+                        <span ng-bind="r.time| date:'MM-dd HH:mm'"></span>
+                    </div>
+                </li>
+            </ul>
+            <pagination list="circleList" pagefn="replyPaginationCb" pageargs="replyPaginationArgs"
+                        class="page-bar s3 jump-hide right ng-isolate-scope"></pagination>
+        </div>
+        <empty-tip ng-show="!loading.reply && !replyList.length"></empty-tip>
+        <loader-ui show="!loading.reply"></loader-ui>
+    </section>
+</div>

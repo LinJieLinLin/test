@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <title>助学中心</title>
+
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css guidance-space/guidance-space.min.css -->
+    <!-- common -->
+    <link rel="stylesheet" href="../rcp-common/styles/common.css"/>
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <!-- directive -->
+    <link rel="stylesheet" href="../rcp-common/directive/common/common-dir.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/chat/chat-directive.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/empty-tip/empty-tip.css"/>
+    <link rel="stylesheet" href="directive/space-head/space-head.css">
+    <link rel="stylesheet" href="directive/user-list/user-list.css">
+    <link rel="stylesheet" href="directive/space-chat/space-chat.css">
+    <link rel="stylesheet" href="directive/user-courses/user-courses.css">
+    <!-- guidance space -->
+    <link rel="stylesheet" href="guidance-space/guidance-space.css">
+    <!-- endbuild -->
+
+</head>
+<body ng-controller="mainCtrl" class="loading">
+<div ng-controller="guidanceSpaceCtr">
+    <space-head headline="助学中心" avatar="userAvatar" un-read-num="unReadNum()"></space-head>
+    <div class="content">
+        <user-list users="userList"></user-list>
+        <space-chat chat-user="chatUser"></space-chat>
+        <div class="user-info">
+            <div class="section-header">
+                <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                <ul>
+                    <li><a ng-click="currentTab = 'search'" ng-class="{active: currentTab == 'search'}" href="">搜索记录</a></li>
+                    <li><a ng-click="currentTab = 'browse'" ng-class="{active: currentTab == 'browse'}" href="">浏览记录</a></li>
+                    <li><a ng-click="currentTab = 'course'" ng-class="{active: currentTab == 'course'}" href="">当前咨询课程</a></li>
+                    <li><a ng-click="currentTab = 'guess'" ng-class="{active: currentTab == 'guess'}" href="">猜TA喜欢</a></li>
+                    <li><a ng-click="currentTab = 'student'" ng-class="{active: currentTab == 'student'}" href="">生源情况</a></li>
+                    <li><a ng-click="currentTab = 'other'" ng-class="{active: currentTab == 'other'}" href="">其他课程</a></li>
+                </ul>
+                <!--<i class="fa fa-refresh" aria-hidden="true"></i>-->
+            </div>
+            <div class="container">
+                <!-- 搜索记录 -->
+                <div class="section-body" ng-show="currentTab == 'search'">
+                    <div class="search-list" ng-show="searchLoaded && searchList.length">
+                        <p class="search-list-head">
+                            <span>关键词</span>
+                            <span>分类</span>
+                            <span>搜索时间</span>
+                            <span>价格范围</span>
+                        </p>
+                        <p ng-repeat="item in searchList" class="search-list-item">
+                            <span ng-bind="item.keyword"></span>
+                            <span ng-bind="item.tags.join(',') || '-'"></span>
+                            <span ng-bind="item.time"></span>
+                            <span ng-bind="item.price ? item.price + '元' : '-'"></span>
+                        </p>
+                        <div class="mg-t20">
+                            <pagination pagefn="searchFn" pageargs="searchArg" list="searchList"></pagination>
+                        </div>
+                    </div>
+                    <loader-ui show="searchLoaded"></loader-ui>
+                    <div ng-show="searchLoaded && !searchList.length" class="no-data">
+                        <img src="imgs/no-data-search.png" alt="">
+                        <p>暂无搜索记录</p>
+                    </div>
+                </div>
+                <!-- 浏览记录 -->
+                <div class="section-body" ng-show="currentTab == 'browse'">
+                    <div class="l-scrollbar" ng-show="browseLoaded && visitList.length">
+                        <ul class="visit-history">
+                            <li class="history-item" ng-repeat="item in visitList">
+                                <div class="course-cover">
+                                    <ng-img c="{'img': item.imgUrl, 'default': '/rcp-common/imgs/icon/gray-default-img.png', 'divClass': 'course-cover', 'imgClass': 'cover'}"></ng-img>
+                                </div>
+                                <div class="inline">
+                                    <p class="item-name" title="{{item.title}}" ng-bind="item.title"></p>
+                                    <p>创建者：<span ng-bind="item.author"></span></p>
+                                    <p>价格：<span ng-bind="item.price == 0 ? '免费' : item.price + '元'"></span></p>
+                                </div>
+                                <p>
+                                <span class="details">
+                                    服务类型：<span ng-bind="item.service.join(',') || '无'"></span>
+                                </span>
+                                <span class="details">
+                                    分类：<span class="ellipsis-text" ng-bind="item.category.join(',')  || '无'"></span>
+                                </span>
+                                </p>
+                                <p>
+                                    <span class="details">浏览时间：<span ng-bind="item.visitTime"></span></span>
+                                    <span class="details">停留时间：<span ng-bind="item.stayTime"></span></span>
+                                </p>
+                            </li>
+                        </ul>
+                        <div class="mg-t20">
+                            <pagination pagefn="browseFn" pageargs="browseArg" list="visitList"></pagination>
+                        </div>
+                    </div>
+                    <loader-ui show="browseLoaded"></loader-ui>
+                    <div ng-show="browseLoaded && !visitList.length" class="no-data">
+                        <img src="imgs/no-data-view.png" alt="">
+                        <p>暂无浏览记录</p>
+                    </div>
+                </div>
+                <!-- 当前咨询课程 -->
+                <div class="section-body" ng-show="currentTab == 'course'">
+                    <div ng-show="curCourseLoaded && curCourse.cid">
+                        <div class="guess-course">
+                            <div class="course-cover">
+                                <ng-img c="{'img': curCourse.imgUrl, 'default': '/rcp-common/imgs/icon/gray-default-img.png', 'divClass': 'course-cover', 'imgClass': 'cover'}"></ng-img>
+                            </div>
+                            <div class="guess-course-intro">
+                                <p class="guess-course-name"><a target="_blank" ng-href="{{curCourse.detailUrl}}" ng-bind="curCourse.title"></a></p>
+                                <p>创建者：<span class="guess-course-user" ng-bind="curCourse.author"></span></p>
+                                <p>
+                                <span>
+                                    价格：<span class="guess-course-price" ng-bind="curCourse.price || '免费'"></span>
+                                </span>
+                                <span>
+                                    参与人数： <span class="guess-course-count" ng-bind="curCourse.join"></span> 人
+                                </span>
+                                </p>
+                            </div>
+                            <p>分类：<span class="guess-course-category" ng-bind="curCourse.category.join(',')"></span></p>
+                            <p>
+                                老师团队：
+                            </p>
+                            <ul class="course-teacher-list">
+                                <li ng-repeat="teacher in curCourse.teachers">
+                                    <img ng-src="{{teacher.avatar}}" alt="">
+                                    <p ng-bind="teacher.name"></p>
+                                </li>
+                            </ul>
+                            <p>所含服务：</p>
+                            <div class="course-exercise" ng-show="curCourse.services && curCourse.services.length">
+                                <div class="service-title">评测</div>
+                                <ul>
+                                    <li ng-repeat="e in curCourse.services">
+                                        <p class="e-name" ng-bind="e.name"></p>
+                                        <p class="e-time">时间：<span ng-bind="e.time"></span></p>
+                                        <p class="e-paper">试卷：<span ng-bind="e.extra.paper.name"></span></p>
+                                        <p class="e-desc">描述</p>
+                                        <div ng-bind-html="e.description"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="course-exercise" ng-show="detailCourse.services['20'] || detailCourse.services['25']">
+                                <div class="service-title">答疑</div>
+                                <ul>
+                                    <li ng-repeat="e in detailCourse.services['20'].items">
+                                        <p class="e-name" ng-bind="e.name"></p>
+                                        <p class="e-time">时间：<span ng-bind="e.t"></span></p>
+                                        <p class="e-teacher">答疑老师：<span ng-bind="e.teacherName.join(',')"></span></p>
+                                        <p class="e-desc">描述：<span ng-bind-html="e.description"></span></p>
+                                    </li>
+                                    <li ng-repeat="e in detailCourse.services['25'].items">
+                                        <p class="e-name" ng-bind="e.name"></p>
+                                        <p class="e-time">时间：<span ng-bind="e.t"></span></p>
+                                        <p class="e-teacher">答疑老师：<span ng-bind="e.teacherName.join(',')"></span></p>
+                                        <p class="e-desc">描述：<span ng-bind="e.description"></span></p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <loader-ui show="guessLoaded"></loader-ui>
+                    <no-data show="curCourseLoaded && !curCourse.cid"></no-data>
+                </div>
+                <!-- 猜TA喜欢 -->
+                <div class="section-body" ng-show="currentTab == 'guess'">
+                    <ul ng-show="guessLoaded && guessList.length" class="guess-list l-scrollbar">
+                        <li ng-style="swiper" class="guess-course" ng-repeat="item in guessList">
+                            <div class="course-cover">
+                                <ng-img c="{'img': item.imgUrl, 'default': '/rcp-common/imgs/icon/gray-default-img.png', 'divClass': 'course-cover', 'imgClass': 'cover'}"></ng-img>
+                            </div>
+                            <div class="guess-course-intro">
+                                <p class="guess-course-name"><a target="_blank" title="{{item.title}}" ng-href="{{item.detailUrl}}" ng-bind="item.title"></a></p>
+                                <p>创建者：<span class="guess-course-user" ng-bind="item.author"></span></p>
+                                <p>
+                                <span>
+                                    价格：<span class="guess-course-price" ng-bind="item.price || '免费'"></span>
+                                </span>
+                                <span>
+                                    参与人数： <span class="guess-course-count" ng-bind="item.join"></span> 人
+                                </span>
+                                </p>
+
+                            </div>
+                            <p>分类：<span class="guess-course-category" ng-bind="item.category.join(',')"></span></p>
+                            <p>所含服务：<span class="guess-course-service" ng-bind="item.service.join(',')"></span></p>
+                            <p>
+                                老师团队：
+                            </p>
+                            <ul class="course-teacher-list">
+                                <li ng-repeat="teacher in item.teachers">
+                                    <img ng-src="{{teacher.avatar}}" alt="">
+                                    <p ng-bind="teacher.name"></p>
+                                </li>
+                            </ul>
+                            <button ng-click="console.log(item);">推荐</button>
+                        </li>
+                    </ul>
+                    <loader-ui show="guessLoaded"></loader-ui>
+                    <no-data show="guessLoaded" list="guessList"></no-data>
+                </div>
+                <!-- 其它课程 -->
+                <user-courses ng-show="currentTab == 'other'"></user-courses>
+            </div>
+        </div>
+    </div>
+</div>
+
+<tailnav></tailnav>
+
+<!-- lib -->
+<script src="../rcp-common/service/lib-default.min.js"></script>
+<!-- build:js guidance-space/guidance-space.min.js-->
+<!-- teacher space -->
+<script src="guidance-space/guidance-space.js"></script>
+<!-- main controller -->
+<script src="../rcp-common/module/main/main-ctrl.js"></script>
+<!-- service -->
+<script src="../course/service/course.js"></script>
+<!-- directive -->
+<script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+<script src="../rcp-common/directive/chat/chat-directive.js"></script>
+<script src="../rcp-common/directive/empty-tip/empty-tip.js"></script>
+<script src="directive/space-head/space-head.js"></script>
+<script src="directive/user-list/user-list.js"></script>
+<script src="directive/space-chat/space-chat.js"></script>
+<script src="directive/user-courses/user-courses.js"></script>
+<!-- endbuild-->
+<!-- service -->
+<script src="../rcp-common/service/service.min.js"></script>
+</body>
+</html>

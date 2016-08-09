@@ -1,0 +1,205 @@
+<!--Created by Zhongj on 2016/6/4.-->
+<div class="score-manager">
+    <h2>成绩管理</h2>
+    <!--<section ng-if="!data.isEmtry">-->
+        <!--<div class="scr-course-list" >-->
+            <!--<div class="scr-course-tags" ng-if="!data.courseIsload">-->
+                <!--<div class="scr-tags-title">-->
+                    <!--<i class="fa fa-file-text-o" aria-hidden="true"></i>-->
+                    <!--<span>课程</span>-->
+                <!--</div>-->
+                <!--<div class="scr-tags-content">-->
+                    <!--<p ng-repeat="c in data.course track by $index"-->
+                       <!--ng-class="{active: $index == data.curCourseIndex, 'scr-large': $index >= data.rowNum}"-->
+                       <!--ng-show="data.showMore || $index < data.rowNum ">-->
+                        <!--<span ng-bind="c.title || '(空名字的课程)'" ng-click="clickCourseTag(c, $index);"></span>-->
+                    <!--</p>-->
+                <!--</div>-->
+                <!--<div class="scr-tags-more" ng-click="toggleMore(data.course)" ng-show="data.course && data.course.length > data.rowNum">-->
+                    <!--<span ng-bind="data.showMore ? '收起' : '展开'"></span>-->
+                    <!--<i class="fa" aria-hidden="true"-->
+                       <!--ng-class="{'fa-chevron-up': data.showMore, 'fa-chevron-down': !data.showMore}"></i>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<loader-ui ng-if="data.courseIsload"></loader-ui>-->
+        <!--</div>-->
+    <!--</section>-->
+    <section>
+        <div class="score-tool" ng-show="!data.scrIsload && data.scoreTags && data.scoreTags.length >0">
+            <ul class="scr-tool-list">
+                <li class="set-score-weight">
+                    <i class="image-set-score"></i>
+                    <a href="javascript:void(0)" ng-click="setScoreSource()" >设置成绩</a>
+                </li>
+                <li class="check-out-score">
+                    <i class="image-checkout-score"></i>
+                    <a ng-href="{{data.exportUrl}}" target="_blank">导出成绩</a>
+                </li>
+                <li class="check-out-score">
+                    <i class="image-test-q-4"></i>
+                    <a href="javascript:void(0)" ng-click="clearScore()">清空成绩</a>
+                </li>
+            </ul>
+            <span class="score-search">
+                <input type="text" class="scr-search-input" ng-model="data.searchKey.value" placeholder="请输入关键字搜索" maxlength="50" ng-change="isEditKey()" ng-keydown="scrSearch()">
+                <a href="javascript:;" class="scr-search-btn" ng-click="scrSearch()"><i class="image-score-search"></i></a>
+            </span>
+        </div>
+    </section>
+    <section ng-if="!data.isEmtry">
+        <div ng-hide="data.scrIsload">
+            <table class="score-list">
+                <tr ng-if="data.scoreTags&&data.scoreTags.length>0">
+                    <td class="score-tags" ng-repeat="s in data.scoreTags track by $index">
+                        <div ng-if="s.status == 'checkbox'"><input type="checkbox" ng-model="data.selected" ng-click="selectAll(data.selected,data.usrScoreLst)"></div>
+                        <div ng-if="s.status == 'basic'" ng-bind="s.key"></div>
+                        <div ng-if="s.status == 'score'">
+                            <span ng-if="s.key == '总成绩'" ng-bind-template="{{s.key}}(百分制)"></span>
+                            <span ng-if="s.key == 'grade'" id="{{s.key}}" ng-mouseover="showTip($event,'score',s,s.key)"  ng-mouseleave="hideTip($event)" ng-bind-template="{{'平时成绩'}}({{s.weight}}%)"></span>
+                            <span ng-if="s.key == 'exam'" id="{{s.key}}" ng-mouseover="showTip($event,'score',s,s.key)"  ng-mouseleave="hideTip($event)" ng-bind-template="{{'考试成绩'}}({{s.weight}}%)"></span>
+
+                        </div>
+                        <div ng-if="s.status == 'scoreExt'" ng-bind="s.key">
+                            <!--<drop-down key="s.key" status="s.status" options="s"></drop-down>-->
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-if="data.usrScoreLst != null" class="score-single"
+                    ng-repeat="u in data.usrScoreLst track by $index" ng-init="rowNum=$index">
+                    <td ng-repeat="s in data.scoreTags track by $index" ng-class="{'scr-basic':s.status === 'basic'}">
+                        <div ng-if="s.status == 'checkbox'"><input id="{{u.uid}}" type="checkbox" ng-disabled="u.status == 'QUIT'" ng-checked="data.selected" ng-model="u[s.status]" ng-click="checkUsr(u[s.status],u)"></div>
+                        <div ng-if="s.status === 'basic'">
+                            <div ng-if="u.msg.hasOwnProperty(s.status)" ><span ng-bind="u.msg.basic[s.key] || '--'"></span></div>
+                            <div ng-if="!u.msg.hasOwnProperty(s.status)" ><span ng-bind="'--'"></span></div>
+                        </div>
+                        <div ng-show="s.status === 'score'">
+                            <div ng-if="s.key !== '总成绩'">
+                        <span class="suit-score" onmouseenter="$(this).find('input:eq(0)').focus();"
+                              onclick="$(this).find('input:eq(0)').focus();">
+                               <input type="text" class="score-input" ng-init="isExist(u,s)" ng-class="{'scr-font-red':u.inScrValid[s.key]}"
+                                      onfocus="$(this).parent().addClass('focus');"
+                                      onblur="$(this).parent().removeClass('focus');" ng-disabled="u.status == 'QUIT'"
+                                      ng-model="u.msg[s.status][s.key]" ng-change="scoreChange(rowNum+1,u,s)"
+                                      ng-pattern="/^(100(?:\.0*)?|0(?:\.\d\d*)?|\d?\d(?:\.\d\d*)?)$/" maxlength="5">
+                        </span>
+                            </div>
+                            <div ng-if="s.key === '总成绩'">
+                                <div ng-if="u.msg.hasOwnProperty(s.status)"><span
+                                        ng-bind="u.msg.score[s.key] | number:1"></span></div>
+                                <div ng-if="!u.msg.hasOwnProperty(s.status)"><span ng-bind="'--'"></span></div>
+                            </div>
+                        </div>
+                        <div ng-if="s.status === 'scoreExt' && s.key==='备注'" ng-init="isExist(u,s)" ng-class="{'scr-font-red':u.status == 'QUIT'}">
+                            <span ng-if="u.status == 'QUIT'" ng-bind="'已退学'" ></span>
+                            <select ng-if="u.status == 'NORMAL'" ng-model="u.msg[s.status][s.key]"  ng-options="item for item in s.range"
+                                    ng-change="scoreChange(rowNum+1,u,s)">
+                            </select>
+                        </div>
+
+                        <div ng-if="s.status === 'scoreExt' && s.key==='证书发放'">
+                            <div ng-if="u.msg.hasOwnProperty(s.status)" ng-class="{'scr-ext-color':u.msg.scoreExt[s.key] == '是'}">
+                                <span ng-bind="u.msg.scoreExt[s.key] || '--'"></span>
+                                <span  ng-class="{'scr-hide-ext':u.status == 'QUIT'||u.msg.scoreExt[s.key] == '是','scr-show-ext':u.status == 'NORMAL'&&u.msg.scoreExt[s.key] == '否'}">
+                                    <i id="{{'ext-'+u.uid}}" ng-mouseover="showTip($event,'ext',u.msg.scoreExt,'ext-'+u.uid)"  ng-mouseleave="hideTip($event)" class="image-score-tip"></i>
+                                </span>
+                            </div>
+                            <div ng-if="!u.msg.hasOwnProperty(s.status)"><span ng-bind="'--'"></span></div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+            <div ng-hide="data.usrScoreLst&&data.usrScoreLst.length<=0">
+                <div class="scr-count-left">
+                    <pagination list="data.usrScoreLst" pagefn="scrPageFn" pageargs="pageargs"
+                                class="page-bar s3 jump-hide"></pagination>
+                </div>
+                <div class="scr-count-right">
+                    <div class="scr-auto-save">
+                        <span ng-show="data.isAutoSaving">
+                            <img src="imgs/loading-black-n1.gif" alt="" width="21">
+                            自动保存中
+                        </span>
+                        <span ng-if="data.isAutoSaved == 1 && data.EntringStuCount == 0">
+                            <i class="image-c-save-success"></i>
+                            已自动保存<span ng-bind="data.saveTime | date : 'yyyy-MM-dd hh:mm:ss'"></span>
+                        </span>
+                        <span ng-if="data.isAutoSaved == 2 && data.EntringStuCount == 0">
+                            <i class="image-c-save-success"></i>
+                            已自动保存<span ng-bind="data.saveTime | date : 'yyyy-MM-dd hh:mm:ss'"></span>,但保存失败
+                        </span>
+                    </div>
+                    <div class="scr-count-tag">
+                        <span class="scr-statistics">共<span ng-bind="data.joinCurStuCount"></span>人,还有<span class="scr-count-font"
+                                                                                     ng-bind="data.noEntryStuCount"></span>人无成绩<span ng-if="data.EntringStuCount > 0">,<span
+                                class="scr-count-font" ng-bind="data.EntringStuCount"></span>人已录入成绩但未保存</span></span>
+                        <a href="javascript:void(0)" class="scr-submit-btn" ng-click="submitEntryStuScore()">提交</a>
+                        <a href="javascript:void(0)" class="scr-save-btn" ng-click="saveEntryStuScore(0)">保存</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div ng-show="data.scrIsload">
+            <loader-ui></loader-ui>
+        </div>
+        <empty-tip
+                ng-show="!data.scrIsload && ((data.scoreTags.length <=0) || (data.usrScoreLst.length<=0))"></empty-tip>
+    </section>
+
+    <empty-tip
+            ng-show="data.isEmtry"></empty-tip>
+
+    <div class="score-confirm" ng-show="confirm.show">
+        <div class="hide-background"></div>
+        <div class="confirm-frame" ng-class="{'edit-confirm':data.isSetScrShow}">
+            <a class="close" ng-click="confirm.show = false;cancelFn();">×</a>
+            <p class="title" ng-bind="confirm.confirmTitle || '提示'"></p>
+            <p class="info" ng-bind="confirm.info"></p>
+            <div class="info" ng-show="confirm.errs&&confirm.errs.length>0" ng-repeat="err in confirm.errs">
+               <span>第<span ng-bind="err.page"></span>页，第<span ng-bind="err.row"></span>行，保存失败（错误信息）：<span ng-bind="err.errMsg"></span></span>
+            </div>
+            <table class="table-info" ng-show="data.isSetScrShow && !data.loadingScrSur">
+                <tr class="table-th">
+                    <td>评分项名称</td><td>所占比例(%)</td><td>指定试卷</td>
+                </tr>
+                <tr class="table-content" ng-repeat="s in data.scoreTags">
+                    <td ng-if="s.status == 'score' && s.key != '总成绩'">
+                        <span ng-if="s.key == 'grade'" ng-bind="'平时成绩'"></span>
+                        <span ng-if="s.key == 'exam'" ng-bind="'考试成绩'"></span>
+                    </td>
+                    <td ng-if="s.status == 'score' && s.key != '总成绩'">
+                        <span class="table-edit" onmouseenter="$(this).find('input:eq(0)').focus();"
+                              onclick="$(this).find('input:eq(0)').focus();">
+                               <input type="text" class="table-input" ng-class="{'invalid-weight':s.weightInvalid}"
+                                      onfocus="$(this).parent().addClass('focus');"
+                                      onblur="$(this).parent().removeClass('focus');"
+                                      ng-model="s.weight" ng-change="changeScrWeight(s)"
+                                      ng-pattern="/^(100(?:\.0*)?|0(?:\.\d\d*)?|\d?\d(?:\.\d\d*)?)$/" maxlength="5">
+                        </span>
+                    </td>
+                    <td ng-if="s.status == 'score' && s.key != '总成绩'" class="table-drop">
+                        <div ng-init="initScoreTag(s)">
+                            <drop-down key="s.specPaper" status="s.status" content="s"></drop-down>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="table-content">
+                    <td class="table-foot" colspan="3">合计:<span ng-bind-template="{{data.weightCount | number:1}}%"></span></td>
+                </tr>
+            </table>
+            <div ng-show="data.isSetScrShow && data.loadingScrSur">
+                <loader-ui></loader-ui>
+            </div>
+            <div  ng-show="data.isScrSurSelect" class="score-tips">
+                <i class="edit-imgs image-score-tip"></i><span ng-bind="data.tips"></span>
+            </div>
+            <div class="btn" ng-class="{'tips-btn':data.isScrSurSelect}">
+                <div class="confirm" ng-show="confirm.show && confirm.isShow" ng-click="confirmFn();" ng-bind="confirm.cfmBtnName || '确定'"></div>
+                <div class="cancle"  ng-click="cancelFn();" ng-class="{'edit-cancel': !confirm.isShow}" ng-bind="confirm.cancelBtnName || '取消'"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="scr-tip">
+        <p class="scr-text"><span ng-bind="data.tipName"></span></p>
+    </div>
+</div>

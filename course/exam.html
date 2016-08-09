@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html ng-app="RCP">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title ng-bind="title"></title>
+
+    <!-- build:css exam/exam.min.css -->
+    <link rel="stylesheet" href="directive/test-paper/q-base.css">
+    <link rel="stylesheet" href="../rcp-common/styles/common.css">
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <!--<link rel="stylesheet" href="../rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.css"/>-->
+    <link rel="stylesheet" type="text/css" href="exam/exam.css">
+    <link rel="stylesheet" type="text/css" href="directive/exam-paper/question-dir.css">
+    <link href="../rcp-common/directive/dynamic/dynamicService.css" rel="stylesheet" />
+    <!-- endbuild -->
+
+    <script src="../config-dy/config-dy.js"></script>
+
+</head>
+<body ng-controller="mainCtrl" >
+    <headnav item-list="itemList" user = "user"></headnav>
+    <div class="g-m-w" ng-controller="examCtrl">
+        <div ng-show="noQuestionShow">
+            <div class="my-mask"></div>
+            <div class="my-mask-content">
+                <p class="title">试卷题目为空，暂不能进行作答</p>
+                <div class="ok" ng-click="toStudy()">确定</div>
+            </div>
+        </div>
+
+        <div ng-show="closeByHandShow">
+            <div class="my-mask"></div>
+            <div class="my-mask-content">
+                <p></p>
+                <p class="title">请手动关闭当前窗口</p>
+            </div>
+        </div>
+
+        <div class="exam-left-section">
+            <h1 ng-bind="examTitle || '未命名试卷'"></h1>
+            <div class="exam-intro">
+                <p >考试须知 :</p>
+                <p>
+                    <span >共有</span><span ng-bind="examSectionNum || 0"></span>部分,&nbsp;<span ng-bind="examQueNum || 0"></span>道题
+                    <!--<span >&nbsp;&nbsp;作答时间 : <span ng-bind="examStartTime || '无'" class="examinfo"></span></span>-->
+                    <span >&nbsp;&nbsp;<span ng-bind="'考试时长 :'" ng-show="tid"></span>&nbsp;<span ng-bind="'建议时长 :'" ng-show="!tid"></span><span ng-bind="examDoTime || '无'" class="examinfo"></span></span>
+                    <span >&nbsp;&nbsp;试卷分数 : <span ng-bind="examScore" class="examinfo"></span></span>
+                </p>
+                <p ng-show="examDesc">考试说明 :</p>
+                <!--<p class="special-p1">1 :<span>严禁抄袭</span></p>-->
+                <!--<p class="special-p2">2 :<span>严禁用手机查找答案</span></p>-->
+                <div ng-bind-html="examDesc | sanitize" ng-show="examDesc"></div>
+            </div>
+
+            <div ng-repeat="curgroup in QuestionGroups track by $index">
+                <div class="group-title-div">
+                    <span ng-bind="curgroup.beg.c.title" class="left-title" id="groupTitle-{{$index}}"></span>
+                    <span class="left-score">( <span ng-bind="curgroup.groupScore"></span>分 )</span>
+                </div>
+                <exam-questions ng-repeat="d in curgroup.items track by $index" data="d" answerlist="questionAnswerList"  resolvestatus='resolvestatus' seeanddo="seeanddo"></exam-questions>
+            </div>
+        </div>
+
+        <div class="exam-right-section" ng-class="{'right-section-float':rightSectionFloat}" ng-style="{'max-height': maxHeight}">
+            <div class="exam-time">
+                <p ng-show="resolvestatus == 4">
+                    <span class="desc-font-s" ng-bind="'考试时长:'" ng-show="tid"></span><span class="desc-font-s" ng-bind="'建议时长:'" ng-show="!tid"></span> <span class="desc-font-s" ng-bind="examDoTime || '无'"></span>
+                </p>
+                <p ng-hide="resolvestatus == 4">
+                    <i class="icon image-exam-time-clock"></i>
+                    <span class="desc-font-s">答题时间</span>
+                    &nbsp;
+                    <span class="desc-font-l" ng-bind="examLfTime "></span>
+                    &nbsp;
+                    <span class="desc-font-s" ng-bind="'(考试时长:'" ng-show="tid"></span><span class="desc-font-s" ng-bind="'(建议时长:'" ng-show="!tid"></span> <span class="desc-font-s" ng-bind="examDoTime || '无'"></span>)
+                </p>
+                <p ng-hide="resolvestatus == 4">
+                    <i class="icon image-exam-doing-exercise"></i>
+                    <span class="desc-font-s" >答题数量</span>
+                    &nbsp;
+                    <span class="desc-font-l" ng-bind="aProgress.percent" >1/15</span>
+                </p>
+
+            </div>
+
+            <div class="overflow-div" ng-style="{'max-height': maxCHeight}" id="overflow-id">
+                <div ng-repeat="g in QuestionGroups track by $index" class="content-margin">
+                    <li class="group-title" ng-click="toLocationGroup($index)">
+                        <div ng-bind="g.beg.c.title" class="exam-group-title"></div>
+                    </li>
+                    <div class="exam-group-item">
+                        <span ng-repeat="d in g.items" ng-class="totalOvClass(d)" ng-click="toLocationQuestion(d)" ng-bind="d.index+1"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div ng-hide="resolvestatus == 4">
+                <div class="click-button" ng-click="submitPaper()"  ng-hide="aProgress.ansLen !== examQueNum">
+                    <span class="click-font" >我要交卷</span>
+                </div>
+                <div class="click-button-null" ng-click="submitPaper()"  ng-show="aProgress.ansLen !== examQueNum">
+                    <span class="click-font" >我要交卷</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <tailnav></tailnav>
+
+    <script src="../rcp-common/service/lib-default.min.js"></script>
+
+    <!-- build:js exam/exam.min.js-->
+    <script src="../rcp-common/service/jf-v1.0.js"></script>
+
+    <!--main Ctrl-->
+    <script src="exam/exam-ctrl.js"></script>
+    <script src="service/exam.js"></script>
+
+    <!--main service-->
+    <script src="../rcp-common/module/main/main-ctrl.js"></script>
+    <!--<script src="../rcp-common/service/common.js"></script>-->
+    <!--<script src="../rcp-common/service/service.js"></script>-->
+    <!--<script src="../rcp-common/service/event.js"></script>-->
+    <!--<script src="../rcp-common/service/aid.js"></script>-->
+    <!--<script src="../rcp-common/service/request.js"></script>-->
+    <!--<script src="../rcp-common/service/login-modal.js"></script>-->
+    <!--<script src="../rcp-common/service/dialog.js"></script>-->
+    <!--<script src="../rcp-common/service/progress-bar.js"></script>-->
+    <!--<script src="../rcp-common/service/http-config.js"></script>-->
+
+    <!--plugin-->
+    <script src="directive/exam-paper/questions-dir.js"></script>
+    <script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+    <!--<script src="../rcp-common/directive/common/common-dir.js"></script>-->
+    <script src="../rcp-common/directive/dynamic/dynamicService.js"></script>
+    <!--<script src="../rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.js"></script>-->
+    <!-- endbuild -->
+    <script src="../ckeditor/ckeditor.js"></script>
+    <script src="../rcp-common/directive/ng-editor/ng-editor.js"></script>
+    <script src="../rcp-common/service/service.min.js"></script>
+
+</body>
+</html>

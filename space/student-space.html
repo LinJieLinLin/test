@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html ng-app="RCP">
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>学习中心</title>
+
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css student-space/student-space.min.css -->
+    <!-- common -->
+    <link rel="stylesheet" href="../rcp-common/styles/common.css" />
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/directive/common/common-dir.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <!-- student space -->
+    <link rel="stylesheet" href="directive/sidebar/sidebar.css"/>
+    <link rel="stylesheet" href="teacher-space/space.css" />
+    <!-- student course -->
+    <link rel="stylesheet" href="../rcp-common/directive/empty-tip/empty-tip.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/default-img/default-img.css"/>
+    <link rel="stylesheet" href="../course/module/student-course/student-courses.css"/>
+    <link rel="stylesheet" href="../course/imgs/sprite.css">
+    <!--my circle-->
+    <link rel="stylesheet" href="../study-circle/module/my-circle/my-circle.css">
+    <link rel="stylesheet" href="../study-circle/directive/study-circle/study-circle.css">
+    <!-- endbuild -->
+
+</head>
+<body ng-controller="mainCtrl" class="bg-body-c">
+
+<!-- 头部 -->
+<headnav item-list="itemList" user="user"></headnav>
+
+<!--主体-->
+<div class="g-m-w" ng-controller="studentSpaceCtrl">
+    <div class="main-body">
+        <div class="left-list">
+            <div class="userInfo">
+                <div class="topBox">
+                    <img ng-src="{{user.avatar}}" alt="用户头像" class="userImg f-l loading-img">
+                    <div class="userInfoList inlineBlock">
+                        <p class="text loading-text">
+                            <span class="biggerText f-l" title="{{user.nickName}}" ng-bind="user.nickName">user</span>
+                            <a ng-href="{{certificateUrl}}" target="_blank"  class="uncertificate white-a loading" ng-show="!user.certification">未认证</a>
+                            <a ng-href="{{certificateUrl}}" target="_blank"  class="certificate white-a loading" ng-show="user.certification">已认证</a>
+                        </p>
+                        <!--<div>
+                            <i class="image-dingdanfabu"></i>
+                            <a ng-href="{{orderUrl}}" target="_blank"  class="order">我的订单</a>
+                        </div>-->
+
+                    </div>
+                </div>
+
+                <div class="bottom-box">
+                    <span ng-bind="user.desc"></span>
+                </div>
+            </div>
+            <sidebar sidebar-type="student"></sidebar>
+        </div>
+
+        <div class="right-list">
+            <div ng-view class="content"></div>
+        </div>
+
+        <div class="clear"></div>
+    </div>
+
+</div>
+<div class="gap-20"></div>
+<!--<chat getscope="getscope"></chat>-->
+
+<!-- 尾部 -->
+<tailnav></tailnav>
+
+<!-- lib -->
+<script src="../rcp-common/service/lib-default.min.js"></script>
+<!-- build:js student-space/student-space.min.js-->
+<!-- student space -->
+<script src="student-space/student-space.js"></script>
+<!-- main controller -->
+<script src="../rcp-common/module/main/main-ctrl.js"></script>
+<!-- directive -->
+<script src="../rcp-common/directive/pagination/pagination.js"></script>
+<script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+<script src="../rcp-common/directive/drag/drag.js"></script>
+<script src="../rcp-common/directive/empty-tip/empty-tip.js"></script>
+<script src="../rcp-common/directive/default-img/default-img.js"></script>
+<script src="directive/sidebar/sidebar.js"></script>
+<!-- student course -->
+<script src="../course/service/course.js"></script>
+<script src="../course/module/student-course/student-courses.js"></script>
+<!-- appraise -->
+<script src="../course/directive/appraise/appraise-service.js"></script>
+<!-- my circle -->
+<script src="../study-circle/service/study-circle.js"></script>
+<script src="../study-circle/module/my-circle/my-circle.js"></script>
+<script src="../study-circle/directive/study-circle/study-circle.js"></script>
+<script src="../rcp-common/directive/image-slider/image-slider.js"></script>
+<!-- endbuild-->
+<!-- service -->
+<script src="../rcp-common/service/service.min.js"></script>
+
+</body>
+
+</html>

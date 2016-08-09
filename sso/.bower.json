@@ -1,0 +1,32 @@
+{
+  "name": "sso",
+  "authors": [
+    "linj"
+  ],
+  "license": "NO",
+  "description": "sso",
+  "main": "index.html",
+  "moduleType": [],
+  "homepage": "index.html",
+  "ignore": [
+    "*.cmd",
+    "test",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "rcp-common": "https://w.gdy.io/dyf_w/dyf.git#buildDev"
+  },
+  "scripts": {
+    "postinstall": "gulp build"
+  },
+  "_release": "4580ce4063",
+  "_resolution": {
+    "type": "branch",
+    "branch": "buildDev",
+    "commit": "4580ce4063db1cad51b70cf85b0b9150a3b294f4"
+  },
+  "_source": "https://w.gdy.io/dyf_w/sso.git",
+  "_target": "buildDev",
+  "_originalSource": "https://w.gdy.io/dyf_w/sso.git"
+}

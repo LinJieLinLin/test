@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <title>全部圈子</title>
+    <meta name="keywords" content="全部圈子" />
+    <meta name="description" content="全部圈子" />
+
+    <script src="../config-dy/config-dy.js"></script>
+
+    <!--build css: study-circle-total/study-circle-total.min.css-->
+    <link href="../rcp-common/styles/common.css" rel="stylesheet" />
+    <link href="../rcp-common/directive/common/common-dir.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.css"/>
+    <link rel="stylesheet" href="../course/directive/course-intro/course-intro.css">
+
+    <link rel="stylesheet" href="/study-circle/directive/study-circle/study-circle.css"/>
+    <link rel="stylesheet" href="../rcp-common/styles/emoticon.css">
+    <!-- endbuild -->
+</head>
+<body ng-controller="mainCtrl">
+<headnav item-list="itemList" user="user"></headnav>
+<section class="g-m-w"  ng-controller="totalCircle">
+    <study-circle class="study-circle-total" c="circleConfig"></study-circle>
+    <div style="display: inline-block; width: 325px; background-color: white;vertical-align: top;margin: 20px 0 0 5px;">
+        <course-intro course-data="courseSource"></course-intro>
+    </div>
+
+</section>
+<tailnav></tailnav>
+</body>
+
+<script src="../rcp-common/service/lib-default.min.js"></script>
+
+<!-- build:js study-circle-total/study-circle-total.min.js-->
+
+<!--current js-->
+<script src="study-circle-total/study-circle-total.js"></script>
+
+<!--dependent services-->
+<!--<script src="../rcp-common/service/jf-v1.0.js"></script>-->
+<!--<script src="../rcp-common/service/service.js"></script>-->
+<!--<script src="../rcp-common/service/aid.js"></script>-->
+<!--<script src="../rcp-common/service/request.js"></script>-->
+<!--<script src="../rcp-common/service/login-modal.js"></script>-->
+<!--<script src="../rcp-common/service/dialog.js"></script>-->
+<!--<script src="../rcp-common/service/event.js"></script>-->
+<!--<script src="../rcp-common/service/http-config.js"></script>-->
+<!--<script src="../rcp-common/service/progress-bar.js"></script>-->
+<!--<script src="../rcp-common/service/common.js"></script>-->
+<!--<script src="../rcp-common/directive/common/common-dir.js"></script>-->
+<script src="../course/service/course.js"></script>
+<script src="service/study-circle.js"></script>
+
+<!--main controller-->
+<script src="../rcp-common/module/main/main-ctrl.js"></script>
+
+
+<!-- http filter-->
+<!--<script src="../rcp-common/service/http-filter.js"></script>-->
+
+<!--plugin-->
+<!-- emoji data -->
+<script src="../js-emoji/lib/emoji.js"></script>
+<!-- emoticon -->
+<script src="../rcp-common/filter/emoticon.js"></script>
+<!-- course intro -->
+<script src="../course/directive/course-intro/course-intro.js"></script>
+<script src="../course/directive/appraise/appraise-service.js"></script>
+
+<script src="directive/study-circle/study-circle.js"></script>
+<script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+<script src="../rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.js"></script>
+<script src="../rcp-common/directive/pagination/pagination.js"></script>
+<script src="../rcp-common/directive/image-slider/image-slider.js"></script>
+
+<!-- endbuild-->
+<script src="../rcp-common/service/service.min.js"></script>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "jsupload",
+  "description": "pure javascript library for upload file by ajax",
+  "keywords": [
+    "ajax",
+    "fileupload"
+  ],
+  "homepage": "https://github.com/Centny/jsupload",
+  "license": "BSD",
+  "moduleType": "globals",
+  "main": [
+    "lib/jsup.js"
+  ],
+  "ignore": [
+    "**/.*",
+    "test",
+    "jsupload.sublime-project"
+  ],
+  "_release": "23b410be53",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "23b410be5309599236899ab0b0c1123d3927e956"
+  },
+  "_source": "https://github.com/Centny/jsupload.git",
+  "_target": "*",
+  "_originalSource": "jsupload"
+}

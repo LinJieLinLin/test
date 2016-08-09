@@ -1,0 +1,124 @@
+@font-face {
+    font-family: "iconfont";
+    src: url('/fonts/iconfont.eot');
+    src: url('/fonts/iconfont.eot?#iefix') format('eot'),
+        url('/fonts/iconfont.woff') format('woff'),
+        url('/fonts/iconfont.ttf') format('truetype'),
+        url('/fonts/iconfont.svg#iconfont') format('svg');
+}
+
+@mixin icon-styles {
+    font-family: "iconfont";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: normal;
+    // speak: none; // only necessary if not using the private unicode range (firstGlyph option)
+    text-decoration: none;
+    text-transform: none;
+}
+
+%icon {
+    @include icon-styles;
+}
+
+@function icon-char($filename) {
+    $char: "";
+    @if $filename == all-course-catalog {
+        $char: "\EA01";
+    }
+    @if $filename == arrow {
+        $char: "\EA02";
+    }
+    @if $filename == calendar {
+        $char: "\EA03";
+    }
+    @if $filename == close {
+        $char: "\EA04";
+    }
+    @if $filename == drop-down-triangle {
+        $char: "\EA05";
+    }
+    @if $filename == iphone {
+        $char: "\EA06";
+    }
+    @if $filename == magnifier {
+        $char: "\EA07";
+    }
+    @if $filename == message {
+        $char: "\EA08";
+    }
+    @if $filename == polaroid {
+        $char: "\EA09";
+    }
+    @if $filename == screenshot {
+        $char: "\EA0A";
+    }
+    @if $filename == sent-files {
+        $char: "\EA0B";
+    }
+    @if $filename == smile {
+        $char: "\EA0C";
+    }
+    @if $filename == sound {
+        $char: "\EA0D";
+    }
+    @if $filename == user {
+        $char: "\EA0E";
+    }
+    @return $char;
+}
+@mixin icon($filename, $insert: before, $extend: true) {
+    &:#{$insert} {
+        @if $extend {
+            @extend %icon;
+        } @else {
+            @include icon-styles;
+        }
+        content: icon-char($filename);
+    }
+}
+
+.icon-all-course-catalog {
+  @include icon(all-course-catalog);
+}
+.icon-arrow {
+  @include icon(arrow);
+}
+.icon-calendar {
+  @include icon(calendar);
+}
+.icon-close {
+  @include icon(close);
+}
+.icon-drop-down-triangle {
+  @include icon(drop-down-triangle);
+}
+.icon-iphone {
+  @include icon(iphone);
+}
+.icon-magnifier {
+  @include icon(magnifier);
+}
+.icon-message {
+  @include icon(message);
+}
+.icon-polaroid {
+  @include icon(polaroid);
+}
+.icon-screenshot {
+  @include icon(screenshot);
+}
+.icon-sent-files {
+  @include icon(sent-files);
+}
+.icon-smile {
+  @include icon(smile);
+}
+.icon-sound {
+  @include icon(sound);
+}
+.icon-user {
+  @include icon(user);
+}

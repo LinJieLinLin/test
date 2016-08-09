@@ -1,0 +1,8 @@
+<div class="dyeditor-w">
+    <div class="stint-chac">
+        <span ng-class="{'c-gray':exceed<=0}" ng-hide="exceed>0">还可以输入<b class="text1">{{surplus}}</b>字</span>
+        <span ng-class="{'c-red':exceed>0}" ng-show="exceed>0">已超出<b class="text1">{{exceed}}</b>字</span>
+    </div>
+    <div class="placeholder" ng-hide="model&&model!=='<br>'">{{config.placeholder}}</div>
+    <div class="contenteditable" contenteditable="true" id="{{config.id}}" ng-style="config.style" ng-focus="onfocus()" ng-blur="onblur()" ng-click="change()"></div>
+</div>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html ng-app="RCP">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title ng-bind="title"> 试卷</title>
+
+    <!-- build:css exam-correcting/exam-correcting.min.css -->
+    <link rel="stylesheet" href="directive/test-paper/q-base.css">
+    <link rel="stylesheet" href="../rcp-common/styles/common.css">
+    <link rel="stylesheet" href="../rcp-common/directive/common/common-dir.css">
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <link rel="stylesheet" href="exam-correcting/exam-correcting.css">
+    <link rel="stylesheet" href="directive/exam-paper/question-dir.css">
+    <link href="../rcp-common/directive/dynamic/dynamicService.css" rel="stylesheet" />
+    <!-- endbuild -->
+
+    <script src="../config-dy/config-dy.js"></script>
+
+</head>
+<body ng-controller="mainCtrl" >
+<!--<headnav item-list="itemList" user = "user"></headnav>-->
+
+<div  ng-controller="correctingCtrl">
+    <div class="exam-head">
+        <div class="exam-head-length">
+            <div class="exam-head-title">
+                <i class="fa fa-file-text-o" ></i>
+                <span ng-bind="examTitle || '未命名试卷'"></span>
+            </div>
+            <button class="exam-head-button" ng-click="nextStudent()" ng-show="resolveStatus == 2">
+                <i class="fa fa-pencil-square-o"></i>
+                <span ng-hide="onlyOne">下一个学生</span>
+                <span ng-show="onlyOne">完成批改</span>
+            </button>
+            <div class="exam-head-people" ng-show="resolveStatus == 2">
+                <i class="icon image-exam-good-people good-i" ></i>
+                <span>合格人数：</span>
+                <span class="good-span" ng-bind="goodStudent">23</span>
+                <i class="icon image-exam-people all-i"></i>
+                <span>剩余人数：</span>
+                <span class="left-span" ng-bind="leftStudent">27</span>/<span class="all-span" ng-bind="allStudents">/50</span>
+            </div>
+        </div>
+    </div>
+    <div class="g-m-w">
+        <div class="exam-left-section">
+            <div ng-repeat="curgroup in QuestionGroups track by $index">
+                <span ng-bind="curgroup.beg.c.title" class="left-title" id="groupTitle-{{$index}}" ng-show="curgroup.hasText || !hideOther" ></span>
+                <exam-questions ng-repeat="d in curgroup.items track by $index" data="d" answerlist="questionAnswerList" resolvestatus="resolveStatus" correctingarg="correctingArg" ng-hide="(d.t !== 'e_text') && hideOther"></exam-questions>
+            </div>
+        </div>
+        <div  ng-style="{'min-height':leftHeight}"></div>
+        <div class="exam-right-section" ng-class="{'right-section-float':rightSectionFloat}" ng-style="{'max-height': maxHeight}">
+            <div class="exam-time">
+                <div class="user-info">
+                    <ng-img c="{img:curStudentImg,divStyle:{width:'60px',height:'60px'},default:'/rcp-common/imgs/face/d-face-1.png',divClass:'f-l',imgClass:'user-image'}"></ng-img>
+                    <div class="user-div">
+                        <div class="user-name text-of" ng-bind="curStudentName" title="{{curStudentName}}">李宥琳</div>
+                        <div class="user-phone" ng-bind="curStudentPhone">1234567890</div>
+                    </div>
+                </div>
+                <div class="div-section">
+                    <i class="icon image-exam-correcting-qno"></i>
+                    <span >得分</span>
+                    <span ng-bind="correctingArg.userScore" class="user-score"></span>
+                    <span class="user-all-score">分</span>
+                    &nbsp;
+                    <span>(总分: <span ng-bind="examScore"></span>) </span>
+                </div>
+                <div class="div-section">
+                    <i class="icon image-exam-doing-exercise"></i>
+                    <span >答题数量</span>
+                    &nbsp;
+                    <span  ng-bind="aProgress.percent">1/15</span>
+                </div>
+                <!--<div class="div-section" ng-show="resolveStatus == 3">-->
+                    <!--<i class="icon image-exam-correcting-score f-l"></i>-->
+                    <!--<span style="margin: 0 5px;">排名</span>-->
+                    <!--&lt;!&ndash;<span class="q-num">&ndash;&gt;-->
+                    <!--<span>无</span>-->
+                    <!--&lt;!&ndash;</span>&ndash;&gt;-->
+                <!--</div>-->
+                <div class="div-section">
+                    <i class="icon image-exam-time-clock"></i>
+                    <span >答题时间</span>
+                    &nbsp;
+                    <span ng-bind="examLfTime||'--' "></span>
+                    &nbsp;
+                    <span ng-bind="'(考试时长 : '" ng-show="tid"></span><span ng-bind="'(建议时长 : '" ng-show="!tid"></span><span ng-bind="examDoTime || '无'"></span>)
+                </div>
+                <div class="div-section" ng-show="resolveStatus == 2">
+                    <i class="icon image-exam-correcting-score f-l"></i>
+                    <span class="no-correcting-margin">未批改数</span>
+                    &nbsp;
+                    <span ng-bind="correctingArg.leftQuestion + '题'"></span>
+                    &nbsp;
+                    (共<span ng-bind="correctingArg.subQuestions"></span>题)
+                    <!--</span>-->
+                </div>
+
+            </div>
+            <div class="right-comment-showbutton" ng-click="showCommentTemp = !showCommentTemp">
+                <button>
+                    答题详情
+                    <i class="fa fa-angle-down" ng-show="!showCommentTemp"></i>
+                    <i class="fa fa-angle-up" ng-show="showCommentTemp"></i>
+                </button>
+            </div>
+            <div  ng-class="{'content-margin':resolveStatus==='2','bottom-height':resolveStatus === '3','content-margin ':resolveStatus === '3'}" ng-show="!showCommentTemp">
+                <table class="right-table-style">
+                    <tr>
+                        <td class="wrong-td">
+                            <span></span>
+                            错误
+                        </td>
+                        <td class="right-td">
+                            <span></span>
+                            正确
+                        </td>
+                        <!--<td style="font-size: 12px; color: #ffca4b;">-->
+                            <!--<span style="position: relative; top: 5px; left: 8%;float: left;border: 1px solid; background-color: #ffca4b; color: #ffca4b;border-radius: 100%; width: 4px; height: 4px; display: block;"></span>-->
+                            <!--含错-->
+                        <!--</td>-->
+                        <td class="correcting-td">
+                            <span></span>
+                            待批改
+                        </td>
+                        <td class="noanswer-td">
+                            <span></span>
+                            未作答
+                        </td>
+                    </tr>
+                </table>
+
+                <!--<div class="overflow-div" ng-style="{'max-height': maxCHeight}">-->
+                    <div ng-repeat="g in QuestionGroups track by $index">
+                        <li class="group-title" ng-click="toLocationGroup($index)">
+                            <div class="hover-div"></div>
+                            <div ng-bind="g.beg.c.title" class="exam-group-title"></div>
+                        </li>
+                        <div class="exam-group-item">
+                            <span ng-repeat="d in g.items" ng-class="
+                            d.result === 'correct'?'correct':
+                            d.result === 'error'?'error':
+                            d.result === 'noAnswer'?'noAnswer':
+                            d.result === 'nor'?'nor':
+                            d.result === 'norDone'?'norDone':''" ng-click="toLocationQuestion(d)" ng-bind="d.index+1" ></span>
+                        </div>
+                    </div>
+                <!--</div>-->
+
+
+                <button ng-class="{'unresolve-button':hideOther,'unresolve-button-n':!hideOther}" ng-click="mytestclick(true)" ng-show="resolveStatus == 2">查看未批改</button>
+                <button ng-class="{'all-button':!hideOther,'all-button-n':hideOther}" ng-click="mytestclick(false)" ng-show="resolveStatus == 2">查看全部</button>
+
+
+            </div>
+            <div class="content-margin">
+                <div class="margin-27">
+                    <div class="comment-title">
+                        <span class="comment-image">评</span>
+                    </div>
+                    <span class="comment-title-info">点评学生作答</span>
+                </div>
+                <div class="margin-27" ng-show="false">
+                    <ng-img c="{img:currentUser.avatar,divStyle:{width:'30px',height:'30px'},default:'/rcp-common/imgs/face/d-face-1.png',divClass:'f-l'}"></ng-img>
+                    <span class="span-name" ng-bind="currentUser.nickName">李老师</span>
+                    <span class="span-cancle">取消</span>
+                </div>
+                <!--<div>-->
+                    <!--<textarea style="width: 100%; height: 100%; margin-top: 12px;"></textarea>-->
+                <!--</div>-->
+                <div class="resolve-text" ng-hide="teacherReview">
+                    <textarea ng-model="selfReview" class="my-textArea" placeholder="请输入内容"></textarea>
+                    <!--<dyeditor class="my-dyedit" model="selfReview" config="{id:'',style:{minHeight:80,overflow:'auto'},placeholder:'请输入内容'}"></dyeditor>-->
+                    <button ng-click="reviewSubmit()" >提交</button>
+                </div>
+                <div ng-show="teacherReview">
+                    <div ng-bind-html="selfReview|sanitize"></div>
+                    <button class="teacher-review-delbtn" ng-click="delText()">
+                        <i class="fa fa-trash-o" class="self-i"></i>
+                    </button>
+
+                    <button class="teacher-review-editbtn" ng-click="editAgain()">
+                        <i class="fa fa-pencil-square-o" class="self-i"></i>
+                    </button>
+
+                </div>
+                <!--<textarea></textarea>-->
+            </div>
+
+        </div>
+    </div>
+
+</div>
+<tailnav></tailnav>
+
+<script src="../rcp-common/service/lib-default.min.js"></script>
+
+<!-- build:js exam-correcting/exam-correcting.min.js-->
+<script src="../rcp-common/service/jf-v1.0.js"></script>
+
+<!--main Ctrl-->
+<script src="exam-correcting/exam-correcting.js"></script>
+<script src="service/exam.js"></script>
+
+<!--main service-->
+<script src="../rcp-common/module/main/main-ctrl.js"></script>
+
+<!--plugin-->
+<script src="directive/exam-paper/questions-dir.js"></script>
+<script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+<script src="../rcp-common/directive/dynamic/dynamicService.js"></script>
+
+<!-- endbuild -->
+<script src="../rcp-common/service/service.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,267 @@
+<div class="edit-w content-n">
+
+    <div class="loading-layer" id="loading-layer" ng-show="loading">
+        <span class="loading-circle loading-amit-spin"></span>
+    </div>
+
+    <div class="ew-h con">
+
+        <div class="list-ac">
+
+            <div class="block-grp">
+                <div class="bw">
+                    <a href="javascript:;" class="return-b back" ng-click="back()">
+                        <p class="ic"><i class="image-con-head-back"></i></p>
+                        <p>返回</p>
+                    </a>
+                </div>
+            </div>
+            <div class="block-grp">
+                <div class="bw">
+                    <a href="javascript:;" class="overview-b">
+                        <p class="ic"><i class="image-con-head-dir"></i></p>
+                        <p>目录</p>
+                    </a>
+                </div>
+            </div>
+            <div class="grp" ng-show="config.mark === 'dir'">
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="newItem({type:'T1',index:curItemIndex.index + 1})">
+                            <p class="ic"><i class="image-con-head-t1"></i></p>
+                            <p>添加章</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-click="newItem({type:'T2',index:curItemIndex.index + 1})">
+                    <div class="bw">
+                        <a href="javascript:;">
+                            <p class="ic"><i class="image-con-head-t2"></i></p>
+                            <p>添加节</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-show="editWidthMode === 'wide'">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="newItem({type:'image',index:curItemIndex.index + 1})">
+                            <p class="ic"><i class="image-con-head-pic"></i></p>
+                            <p>插入图片</p>
+                            <div class="up-i">
+                                <div class="li">
+                                    插入图片
+                                </div>
+                                <div class="li">
+                                    支持Png、Jpg、Jpeg、Bmp、Gif格式
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-show="editWidthMode === 'wide'">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="newItem({type:'text',index:curItemIndex.index + 1})">
+                            <p class="ic"><i class="image-con-head-content"></i></p>
+                            <p>添加内容</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp" ng-show="editWidthMode === 'wide'">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="addExam('test')">
+                            <p class="ic"><i class="image-con-head-paper"></i></p>
+                            <p>插入试卷</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" class="up-panel down-list-h">
+                            <p class="ic"><i class="image-con-head-more"></i></p>
+                            <p>更多</p>
+                            <div class="down-list">
+                                <ul>
+                                    <li ng-click="newItem({type:'image',index:curItemIndex.index + 1})"
+                                        ng-show="editWidthMode === 'petty'">
+                                        <div class="img-p"><i class="image-con-s-pic"></i></div>
+                                        插入图片
+                                        <div class="up-i-s">
+                                            <div class="li">
+                                                插入图片
+                                            </div>
+                                            <div class="li">
+                                                支持Png、Jpg、Jpeg、Bmp、Gif格式
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li ng-click="newItem({type:'text',index:curItemIndex.index + 1})"
+                                        ng-show="editWidthMode === 'petty'">
+                                        <div class="img-p"><i class="image-con-s-content"></i></div>
+                                        添加内容
+                                    </li>
+                                    <li ng-click="addExam('test')"
+                                        ng-show="editWidthMode === 'petty'">
+                                        <div class="img-p"><i class="image-con-s-p1"></i></div>
+                                        插入试卷
+                                    </li>
+                                    <li ng-click="newItem({type:'attach',index:curItemIndex.index + 1})">
+                                        <div class="img-p"><i class="image-con-s-file"></i></div>
+                                        添加附件
+                                        <div class="up-i-s">
+                                            <div class="li">
+                                                添加附件
+                                            </div>
+                                            <div class="li">
+                                                支持文件的下载或预览；支持的预览文件格式主要有Doc/Docx、Ppt/Pptx、Pdf。
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li ng-click="newItem({type:'link',index:curItemIndex.index + 1})">
+                                        <div class="img-p"><i class="image-con-s-link"></i></div>
+                                        添加链接
+                                    </li>
+                                    <li ng-click="newItem({type:'embed',index:curItemIndex.index + 1})">
+                                        <div class="img-p"><i class="image-con-s-movie-ext"></i></div>
+                                        网上视频
+                                    </li>
+                                    <li ng-click="newItem({type:'video',index:curItemIndex.index + 1})">
+                                        <div class="img-p"><i class="image-con-s-movie-loc"></i></div>
+                                        本地视频
+                                        <div class="up-i-s">
+                                            <div class="li">
+                                                上传本地视频
+                                            </div>
+                                            <div class="li">
+                                                支持wmv、rm、rmvb、mpg、mpeg、mpe、3gp、mov、mp4、m4v、avi、mkv、flv、vob格式的视频文件
+                                            </div>
+                                            <div class="li">
+                                                视频大小不能超过2G
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li ng-click="newItem({type:'flash',index:curItemIndex.index + 1})">
+                                        <div class="img-p"><i class="image-con-s-flash"></i></div>
+                                        添加Flash
+                                    </li>
+                                </ul>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grp" ng-show="config.mark === 'intro'">
+                <div class="block-grp" ng-click="newItem({type:'T1',index:curItemIndex.index + 1})">
+                    <div class="bw">
+                        <a href="javascript:;">
+                            <p class="ic"><i class="image-con-head-t"></i></p>
+                            <p>插入标题</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="newItem({type:'image',index:curItemIndex.index + 1})">
+                            <p class="ic"><i class="image-con-head-pic"></i></p>
+                            <p>插入图片</p>
+                            <div class="up-i">
+                                <div class="li">
+                                    插入图片
+                                </div>
+                                <div class="li">
+                                    支持Png、Jpg、Jpeg、Bmp、Gif格式
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" ng-click="newItem({type:'text',index:curItemIndex.index + 1})">
+                            <p class="ic"><i class="image-con-head-content"></i></p>
+                            <p>添加内容</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grp">
+                <div class="seq"></div>
+
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" class="save-b" ng-click="saveContent()">
+                            <p class="ic"><i class="image-con-head-save"></i></p>
+                            <p>保存</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="block-grp">
+                    <div class="bw">
+                        <a href="javascript:;" class="" target="_blank" ng-href="{{previewUrl()}}">
+                            <p class="ic"><i class="image-con-head-preview"></i></p>
+                            <p>预览</p>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="seq"></div>
+            </div>
+
+            <div class="grp">
+                <div class="block_new ck-tool-bar" ng-class="ckToolPosMode">
+                    <div id="topEditor-{{config.mark}}" class="top-editor">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ew-m con">
+            <div class="ew-list">
+                <a href="javascript:;" class="close-b" title="隐藏"><i class="image-con-dir-close"></i></a>
+                <div class="h">
+                    <span>课程目录</span>
+                </div>
+                <div class="l dir">
+                    <div class="l-c">
+                        <div class="tree-line"></div>
+                        <ul>
+                            <li class="option" ng-repeat="item in cat.items track by $index"
+                                ng-show="item.type == 'T1' || item.type == 'T2'">
+                                <div class="icon">
+                                    <i class="image-con-dir-t1" ng-show="item.type == 'T1'"></i>
+                                    <i class="image-con-dir-t2" ng-show="item.type == 'T2'"></i>
+                                </div>
+                                <a ng-show="item.type == 'T1'" ng-click="gotoGrpItem(item.id)" title="{{item.title}}"
+                                   class="section-context first">{{item.title}}</a>
+                                <a ng-show="item.type == 'T2'" ng-click="gotoGrpItem(item.id)" title="{{item.title}}"
+                                   class="section-context second">{{item.title}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="ew-word" id="{{contentEwId}}">
+                <div class="m w-ck dir">
+
+                    <div class="un-support" ng-show="unSupport">
+                        <div>{{unSupport}}</div>
+                    </div>
+
+
+                    <div ng-repeat="group in content.groups track by $index">
+
+                        <!--<paper-edit></paper-edit>-->
+
+                        <content-group group="group" ctrl="containerCtrl" index="$index" config="config"
+                                       focus="curItemIndex"></content-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="upload-area">
+            <input type="file" id="{{uploadInputId}}">
+        </div>
+    </div>
+</div>

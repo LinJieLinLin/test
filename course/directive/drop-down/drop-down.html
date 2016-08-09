@@ -1,0 +1,15 @@
+<!--
+ * Created by Zhongj on 2016/6/22.
+ * 模块说明：
+ -->
+<div class="drop-down" ng-class="{'drop-down-spec':isChange}">
+    <div ng-click="toggle();" class="toggle">
+        <div class="text-of key-width">{{key}}</div>
+        <div class="fa fa-caret-down" aria-hidden="true" ng-class="{'fa-caret-down': !content.showOptions, 'fa-caret-up': content.showOptions,'select-content':isChange}"></div>
+    </div>
+    <ul class="drop-down-options" ng-show="content.showOptions" ng-class="{'specify-paper':isChange}">
+        <li  ng-repeat="option in options" ng-click="setSpecPaper(option, $index);" class="text-of"
+            ng-class="{'active': content.curSelectIndex == $index, 'hover-bg': content.curSelectIndex != $index}">{{option.name}}
+        </li>
+    </ul>
+</div>

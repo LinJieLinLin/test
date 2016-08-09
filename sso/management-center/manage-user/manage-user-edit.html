@@ -1,0 +1,109 @@
+<div class="breadcrumb">
+    账号管理 > 用户管理 >
+    <span class="color-bc-blue-c" ng-bind="typeOpt[type].title"></span>
+</div>
+
+<div class="main-content">
+
+    <div class="content-edit">
+        <table>
+            <tr>
+                <td>
+                    <span class="require">*</span>
+                    <span class="title">用户名称：</span>
+                </td>
+                <td ng-show="type == 'new'">
+                    <input type="text" class="n-input" placeholder="请输入用户名称" ng-model="userInfo.nickName" maxlength="12">
+                </td>
+                <td ng-show="type == 'edit'">
+                    <span class="info">{{userInfo.nickName}}</span>
+                </td>
+            </tr>
+            <tr ng-show="type == 'edit'">
+                <td>
+                    <span class="title">用户账号：</span>
+                </td>
+                <td>
+                    <span class="info">{{userInfo.account}}</span>
+                </td>
+            </tr>
+            <tr ng-show="type == 'new'">
+                <td>
+                    <span class="title">密码：</span>
+                </td>
+                <td>
+                    <input type="text" class="n-input" placeholder="默认密码：123456" ng-model="userInfo.pw" maxlength="20-">
+                    <span class="warn">
+                        <i class="image-mo-i"></i>
+                        <span>请确保您已经牢记密码</span>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="title">权限属性：</span>
+                </td>
+                <td>
+                    <label for="orgMg">
+                        <input type="radio" name="auth" id="orgMg" value="10" ng-model="userInfo.type">
+                        <span>普通用户</span>
+                    </label>
+                    <label for="normalU">
+                        <input type="radio" name="auth" id="normalU" value="20" ng-model="userInfo.type">
+                        <span>课程管理员</span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="require">*</span>
+                    <span class="title">标签：</span>
+                </td>
+                <td>
+                    <div class="tag-area">
+                        <div class="tag-n">
+                            <a href="" class="tag-o a" ng-click="tag.selected = !tag.selected" ng-class="{'select': tag.selected}" ng-repeat="tag in tag.tags track by $index">{{tag.name}}</a>
+                        </div>
+                        <div class="tag-d">
+                            <div class="tag-o d" ng-repeat="tag in tag.tagCustom track by $index">{{tag}}
+                                <a href="" ng-click="tagDel($index)"><i class="image-mo-o-del"></i></a>
+                            </div>
+                        </div>
+                        <div class="tag-i">
+                            <span class="other">其他</span>
+                            <input type="text" class="n-input" placeholder="单个标签最长20个字，按回车或空格键确认" ng-model="tag.newTag" ng-keydown="onKeyDown($event)" maxlength="20">
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr ng-show="">
+                <td>
+                    <span class="require">*</span>
+                    <span class="title">账号有效期：</span>
+                </td>
+                <td>
+                    <label for="timeC">
+                        <input type="radio" name="auth" id="timeC">
+                        <input type="text">
+                    </label>
+                    <label for="timeO">
+                        <input type="radio" name="auth" id="timeO">
+                        <span>永久</span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <div class="form-btn">
+                        <a href="" ng-click="confirm()">确认</a>
+                        <a href="#/manage-user" id="cancel">取消</a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+
+</div>

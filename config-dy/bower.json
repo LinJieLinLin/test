@@ -1,0 +1,17 @@
+{
+    "name": "config-dy",
+    "version": "0.0.1",
+    "authors": [
+        "linj"
+    ],
+    "license": "NO",
+    "description": "",
+    "main": "config-dy.js",
+    "moduleType": [],
+    "ignore": [
+        "**/.*",
+        "*.cmd",
+        "node_modules",
+        "bower_components"
+    ]
+}

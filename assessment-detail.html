@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN" ng-app="RCP">
+<head>
+  <meta charset="UTF-8">
+  <meta name="renderer" content="webkit"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta http-equiv="pragma" content="no-cache"/>
+  <meta http-equiv="cache-control" content="no-cache"/>
+  <title ng-bind="title"></title>
+
+  <script src="config-dy/config-dy.js"></script>
+  <!-- build:css assessment-detail/assessment-detail.min.css -->
+  <!-- common -->
+  <link rel="stylesheet" href="rcp-common/styles/common.css">
+  <link rel="stylesheet" href="rcp-common/styles/font-awesome.css">
+  <link rel="stylesheet" href="rcp-common/directive/common/common-dir.css">
+  <link rel="stylesheet" href="rcp-common/directive/head-tail/head-tail-dir.css">
+  <!-- myself -->
+  <link rel="stylesheet" href="assessment-detail/assessment-detail.css">
+  <!-- appraiseList -->
+  <link rel="stylesheet" href="course/directive/appraise/appraise-list.css">
+  <!-- course intro -->
+  <link rel="stylesheet" href="course/directive/course-intro/course-intro.css">
+  <!-- endbuild -->
+
+</head>
+<body ng-controller="mainCtrl" class="bg-body-c">
+
+<headnav item-list="itemList" user="user"></headnav>
+
+<div class="g-m-w" ng-controller="assessmentDetailCtrl">
+  <div class="main-body">
+    <div class="left-list f-l">
+      <!-- 课程评价 -->
+      <appraise-list
+              config="config"
+              data="cmtResult"></appraise-list>
+    </div>
+
+    <div class="right-list f-r">
+      <course-intro course-data="courseSource"></course-intro>
+    </div>
+
+    <div class="clear"></div>
+  </div>
+</div>
+
+<div class="gap-20"></div>
+
+<tailnav></tailnav>
+
+<!-- basic package -->
+<script src="rcp-common/service/lib-default.min.js"></script>
+
+<!-- build:js assessment-detail/assessment-detail.min.js-->
+<!-- itself controller -->
+<script src="assessment-detail/assessment-detail.js"></script>
+<!-- directive -->
+<script src="rcp-common/directive/head-tail/head-tail-dir.js"></script>
+<script src="rcp-common/directive/pagination/pagination.js"></script>
+<!-- course -->
+<script src="course/service/course.js"></script>
+<!-- appraise list -->
+<script src="course/directive/appraise/appraise-service.js"></script>
+<script src="course/directive/appraise/appraise-list.js"></script>
+<!-- course intro -->
+<script src="course/directive/course-intro/course-intro.js"></script>
+<!-- endbuild-->
+<!-- service -->
+<script src="rcp-common/service/service.min.js"></script>
+
+<!-- to dev -->
+<!--<script src="rcp-common/service/dialog.js"></script>-->
+</body>
+</html>

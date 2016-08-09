@@ -1,0 +1,34 @@
+<style>
+.y-loading{text-align:center;margin:0 auto;font-size:18px;color:#d5d5d5;letter-spacing: 2px;text-shadow:0 2px 0 white;position:relative;cursor:default;}
+.y-loading .cover{position:absolute;width:218px;height:204px;left:50%;top:0;margin-left:-109px;}
+.y-loading p{position:relative;}
+.y-loading .font{margin-right:18px;}
+.y-loading img{width:218px;margin-bottom:5px;}
+.y-loading.s2{font-size:14px;}
+.y-loading.s2 img{width:138px;}
+.y-loading.s2 .y-ld-ellipsis{margin-left:16px;}
+.y-loading.s3{font-size:14px;}
+.y-loading.s3 img{width:88px;}
+.y-ld-ellipsis{
+    position:absolute;left:50%;top:0;margin-left:22px;
+    -webkit-animation: y-loading 1.5s linear infinite normal;
+    animation: y-loading 1.5s linear infinite normal;
+}
+@keyframes y-loading{
+    0%   {clip:rect(auto 0px auto auto);}
+    35%  {clip: rect(auto 6px auto auto);}
+    70% {clip: rect(auto 12px auto auto);}
+    100% {clip: rect(auto 18px auto auto);}
+}
+@-webkit-keyframes y-loading{
+    0%   {clip:rect(auto 0px auto auto);}
+    35%  {clip: rect(auto 6px auto auto);}
+    70% {clip: rect(auto 12px auto auto);}
+    100% {clip: rect(auto 18px auto auto);}
+}
+</style>
+<div class="y-loading" ng-show="show">
+    <div class="cover"></div>
+    <img src="/rcp-common/imgs/old/loading/y-loading.gif">
+    <p><span class="font">加载中</span><span class="y-ld-ellipsis">...</span></p>
+</div>

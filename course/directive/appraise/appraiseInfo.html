@@ -1,0 +1,30 @@
+
+<div>
+  <!-- 评价信息条 -->
+  <div id="learning-appraisal" class="learning-appraisal">
+    <div class="comment-grade">
+      <div ng-click="selectAppraisalGrade(0, $event)" class="grade_v good" ng-class="commentData.grade==0 ? 'selected': 'unselected-color' " ><span class="icon">赞</span><span class="text" ng-bind="grades['0']">0</span></div>
+      <i class="delimiter"></i>
+      <div ng-click="selectAppraisalGrade(1, $event)" class="grade_v ordinary" ng-class="commentData.grade==1 ? 'selected': 'unselected-color' " ><span class="icon">一般</span><span class="text" ng-bind="grades['1']">0</span></div>
+      <i class="delimiter"></i>
+      <div ng-click="selectAppraisalGrade(2, $event)" class="grade_v bad" ng-class="commentData.grade==2 ? 'selected': 'unselected-color' " ><span class="icon">踩</span><span class="text" ng-bind="grades['2']">0</span></div>
+    </div>
+  </div>
+  <!-- 评价信息条 end -->
+
+  <div id="comment-popover" class="comment-popover-space" ng-show="dialogVisible">
+    <div class="frame-dialog">
+      <div class="dialog-body">
+        <div class="editor-space">
+          <textarea class="editor" ng-model="commentDialogContent" ng-attr-placeholder="{{placeholder}}" ng-trim="false" ng-readonly="commentEdited" maxlength="100"></textarea>
+          <span class="measure" ng-bind="commentDialogContent.length + '/100'"></span>
+        </div>
+        <div class="btn-bar">
+          <div ng-click="hideDialog()" class="button cancel">取消</div>
+          <div ng-click="submitAppraisal()" ng-show="!commentEdited" class="button submit">提交</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <title>课程概述</title>
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css course-summary/course-summary.min.css -->
+    <link rel="stylesheet" href="../rcp-common/styles/common.css">
+    <link rel="stylesheet" href="directive/course-content/content-summary.css">
+    <!-- endbuild -->
+
+    <style>
+        .main-c {
+            padding: 10px;
+        }
+    </style>
+</head>
+<body ng-controller="mainCtrl">
+
+
+<div ng-controller="courseSummary" class="main-c">
+    <content-summary config="introConfig"></content-summary>
+</div>
+
+
+
+
+<script src="../rcp-common/service/lib-default.min.js"></script>
+
+<!-- build:js course-summary/course-summary.min.js-->
+<script src="../rcp-common/service/aid.js"></script>
+<script src="course-summary/course-summary.js"></script>
+
+<!--service-->
+<script src="service/course.js"></script>
+<script src="service/content.js"></script>
+<!--service end-->
+
+<!-- summary -->
+<script src="directive/course-content/content-summary.js"></script>
+
+<!-- endbuild-->
+
+
+<script src="../rcp-common/service/service.min.js"></script>
+
+</body>
+</html>

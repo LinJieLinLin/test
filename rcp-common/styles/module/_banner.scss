@@ -1,0 +1,92 @@
+.m-banner {
+    clear: both;
+    position: relative;
+    min-height: 326px;
+    position: relative;
+    background-color: #D7F5FF;
+}
+
+.mban-key {
+    position: absolute;
+    left: 50%;
+    bottom: 10px;
+    margin-left: -50px;
+    width: 100px;
+    text-align: center;
+    height: 12px;
+    z-index: 5;
+    .key {
+        vertical-align: top;
+        width: 10px;
+        height: 10px;
+        line-height: 10px;
+        overflow: hidden;
+        display: inline-block;
+        margin: 0 6px;
+        opacity: .3;
+        background: black;
+        border-radius: 10px;
+        transition: .3s ease-in-out;
+    }
+    .active {
+        width: 30px;
+        background: white;
+        opacity: .8;
+    }
+}
+
+.mban-container {
+    overflow: hidden;
+    height: 326px;
+    position: relative;
+    background-color: #D7F5FF;
+    transition: all 1.3s ease;
+    .mban-item {
+        position: absolute;
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        cursor: default;
+        background-size: auto 100%;
+        background-position: center;
+        opacity: 0;
+        transition: opacity 1.3s ease-out;
+        &.active {
+            z-index: 2;
+            opacity: 1;
+        }
+    }
+    .transt {
+        transition: all .5s ease-out;
+    }
+}
+
+.downl-app {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 8;
+    margin: -130px 0 0 400px;
+    height: 260px;
+    width: 200px;
+    background: rgba(250, 250, 250, .7) url(/rcp-common/imgs/icon/download-app.png) no-repeat center bottom;
+    cursor: default;
+    .img {
+        width: 180px;
+        height: 180px;
+        overflow: hidden;
+        margin: 0 auto;
+        position: relative;
+        top: 9px;
+    }
+    .bm {
+        color: white;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        line-height: 60px;
+        font-size: 14px;
+        text-indent: 85px;
+    }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "wcms.js",
+  "authors": [
+    "wensh"
+  ],
+  "license": "NO",
+  "ignore": [
+    "**/.*",
+    "**/node_modules",
+    "src",
+    "**/bower_components",
+    "www/test"
+  ],
+  "dependencies": {
+    "jquery": "1.11.1",
+    "angular": "1.2.9"
+  },
+  "_release": "4243507668",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "42435076687d7f8027ec7686b67fb22f3ef6e928"
+  },
+  "_source": "https://w.gdy.io/dyf_w/wcms.git",
+  "_target": "*",
+  "_originalSource": "https://w.gdy.io/dyf_w/wcms.git"
+}

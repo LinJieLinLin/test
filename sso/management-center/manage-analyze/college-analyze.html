@@ -1,0 +1,23 @@
+<div class="breadcrumb">
+    学情统计 &gt;
+    <span class="color-bc-blue-c">高校概况</span>
+</div>
+<div class="manage-analyze">
+    <div ng-show="loading">
+        <loader-ui></loader-ui>
+    </div>
+    <section ng-show="!loading" class="college-analyze">
+        <p class="ca-title"><span>高校概况</span></p>
+        <p class="ca-sub-title"><span>课程建设情况</span></p>
+        <div class="ca-content">
+            <div id="ca-college" class="ca-container" ng-style="containerStyle"></div>
+        </div>
+    </section>
+    <section ng-show="!loading" class="college-analyze ca-m-b">
+        <p class="ca-title"><span>人员统计</span></p>
+        <p class="ca-sub-title"><span>人数参与度</span></p>
+        <div class="ca-content">
+            <div id="ca-people" class="ca-container" ng-style="containerStyle"></div>
+        </div>
+    </section>
+</div>

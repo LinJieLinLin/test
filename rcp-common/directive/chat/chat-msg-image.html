@@ -1,0 +1,16 @@
+<a ng-click="showPic()"><img ng-src="{{imgUrl}}" /></a>
+<div class="chat-pos-fixed chat-pos-center chat-bg-transparent"  ng-show="showBigImg">
+    <div class="chat-dis-table">
+        <div class="chat-dis-tablecell">
+            <div class="chat-big-img">
+                <button ng-click="closePic()" class="chat-close-img">&times;</button>
+                <div>
+                    <i ng-hide="imgLoaded" class="fa fa-spinner fa-spin"></i>
+                    <a ng-show="imgLoaded" ng-click="zoomPic()" ng-style="parentStyle">
+                        <img class="chat-img" ng-class="{'chat-img-zoom': largeImg && !dragMode, 'chat-img-drag': dragMode}" ng-mousedown="mousedown($event)" ng-src="{{bigImgUrl}}" ng-style="imgStyle" />
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

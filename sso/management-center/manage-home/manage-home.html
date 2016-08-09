@@ -1,0 +1,464 @@
+<div class="breadcrumb">
+    内容管理 >
+    <span class="color-bc-blue-c" belong-to="#/manage-home">首页管理</span>
+</div>
+
+<div style="padding: 0 15px; margin-bottom: 50px;position: relative;">
+    <!--approval tab-->
+    <div class="box selectModel">
+        <div class="m-select one" ng-class="{'cur':selectedPC}">
+            <div class="select" ng-click="cSelect('pc')">
+                <i class="icon" ng-class="{true:'image-con-homepage-s',false:'image-con-homepage-u'}[selectedPC]"></i>
+                <span ng-bind="pcSelectVal"></span>
+                <i class="arrow" ng-class="{true:'image-drop-down-s',false:'image-drop-down-u'}[selectedPC]"></i>
+            </div>
+            <ul class="option" ng-show="pcOption">
+                <li ng-repeat="pc in pcSelectDatas" ng-click="repeatClick(pc.value,'pc')"><span>{{pc.text}}</span></li>
+            </ul>
+        </div>
+        <div class="m-select two"  ng-class="{'cur':!selectedPC}">
+            <div class="select" ng-click="cSelect('wap')">
+                <i class="icon" ng-class="{true:'image-mobilehomepage-s',false:'image-mobilehomepage-u'}[!selectedPC]"></i>
+                <span ng-bind="wapSelectVal"></span>
+                <i class="arrow" ng-class="{true:'image-drop-down-s',false:'image-drop-down-u'}[!selectedPC]"></i>
+            </div>
+            <ul class="option" ng-show="wapOption">
+                <li ng-repeat="wap in wapSelectDatas" ng-click="repeatClick(wap.value,'wap')"><span>{{wap.text}}</span></li>
+            </ul>
+        </div>
+    </div>
+    <div class="box editModel">
+        <p>请选择你要编辑的模块</p>
+        <ul ng-init="selectIndex=0">
+            <li ng-repeat="x in editModelDatas" ng-click="editModel(x.tag,x.text,$index)" ng-class="{'cur':$index===selectIndex}">
+                <i class="icon" ng-class="{true:x.curicon,false:x.icon}[$index===selectIndex]"></i>
+                <span class="text">{{x.text}}</span>
+            </li>
+        </ul>
+    </div>
+    <div class="box tagContain" ng-switch="ngTagContain">
+        <h2>{{hTitle}}</h2>
+        <div class="basicSet myForm" ng-switch-when="basicSet">
+            <ul class="forms">
+                <li class="name">
+                    <label for=""><em>*</em>平台标题</label>
+                    <input type="text" id="txtHomeTitle" ng-model="basicSetFormInfo.title">
+                </li>
+                <li class="logo">
+                    <label for=""><em>*</em>平台logo</label>
+                    <div id="h-upLoadLogo" class="upLoadLogo">
+                        <div class="my-avatar">
+                            <img ng-src="{{basicSetFormInfo.logo}}" alt="用户头像" ng-click="uploadAvatarLogo('user')"/>
+                        </div>
+                    </div>
+                </li>
+                <li class="name">
+                    <label for=""><em>*</em>配置keywords</label>
+                    <input type="text" id="txtKeywords" ng-model="basicSetFormInfo.Keywords">
+                </li>
+                <li class="descripition">
+                    <label for=""><em>*</em>配置descripition</label>
+                    <textarea ng-model="basicSetFormInfo.descripition"></textarea>
+                </li>
+                <li class="logo">
+                    <label for=""><em>*</em>页尾logo</label>
+                    <div class="upLoadLogo">
+                        <div class="my-avatar">
+                            <img ng-src="{{basicSetFormInfo.footLogo}}" alt="用户头像" ng-click="uploadAvatarLogo('foot')"/>
+                        </div>
+                    </div>
+                </li>
+                <li class="name">
+                    <label for=""><em>*</em>公司名设置</label>
+                    <input type="text" id="" ng-model="basicSetFormInfo.cpName">
+                </li>
+                <li class="name">
+                    <label for=""><em>*</em>备案号设置</label>
+                    <input type="text" id="" ng-model="basicSetFormInfo.cope">
+                </li>
+                <li class="btnBox">
+                    <label for=""></label>
+                    <span class="">
+                        <a href="" class="m-btn" ng-click="saveBasicSet()">保存</a>
+                        <a href="" class="m-btn" ng-click="previewBasicSet()">预览</a>
+                        <a href="" class="m-btn cur" ng-click="publishBasicSet()">发布</a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+        <!--导航菜单开始-->
+        <div class="navMenu" ng-show="navMenuShow" ng-switch-when="navMenu">
+            <div class="heading">
+                <a href="" class="m-btn" ng-click="navMenuEdit(navMenuDatas.length)"><i class="icon">+</i>添加导航菜单</a>
+            <span>
+                <a href="" class="m-btn">保存更改</a>
+                <a href="" class="m-btn">预览效果</a>
+                <a href="" class="m-btn cur">确定发布</a>
+            </span>
+            </div>
+            <div class="cert-list">
+                <ul class="thead">
+                    <li>菜单名称</li>
+                    <li>链接</li>
+                    <li>移动</li>
+                    <li>创建时间</li>
+                    <li>操作</li>
+                </ul>
+                <ul class="tbody">
+                    <li ng-repeat="cert in navMenuDatas track by $index">
+                        <ol>
+                            <li><span class="ifExpand" ng-class="{'expand':navMenuDatas[$index].expand}" ng-click="expandClick($index)"></span><input type="text" ng-model="cert.name" /></li>
+                            <li><input type="text" ng-model="cert.link" /></li>
+                            <li>
+                                <span class="movePrev image-move-upper-level"></span>
+                                <span class="moveNext image-move-next-level"></span>
+                            </li>
+                            <li ng-bind="cert.date"></li>
+                            <li>
+                                <a class="cert-button" ng-href="" ng-click="navMenuDelete($index)">删除</a>
+                            </li>
+                        </ol>
+                        <div class="expandChild" ng-show="navMenuDatas[$index].expand">
+                            <ol  ng-repeat="cert in cert.childDatas track by $index">
+                                <li><span class="ifChild"></span><input type="text" ng-model="cert.name" /></li>
+                                <li><input type="text" ng-model="cert.link" /></li>
+                                <li>
+                                    <span class="movePrev image-move-upper-level"></span>
+                                    <span class="moveNext image-move-next-level"></span>
+                                </li>
+                                <li ng-bind="cert.date"></li>
+                                <li>
+                                    <a class="cert-button" ng-href="" ng-click="navMenuDChileDelete($parent.$index,$index)">删除</a>
+                                </li>
+                            </ol>
+                            <div class="btnBox">
+                                <span class="ifChild"></span>
+                                <span  class="m-btn" ng-click="navMenuDChileAdd($index)"><i class="iconn">&</i>添加子分类</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--<div class="navMenuEdit myForm" ng-show="!navMenuShow"  ng-switch-when="navMenu">-->
+            <!--<div class="editHead">&gt;{{editOrAdd}}</div>-->
+            <!--<ul class="forms">-->
+                <!--<li class="name">-->
+                    <!--<label for=""><em>*</em>属性名称：</label>-->
+                    <!--<input type="text"  ng-model="navMenuEditInfo.name">-->
+                <!--</li>-->
+                <!--<li class="logo">-->
+                    <!--<label for=""><em>*</em>链接：</label>-->
+                    <!--<input type="text" ng-model="navMenuEditInfo.link">-->
+                <!--</li>-->
+
+                <!--<li class="btnBox">-->
+                    <!--<label for=""></label>-->
+                <!--<span class="">-->
+                    <!--<a href="" class="m-btn cur" ng-show="orgBtnShow" ng-click="navMenuEditSave(navMenuEditInfo.index)">确认</a>-->
+                    <!--<a href="" class="m-btn cur" ng-show="!orgBtnShow" ng-click="navMenuAddSave()">新增</a>-->
+                    <!--<a href="" class="m-btn" ng-click="navMenuEditCancel()">取消</a>-->
+                <!--</span>-->
+                <!--</li>-->
+            <!--</ul>-->
+        <!--</div>-->
+        <!--导航菜单结束-->
+
+        <div class="imgSet" ng-show="imgSetShow" ng-switch-when="imgSet">
+            <div class="heading">
+                <a href="" class="m-btn" ng-click="imgSetEdit('isAdd')"><i class="icon">+</i>添加新轮播图</a>
+                <span>
+                    <a href="" class="m-btn">预览效果</a>
+                    <a href="" class="m-btn cur">确定发布</a>
+                </span>
+            </div>
+            <table class="cert-list">
+                <thead>
+                    <tr>
+                        <th>名称</th>
+                        <th>链接</th>
+                        <th>描述</th>
+                        <th>发布状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="cert in imgSetDatas track by $index">
+                        <td ng-bind="cert.name"></td>
+                        <td ng-bind="cert.src"></td>
+                        <td ng-bind="cert.describe"></td>
+                        <td ng-switch="cert.status">
+                            <span ng-switch-when="1" class="color-bc-blue-c">是</span>
+                            <span ng-switch-when="2" class="color-red">否</span>
+                        </td>
+                        <td>
+                            <a class="cert-button" ng-href="" ng-click="imgSetEdit($index)">编辑</a>
+                            <a class="cert-button" ng-href="" ng-click="imgSetDelete($index)">删除</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="imgSetEdit myForm" ng-show="!imgSetShow"  ng-switch-when="imgSet">
+            <div class="editHead">&gt;{{editOrAdd}}</div>
+            <ul class="forms">
+                <li class="name">
+                    <label for=""><em>*</em>名称</label>
+                    <input type="text"  ng-model="imgSetEditInfo.name">
+                </li>
+                <li class="logo">
+                    <label for=""><em>*</em>链接</label>
+                    <input type="text" ng-model="imgSetEditInfo.src">
+                </li>
+                <li class="descripition">
+                    <label for=""><em>*</em>描述</label>
+                    <input type="text" ng-model="imgSetEditInfo.describe">
+                </li>
+                <li class="name">
+                    <label for=""><em>*</em>图片</label>
+                    <div class="upLoadLogo">
+                        <div class="my-avatar">
+                            <img ng-src="{{imgSetEdit.picSrc}}" alt="用户头像" ng-click="uploadAvatarLogo()"/>
+                        </div>
+                        <div class="remain">支持png，jpg，建议尺寸1345*326</div>
+                    </div>
+                </li>
+
+                <li class="descripition">
+                    <label for=""><em>*</em>是否发布</label>
+                    <span>
+                        <input type="radio" id="imgSetEditYes"  ng-checked="imgSetEditInfo.status==1" ng-click="editRadio(1)" name="imgSetEditRadio" ><label for="imgSetEditYes">是</label>
+                        <input type="radio" id="imgSetEditNo" ng-checked="imgSetEditInfo.status==2"ng-click="editRadio(2)" name="imgSetEditRadio" ><label for="imgSetEditNo">否</label>
+                    </span>
+                </li>
+                <li class="btnBox">
+                    <label for=""></label>
+                    <span class="">
+                        <a href="" class="m-btn cur" ng-show="editBtnShow" ng-click="imgSetEditSave(imgSetEditInfo.index)">确认修改</a>
+                        <a href="" class="m-btn cur" ng-show="!editBtnShow" ng-click="imgSetAddSave()">提交</a>
+                        <a href="" class="m-btn" ng-click="imgSetEditCancel()">取消</a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <!--课程推荐开始-->
+        <div class="courseRecommend" ng-show="courseRShow"  ng-switch-when="courseRecommend">
+            <div class="heading">
+                <a href="" class="m-btn" ng-click="courseREdit('isAdd')"><i class="icon">+</i>添加课程推荐</a>
+                <span>
+                    <a href="" class="m-btn">预览效果</a>
+                    <a href="" class="m-btn cur">确定发布</a>
+                </span>
+            </div>
+            <table class="cert-list">
+                <thead>
+                <tr>
+                    <th>推荐名称</th>
+                    <th>显示设置</th>
+                    <th>推荐方式</th>
+                    <th>移动</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="cert in courseRDatas track by $index">
+                    <td ng-bind="cert.name"></td>
+                    <td ng-switch="cert.selectShow">
+                        <span ng-switch-when="1" class="color-bc-blue-c">
+                            <span class="imgDisplay image-five-display"></span>
+                            <span class="imgDisplayText">5图显示</span>
+                        </span>
+                        <span ng-switch-when="2" class="color-red">
+                            <span class="imgDisplay image-seven-display"></span>
+                            <span class="imgDisplayText">7图显示</span>
+                        </span>
+                    </td>
+                    <td ng-switch="cert.way">
+                        <span ng-switch-when="1">人工推荐</span>
+                        <span ng-switch-when="2">自动推荐</span>
+                    </td>
+                    <td >
+                        <span class="movePrev image-move-upper-level"></span>
+                        <span class="moveNext image-move-next-level"></span>
+                    </td>
+                    <td ng-bind="cert.date"></td>
+                    <td>
+                        <a class="cert-button" ng-href="" ng-click="courseREdit($index)">编辑</a>
+                        <a class="cert-button" ng-href="" ng-click="courseRDelete($index)">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="courseREdit myForm" ng-show="!courseRShow"  ng-switch-when="courseRecommend">
+            <div class="editHead">&gt;{{editOrAdd}}</div>
+            <ul class="forms">
+                <li class="name">
+                    <label for=""><em>*</em>名称：</label>
+                    <input type="text"  ng-model="courseREditInfo.name">
+                </li>
+                <li class="name">
+                    <label for=""><em>*</em>显示方式：</label>
+                    <div>
+                        <span class="color-bc-blue-c">
+                            <span class="imgDisplay image-five-display"></span>
+                            <span class="imgDisplayText">5图显示</span>
+                        </span>
+                        <span class="color-red">
+                            <span class="imgDisplay image-seven-display"></span>
+                            <span class="imgDisplayText">7图显示</span>
+                        </span>
+                    </div>
+                </li>
+                <li class="logo">
+                    <label for=""><em>*</em>推荐方式：</label>
+                    <span>
+                        <input type="radio" id="courseREditYes"  ng-checked="courseREditInfo.way==1" ng-click="editRadio(1)" name="courseREditRadio" ><label for="courseREditYes">自动推荐</label>
+                        <input type="radio" id="courseREditNo" ng-checked="courseREditInfo.way==2" ng-click="editRadio(2)" name="courseREditRadio" ><label for="courseREditNo">手动推荐</label>
+                    </span>
+                </li>
+
+                <li class="btnBox">
+                    <label for=""></label>
+                    <span class="">
+                        <a href="" class="m-btn cur" ng-show="orgBtnShow" ng-click="courseREditSave(courseREditInfo.index)">确认</a>
+                        <a href="" class="m-btn cur" ng-show="!orgBtnShow" ng-click="courseRAddSave()">新增</a>
+                        <a href="" class="m-btn" ng-click="courseREditCancel()">取消</a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <!--课程推荐结束-->
+        <!--机构管理开始-->
+        <div class="orgManage" ng-show="orgManageShow" ng-switch-when="orgManage">
+            <div class="heading">
+                <a href="" class="m-btn" ng-click="orgManageEdit('isAdd')"><i class="icon">+</i>添加机构</a>
+                <span>
+                    <a href="" class="m-btn">预览效果</a>
+                    <a href="" class="m-btn cur">确定发布</a>
+                </span>
+            </div>
+            <table class="cert-list">
+                <thead>
+                <tr>
+                    <th>名称</th>
+                    <th>图像</th>
+                    <th>链接</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="cert in orgManageDatas track by $index">
+                    <td ng-bind="cert.name"></td>
+                    <td>
+                        <img class="img" ng-src="cert.src" alt="">
+                    </td>
+                    <td ng-bind="cert.link"></td>
+                    <td>
+                        <a class="cert-button" ng-href="" ng-click="orgManageEdit($index)">编辑</a>
+                        <a class="cert-button" ng-href="" ng-click="orgManageDelete($index)">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="orgManageEdit myForm" ng-show="!orgManageShow"  ng-switch-when="orgManage">
+            <div class="editHead">&gt;{{editOrAdd}}</div>
+            <ul class="forms">
+                <li class="name">
+                    <label for=""><em>*</em>名称</label>
+                    <input type="text"  ng-model="orgManageEditInfo.name">
+                </li>
+                <li class="name">
+                    <label for=""><em>*</em>图片</label>
+                    <div class="upLoadLogo">
+                        <div class="my-avatar">
+                            <img ng-src="{{orgManageEditInfo.src}}" alt="用户头像" ng-click="uploadAvatarLogo()"/>
+                        </div>
+                    </div>
+                </li>
+                <li class="logo">
+                    <label for=""><em>*</em>链接</label>
+                    <input type="text" ng-model="orgManageEditInfo.link">
+                </li>
+
+                <li class="btnBox">
+                    <label for=""></label>
+                    <span class="">
+                        <a href="" class="m-btn cur" ng-show="orgBtnShow" ng-click="orgManageEditSave(orgManageEditInfo.index)">确认</a>
+                        <a href="" class="m-btn cur" ng-show="!orgBtnShow" ng-click="orgManageAddSave()">新增</a>
+                        <a href="" class="m-btn" ng-click="orgManageEditCancel()">取消</a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <!--机构管理结束-->
+        <!--页尾设置开始-->
+        <div class="footSet" ng-show="footSetShow" ng-switch-when="footSet">
+            <div class="heading">
+                <a href="" class="m-btn" ng-click="footSetEdit('isAdd')"><i class="icon">+</i>添加属性</a>
+                <span>
+                    <a href="" class="m-btn">预览效果</a>
+                    <a href="" class="m-btn cur">确定发布</a>
+                </span>
+            </div>
+            <table class="cert-list">
+                <thead>
+                <tr>
+                    <th>属性名称</th>
+                    <th>链接</th>
+                    <th>移动</th>
+                    <th>创建时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="cert in footSetDatas track by $index">
+                    <td ng-bind="cert.name"></td>
+                    <td ng-bind="cert.link"></td>
+                    <td>
+                        <span class="movePrev image-move-upper-level"></span>
+                        <span class="moveNext image-move-next-level"></span>
+                    </td>
+                    <td ng-bind="cert.date"></td>
+                    <td>
+                        <a class="cert-button" ng-href="" ng-click="footSetEdit($index)">编辑</a>
+                        <a class="cert-button" ng-href="" ng-click="footSetDelete($index)">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="footSetEdit myForm" ng-show="!footSetShow"  ng-switch-when="footSet">
+            <div class="editHead">&gt;{{editOrAdd}}</div>
+            <ul class="forms">
+                <li class="name">
+                    <label for=""><em>*</em>属性名称：</label>
+                    <input type="text"  ng-model="footSetEditInfo.name">
+                </li>
+                <li class="logo">
+                    <label for=""><em>*</em>链接：</label>
+                    <input type="text" ng-model="footSetEditInfo.link">
+                </li>
+
+                <li class="btnBox">
+                    <label for=""></label>
+                    <span class="">
+                        <a href="" class="m-btn cur" ng-show="orgBtnShow" ng-click="footSetEditSave(footSetEditInfo.index)">确认</a>
+                        <a href="" class="m-btn cur" ng-show="!orgBtnShow" ng-click="footSetAddSave()">新增</a>
+                        <a href="" class="m-btn" ng-click="footSetEditCancel()">取消</a>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <!--页尾设置结束-->
+        <!--<div ng-switch-default>-->
+            <!--{{hTitle}}的内容部分ng-switch-default；-->
+        <!--</div>-->
+    </div>
+    <!--approval tab end-->
+</div>
+<upload-img-base upload-config="uploadImgConfig"></upload-img-base>
+<!--<upload-img-base upload-config="uploadImgConfigFoot"></upload-img-base>-->

@@ -1,0 +1,54 @@
+<div class="breadcrumb">
+    学情统计 &gt;
+    <span class="color-bc-blue-c">教师统计</span>
+</div>
+<div class="manage-analyze">
+    <div ng-show="loading">
+        <loader-ui></loader-ui>
+    </div>
+    <div ng-show="!loading && !collegeList.length">
+        <empty-tip></empty-tip>
+    </div>
+    <div class="list-analyze" ng-show="!loading && collegeList.length">
+        <!--<p class="la-title">课程统计</p>-->
+        <div class="la-org">
+            <span>学校：</span>
+            <div>
+                <p class="la-college" ng-repeat="item in collegeList" ng-class="{'la-action': curCollegeIndex === $index}" ng-click="collegeClick(item, $index)">{{item.name + (item.num >= 0 ? '（' : '')}}<span ng-class="{'la-text-white': curCollegeIndex === $index}" class="la-text-blue" ng-show="item.num >= 0" ng-bind="item.num"></span>{{item.num >= 0 ? '）' : ''}}</p>
+            </div>
+        </div>
+        <div class="la-count">
+            <span ng-bind="'课程数：' + count.course"></span>
+            <span ng-bind="'教师人数：' + count.teacher"></span>
+            <span ng-bind="'学生人数：' + count.student"></span>
+            <div class="la-search">
+                <input type="text" placeholder="请输入关键字搜索" ng-model="teacherSearch"  ng-keydown="keydown($event);">
+                <span></span>
+                <i class="fa fa-search" aria-hidden="true" ng-click="reLoadTeacherList();"></i>
+            </div>
+        </div>
+        <div class="la-table">
+            <table border="0" cellspacing="0">
+                <thead>
+                <tr>
+                    <th class="tb-width-15">姓名</th><th>学校</th><th>课程数</th><th>本校参与学生</th><th>外校参与学生</th><th>社会参与学生</th>
+                </tr>
+                </thead>
+                <tbody ng-show="!teacherLoading && teacherList.length">
+                <tr ng-repeat="item in teacherList">
+                    <td class="tb-width-15" ng-bind="item.teacher"></td><td ng-bind="item.college"></td><td ng-bind="item.courseNum"></td><td ng-bind="item.inStu"></td><td ng-bind="item.outStu"></td><td ng-bind="item.societyStu"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div ng-show="teacherLoading">
+                <loader-ui></loader-ui>
+            </div>
+            <div ng-show="teacherLoading || teacherList.length">
+                <pagination list="teacherList" pagefn="loadDataFn" pageargs="pageArgs" class="page-bar s3 jump-hide"></pagination>
+            </div>
+            <div ng-show="!teacherLoading && !teacherList.length">
+                <empty-tip></empty-tip>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<div class="exam-score">
+    <div class="nav-bar">
+        <!--<span class="nav-title">试卷批改</span>-->
+        <h2>试卷批改</h2>
+    </div>
+
+    <section>
+        <div class="pager-list">
+            <ul>
+                <li class="pl-header">
+                    <span>试卷名称</span><head-selector content="'试卷类型'" config="pagerTypeSelector"></head-selector><span>所在位置</span><span>已提交</span><span>已批改</span><span>操作</span>
+                </li>
+                <div ng-show="pagerLoaded && pagerList.length">
+                    <li class="pl-body" ng-repeat="item in pagerList">
+                        <span ng-bind="item.name" title="{{item.name}}"></span><span ng-bind="item.type"></span><span ng-bind="item.location" title="{{item.location}}"></span><span ng-bind="item.submit"></span><span ng-bind="item.score"></span><p><a href="" ng-click="toScore(item.aid, item.tid);">批改</a><a href="" style="display: none">分析</a></p>
+                    </li>
+                </div>
+                <loader-ui show="pagerLoaded"></loader-ui>
+                <empty-tip ng-show="pagerLoaded && !pagerList.length"></empty-tip>
+            </ul>
+        </div>
+    </section>
+</div>

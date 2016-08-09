@@ -1,0 +1,42 @@
+module.directive("landscapeList", function () {
+    return {
+        template:'<div class="landscape-list"><style type="text/css">.landscape-list{border:1px solid #f7f7f7;padding:11px 6px 11px 16px}.landscape-list .landscape-content{font-size:14px}.landscape-list .landscape-content .ls-item,.landscape-list .landscape-content .ls-more,.landscape-list .landscape-content .ls-title{display:inline-block}.landscape-list .landscape-content .ls-title{color:#666;vertical-align:top}.landscape-list .landscape-content .ls-title>span{margin-left:1px;vertical-align:top}.landscape-list .landscape-content .ls-title>i{margin-top:-1px}.landscape-list .landscape-content .ls-more{float:right;width:54px;height:22px;line-height:22px;font-size:12px;color:#8c8c8c;border:1px solid #f7f7f7;border-radius:3px;text-align:center;cursor:pointer}.landscape-list .landscape-content .ls-more>i{margin-top:-2px}.landscape-list .landscape-content .ls-item{width:84%}.landscape-list .landscape-content .ls-item>p{display:inline-block;width:150px;margin-left:35px;color:#1f211e}.landscape-list .landscape-content .ls-item>p>span{display:inline-block;max-width:150px;white-space:nowrap;-o-text-overflow:ellipsis;text-overflow:ellipsis;overflow:hidden;cursor:pointer}.landscape-list .landscape-content .ls-item .m-t-large{margin-top:25px}.landscape-list .landscape-content .ls-item .active{color:#07afa9}.landscape-list .landscape-content .ls-empty{display:inline-block;width:90%;text-align:center;color:#333}@media screen and (max-width:1240px){.landscape-list .landscape-content .ls-item>p{width:115px}.landscape-list .landscape-content .ls-item>p>span{max-width:115px}}</style><div class="landscape-content"><div class="ls-title"><i class="fa fa-file-text-o" aria-hidden="true"></i> <span>{{ldTitle || \'课程\'}}</span></div><div class="ls-item" ng-show="loaded && list.length"><p ng-repeat="item in list" ng-class="{active: $index == curItemIndex, \'m-t-large\': $index >= rowNum}" ng-show="showMore || $index < rowNum"><span title="{{item.name}}" ng-bind="item.name" ng-click="click(item, $index);"></span></p></div><div class="ls-more" ng-click="toggle()" ng-show="list.length > rowNum"><span ng-bind="showMore ? \'收起\' : \'展开\'"></span> <i class="fa" aria-hidden="true" ng-class="{\'fa-chevron-up\': showMore, \'fa-chevron-down\': !showMore}"></i></div><loader-ui show="loaded"></loader-ui><div class="ls-empty" ng-show="loaded && !list.length">暂无内容</div></div></div>',
+        restrict: "E",
+        replace: true,
+        transclude: true,
+        scope: {
+            list: '=',
+            loaded: '=',
+            itemClick: '=',
+            ldTitle: '='
+        },
+        controller: ['$scope', function ($scope) {
+            $scope.rowNum = 4;
+            $scope.showMore = false;
+            $scope.curItemIndex = 0;
+
+            $scope.click = function (item, index) {
+                $scope.curItemIndex = index;
+                $scope.itemClick && $scope.itemClick(item.id, item);
+            };
+
+            $scope.toggle = function () {
+                $scope.showMore = !$scope.showMore;
+                if (!$scope.showMore && $scope.curItemIndex >= $scope.rowNum) {
+                    var row = Math.floor($scope.curItemIndex / $scope.rowNum);
+                    var rowStartIndex = row * $scope.rowNum;
+                    var rowLen = rowStartIndex + $scope.rowNum <= $scope.list.length - 1 ? $scope.rowNum : $scope.list.length - rowStartIndex;
+                    var arr = $scope.list.splice(rowStartIndex, rowLen);
+                    Array.prototype.unshift.apply($scope.list, arr);
+                    $scope.curItemIndex = $scope.curItemIndex % $scope.rowNum;
+                }
+            };
+
+            $scope.$watch('list.length', function (len) {
+                if(!len || len == 0){
+                    $scope.curItemIndex = 0;
+                }
+            })
+        }]
+    }
+});

@@ -1,0 +1,42 @@
+<div class="user-courses">
+    <div class="course-list l-scrollbar" call-scroll="scrollTo('course')">
+        <ul ng-show="loaded.course && list.course.length">
+            <li ng-repeat="course in list.course track by $index" ng-class="{'m-t-16': $index > 0}">
+                <div class="left">
+                    <ng-img c="{'img': course.imgUrl, 'default': '/rcp-common/imgs/icon/gray-default-img.png', 'divClass': 'cover', 'imgClass': 'cover-img'}"></ng-img>
+                    <div class="progress">
+                        <div class="bg"></div>
+                        <div class="white">
+                            <div class="green" ng-style="{'width': course.progress + '%'}"></div>
+                            <span class="text">{{course.progress + '%'}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <p class="title" title="{{course.title}}" ng-bind="course.title"></p>
+                    <p class="status"><span>课程状态：</span><span ng-class="{'green': course.status == 0, 'blue': course.status != 0}">{{course.status == 0 ? '已完成' : '进行中'}}</span></p>
+                    <p class="grades">{{'分数：' + (!isNaN(course.grades) ? course.grades + '分' : '暂无')}}</p>
+                </div>
+                <a class="detail" ng-href="{{course.detailUrl}}" target="_blank">查看详情</a>
+            </li>
+        </ul>
+        <loader-ui show="loaded.course"></loader-ui>
+        <empty-tip ng-show="loaded.course && !list.course.length"></empty-tip>
+    </div>
+    <div class="teacher-guide">
+        <p class="guide-title"><i class="fa fa-bookmark" aria-hidden="true"></i><span>老师评价</span></p>
+        <div class="guide-list l-scrollbar" ng-show="loaded.guide && list.guide.length" call-scroll="scrollTo('guide')">
+            <ul>
+                <li ng-repeat="guide in list.guide">
+                    <img src="" alt="" ng-src="{{guide.avatar}}">
+                    <div class="right-desc">
+                        <p class="name">来自“<span ng-bind="guide.name"></span>”的评价</p>
+                        <p class="desc" title="{{guide.desc}}" ng-bind="guide.desc"></p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <loader-ui show="loaded.guide"></loader-ui>
+        <empty-tip ng-show="loaded.guide && !list.guide.length"></empty-tip>
+    </div>
+</div>

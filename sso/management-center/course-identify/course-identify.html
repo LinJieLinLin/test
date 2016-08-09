@@ -1,0 +1,227 @@
+<div class="breadcrumb">
+    审核管理 >
+    <span class="color-bc-blue-c" belong-to="#/course-identify">课程认证</span>
+</div>
+
+<div style="padding: 0 15px; margin-bottom: 50px">
+    <!--approval tab-->
+    <div id="approval-menu" class="approval-menu">
+        <div class="approval-list">
+            <ul>
+                <li ng-click="switchTab('WAITING')" class="approval-tab-active">待认证<span ng-if="allCount && currentTab == 'WAITING'" ng-bind="'(' + allCount + ')'"></span></li>
+                <li class="split">|</li>
+                <li ng-click="switchTab('NORMAL')">已通过<span ng-if="allCount && currentTab == 'NORMAL'" ng-bind="'(' + allCount + ')'"></span></li>
+                <li class="split">|</li>
+                <li ng-click="switchTab('FAIL')">未通过<span ng-if="allCount && currentTab == 'FAIL'" ng-bind="'(' + allCount + ')'"></span></li>
+            </ul>
+        </div>
+    </div>
+    <!--approval tab end-->
+    <!--search-->
+    <div style="padding: 10px; margin-bottom: 20px">
+        <div style="float: left;">
+            <label>
+                课程名称：
+                <input type="text" class="search-course-input" ng-model="searchKw"  ng-keydown="onKeyDown($event)" />
+            </label>
+        </div>
+
+        <div style="float: right">
+            提交时间：
+            <input type="text" class="jf-date date-time-input" plug-style="all time" readonly ng-model="startTime" placeholder="请选择时间范围的起始" id="startTime">
+            -
+            <input type="text" class="jf-date date-time-input" plug-style="all time" readonly ng-model="endTime" placeholder="请选择时间范围的结束" id="endTime">
+            <button class="search-button" ng-click="searchCourse()">搜索</button>
+            <a ng-click="reset()">重置</a>
+        </div>
+    </div>
+    <!--search end-->
+    <!--WAITING view-->
+    <div class="approval-view" ng-if="currentTab == 'WAITING' && !showLoading">
+        <div class="course-list" style="min-height: 322px">
+            <table class="course-list">
+                <thead>
+                <tr>
+                    <th style="width: 40%; text-align: left; padding-left: 30px">课程名称</th>
+                    <th style="width: 15%;">发布人</th>
+                    <th>参与人数</th>
+                    <th>提交时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="course in courseList track by $index">
+                    <td style="text-align: left">
+                        <div class="img-div">
+                            <!--<img ng-src="{{course.imgs[0]}}" style="width: 75px; height: 45px;" />-->
+                            <a ng-href="{{getCourseUrl(course)}}" target="_blank" title="{{course.title}}">
+                                <default-img src="course.img" conf="imgConfig"></default-img>
+                            </a>
+                        </div>
+                        <div class="title">
+                            <p>
+                                <a ng-href="{{getCourseUrl(course)}}" target="_blank" title="{{course.title}}">
+                                    <span ng-bind="course.title"></span>
+                                </a>
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="name">
+                            <span title="{{getUserName(course.uid)}}" ng-bind="getUserName(course.uid)"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <span ng-bind="course.joined"></span>人
+                    </td>
+                    <td>
+                        <span ng-bind="course.subTime | date:'yyyy-MM-dd HH:mm'"></span>
+                    </td>
+                    <td>
+                        <a ng-click="authCourse(course.id, 1)">通过认证</a>
+                        <br />
+                        <a ng-click="authCourse(course.id, -1)">不通过认证</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; padding: 15px 0;" ng-show="!courseList.length || courseList.length==0">
+                <div style="margin-left: auto; margin-right: auto;">
+                    <img src="../../course/imgs/icon-cloud.png" />
+                </div>
+                <div class="pd-t10">暂无数据</div>
+            </div>
+        </div>
+    </div>
+    <!--WAITING view end-->
+    <!--NORMAL view-->
+    <div class="approval-view" ng-if="currentTab == 'NORMAL' && !showLoading">
+        <div class="course-list" style="min-height: 322px">
+            <table class="course-list">
+                <thead>
+                <tr>
+                    <th style="width: 40%; text-align: left; padding-left: 30px">课程名称</th>
+                    <th style="width: 15%;">发布人</th>
+                    <th>参与人数</th>
+                    <th>提交时间</th>
+                    <!--<th>操作</th>-->
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="course in courseList track by $index">
+                    <td style="text-align: left">
+                        <div class="img-div">
+                            <!--<img ng-src="{{course.imgs[0]}}" style="width: 75px; height: 45px;" />-->
+                            <a ng-href="{{getCourseUrl(course)}}" target="_blank" title="{{course.title}}">
+                                <default-img src="course.img" conf="imgConfig"></default-img>
+                            </a>
+                        </div>
+                        <div class="title">
+                            <p>
+                                <a ng-href="{{getCourseUrl(course)}}" target="_blank" title="{{course.title}}">
+                                    <span ng-bind="course.title"></span>
+                                </a>
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="name">
+                            <span title="{{getUserName(course.uid)}}" ng-bind="getUserName(course.uid)"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <span ng-bind="course.joined"></span>人
+                    </td>
+                    <td>
+                        <span ng-bind="course.subTime | date:'yyyy-MM-dd HH:mm'"></span>
+                    </td>
+                    <!--<td>-->
+                        <!--<a ng-click="authCourse(course.id, -1)">取消认证</a>-->
+                    <!--</td>-->
+                </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; padding: 15px 0;" ng-show="!courseList.length || courseList.length==0">
+                <div style="margin-left: auto; margin-right: auto;">
+                    <img src="../../course/imgs/icon-cloud.png" />
+                </div>
+                <div class="pd-t10">暂无数据</div>
+            </div>
+        </div>
+    </div>
+    <!--NORMAL view end-->
+    <!--FAIL view-->
+    <div class="approval-view" ng-if="currentTab == 'FAIL' && !showLoading">
+        <div class="course-list" style="min-height: 322px">
+            <table class="course-list">
+                <thead>
+                <tr>
+                    <th style="width: 40%; text-align: left; padding-left: 30px">课程名称</th>
+                    <th style="width: 15%;">发布人</th>
+                    <th>参与人数</th>
+                    <th>提交时间</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="course in courseList track by $index">
+                    <td style="text-align: left">
+                        <div class="img-div">
+                            <!--<img ng-src="{{course.imgs[0]}}" style="width: 75px; height: 45px;" />-->
+                            <a ng-href="{{getCourseUrl(course)}}" target="_blank" title="{{course.title}}">
+                                <default-img src="course.img" conf="imgConfig"></default-img>
+                            </a>
+                        </div>
+                        <div class="title">
+                            <p>
+                                <a ng-href="{{getCourseUrl(course)}}" target="_blank" title="{{course.title}}">
+                                    <span ng-bind="course.title"></span>
+                                </a>
+                            </p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="name">
+                            <span title="{{getUserName(course.uid)}}" ng-bind="getUserName(course.uid)"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <span ng-bind="course.joined"></span>人
+                    </td>
+                    <td>
+                        <span ng-bind="course.subTime | date:'yyyy-MM-dd HH:mm'"></span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div style="text-align: center; padding: 15px 0;" ng-show="!courseList.length || courseList.length==0">
+                <div style="margin-left: auto; margin-right: auto;">
+                    <img src="../../course/imgs/icon-cloud.png" />
+                </div>
+                <div class="pd-t10">暂无数据</div>
+            </div>
+        </div>
+    </div>
+    <!--FAIL view end-->
+    <div class="loader-ui-style" ng-show="showLoading">
+        <loader-ui></loader-ui>
+    </div>
+    <div ng-show="!showLoading">
+        <pagination class="page-bar s2 mg-t20" list="courseList" pageargs="pageArgs" pagefn="pageFn"></pagination>
+    </div>
+</div>
+<script type="application/javascript">
+    $('.tab li:not(.li-head)').removeClass('li-active');
+    $("[href='" + $('[belong-to]').attr('belong-to') + "']").parent().addClass('li-active');
+
+    var approvalTab = $('.approval-menu li:even');
+    approvalTab.each(function (index) {
+        $(this).click(function () {
+            $('.approval-menu li:even').removeClass('approval-tab-active').eq(index).addClass('approval-tab-active');
+        });
+    });
+    $(function (){
+        $('.jf-date').each(function(index, element) {
+            $(this).date();
+        });
+    });
+</script>

@@ -1,0 +1,109 @@
+<div class="breadcrumb">
+    账号管理 >
+    <span class="color-bc-blue-c">机构管理</span>
+</div>
+
+<div class="main-content">
+
+    <div class="c-head">
+        <div>
+            <div class="sel-key">
+                <select-ui class="s-sort" option="kwSelect" value="kwSelectValue"></select-ui>
+            </div>
+            <div class="search">
+                <input type="text" placeholder="请输入关键字搜索" ng-model="searchKey" ng-keydown="onKeyDown($event)">
+                <a href="" ng-click="searchByKey()">
+                    <i class="image-mo-search"></i>
+                </a>
+            </div>
+            <div class="new">
+                <a href="#/manage-organization-edit/new/null" class="btn-m-new">
+                    <i class="fa fa-plus"></i>
+                    创建机构
+                </a>
+            </div>
+        </div>
+
+        <div class="opt">
+            <div class="btn-group">
+                <a href="" class="btn-m-opt" ng-click="orgDel()">
+                    <i class="image-mo-delete"></i>
+                    删除机构
+                </a>
+                <a href="" class="btn-m-opt reset-ps" ng-click="orgResetPw()">
+                    重置密码
+                    <i class="image-mo-i"></i>
+                    <div class="reset-ps-tips">重置密码为：123456
+                        <div class="arr">
+                            <div class="arr1"></div>
+                            <div class="arr2"></div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="c-content">
+        <div class="main-list">
+            <table>
+                <thead>
+                <tr>
+                    <th class="check">
+                        <input type="checkbox" ng-model="checkAll" ng-change="checkAllOrg()">
+                    </th>
+                    <th class="name">
+                        机构名称
+                    </th>
+                    <th>
+                        机构标签
+                    </th>
+                    <th>
+                        管理员账号
+                    </th>
+                    <th>
+                        昵称
+                    </th>
+                    <th>
+                        创建时间
+                    </th>
+                    <th class="opt">
+                        操作
+                    </th>
+                </tr>
+                </thead>
+                <tbody ng-show="!listLoading">
+                <tr ng-repeat="org in orgList track by $index">
+                    <td><input type="checkbox" ng-model="org.check" ng-checked="checkAll"></td>
+                    <td class="name" ng-bind="org.attrs.org.name"></td>
+                    <td><div ng-repeat="tag in org.attrs.org.tags" class="tag-o" ng-bind="tag"></div></td>
+                    <td ng-bind="org.usr"></td>
+                    <td ng-bind="org.attrs.basic.nickName"></td>
+                    <td ng-bind="transTime(org.time)"></td>
+                    <td>
+                        <div class="btn-opt">
+                            <a href="" ng-click="orgResetPw(org._id)" title="重置密码为：123456">重置密码</a>
+                            <a ng-href="#/manage-organization-edit/edit/{{org._id}}" title="编辑机构信息">编辑</a>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="data-empty" ng-show="!orgList.length && !listLoading">
+                <div class="em-image">
+                    <img src="../../course/imgs/icon-cloud.png" />
+                </div>
+                <div class="pd-t10">暂无数据</div>
+            </div>
+
+            <div class="loader-ui-style" ng-show="listLoading">
+                <loader-ui></loader-ui>
+            </div>
+        </div>
+
+        <div ng-show="!listLoading">
+            <pagination class="page-bar s2 mg-t20" list="orgList" pageargs="pageArgs" pagefn="listFn"></pagination>
+        </div>
+    </div>
+</div>

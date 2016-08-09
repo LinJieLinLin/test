@@ -1,0 +1,67 @@
+/**
+ * Created by FENGSB on 2015/8/12.
+ */
+* {
+    font-family: 'Microsoft YaHei', arial, sans-serif, "Open Sans", sans-serif;
+    padding: 0;
+    margin: 0;
+    word-wrap: break-word;
+}
+
+body {
+    // color: #999;
+    // font-size: 12px;
+    -webkit-text-size-adjust: none;
+    min-width: 1224px;
+    display:none;
+}
+
+img {
+    border: 0;
+    vertical-align: middle;
+}
+
+
+ul,
+li {
+    list-style: none
+}
+
+a {
+    // color: #999;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover {
+    color: #0095CE;
+    text-decoration: underline;
+}
+
+a,
+button,
+select,
+input {
+    -webkit-tap-highlight-color: transparent;
+    vertical-align: middle;
+    outline: none;
+}
+
+textarea {
+    resize: none;
+    outline: none;
+}
+
+article,
+aside,
+dialog,
+footer,
+header,
+section,
+footer,
+nav,
+figure,
+menu,
+main {
+    display: block
+}

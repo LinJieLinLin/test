@@ -1,0 +1,59 @@
+<section class="register-sso" ng-keydown="keydown($event)">
+    <div>
+        <form name="register">
+            <label for="account">
+                <!-- <div><span>*</span>手机号码:</div> -->
+                <div class="input-div" ng-class="{'b-blue':focus.account==1||(!msg.account&&rData.account),'b-red':msg.account&&!focus.account||(msg.account&&!focus.account)}">
+                    <div class="r-icon"><i class="image-sso-phone"></i></div>
+                    <input type="text" placeholder="请输入手机号" id="account" maxlength="11" ng-model="rData.account" ng-focus="checkFocus('account')" ng-blur="checkRegisterSso(rData,'account')" autofocus required>
+                    <div class="tip tip-err tip-right" ng-class="c.tip.class" ng-show="msg.account&&!focus.account">
+                        <div ng-bind="msg.account"></div>
+                    </div>
+                </div>
+            </label>
+            <label for="code">
+                <!-- <div><span>*</span>验证码:</div> -->
+                <div class="input-div input-code" ng-class="{'b-blue':focus.code==1||(!msg.code&&rData.code),'b-red':msg.code&&!focus.code||(msg.code&&!focus.code)}">
+                    <div class="r-icon"><i class="image-sso-code"></i></div>
+                    <input type="text" placeholder="手机验证码" id="code" maxlength="20" ng-model="rData.code" ng-focus="checkFocus('code')" ng-blur="checkRegisterSso(rData,'code')" ng-mouseleave="checkRegisterSso(data,'code')" required>
+                    <div class="get-code">
+                        <button class="btn btn-code" ng-class="{'send-code':countTime<60&&countTime>0}" type="button" ng-mouseover="checkAccount()" ng-click="getCode()" ng-bind="codeMsg"></button>
+                    </div>
+                    <div class="tip tip-err tip-right" ng-class="c.tip.class" ng-show="msg.code&&!focus.code">
+                        <div ng-bind="msg.code"></div>
+                    </div>
+                </div>
+            </label>
+            <label for="pwd">
+                <!-- <div><span>*</span>设置密码:</div> -->
+                <div class="input-div" ng-class="{'b-blue':focus.password==1||(!msg.password&&rData.password.length>5),'b-red':msg.password&&!focus.password||(msg.password&&!focus.password)}">
+                    <div class="r-icon"><i class="image-sso-pwd"></i></div>
+                    <div>
+                        <input type="password" placeholder="6-20位字母、数字或符号" id="pwd" maxlength="20" ng-model="rData.password" ng-focus="checkFocus('password')" ng-blur="checkRegisterSso(rData,'password')" ng-keydown="passwordChange($event)" required>
+                    </div>
+                    <div class="tip tip-err  tip-right" ng-class="c.tip.class" ng-show="msg.password&&!focus.password">
+                        <div ng-bind="msg.password"></div>
+                    </div>
+                </div>
+            </label>
+            <label for="repwd">
+                <!-- <div><span>*</span>确认密码:</div> -->
+                <div class="input-div" ng-class="{'b-blue':focus.rePassword==1||(!msg.rePassword&&rData.rePassword.length>5),'b-red':msg.rePassword&&!focus.rePassword||(msg.rePassword&&!focus.rePassword)}">
+                    <div class="r-icon"><i class="image-sso-pwd"></i></div>
+                    <input type="password" placeholder="请再次确认密码" id="repwd" maxlength="{{rData.password.length||0}}" ng-model="rData.rePassword" ng-focus="checkFocus('rePassword')" ng-blur="checkRegisterSso(rData,'rePassword')" required>
+                    <div class="tip tip-err tip-right" ng-class="c.tip.class" ng-show="msg.rePassword&&!focus.rePassword">
+                        <div ng-bind="msg.rePassword"></div>
+                    </div>
+                </div>
+            </label>
+        </form>
+        <div class="agreement">
+            <input type="checkbox" ng-model="rData.agree" id="agree" value="false" />
+            <label for="agree">
+                我已阅读并同意
+            </label>
+            <a href="agreement.html" target="_blank">《用户注册协议》</a>
+        </div>
+        <a class="btn btn-reg" id="login" ng-mouseover="checkRegisterSso(rData,'rePassword')" ng-click="registerSso()" ng-bind="registerText"></a>
+    </div>
+</section>

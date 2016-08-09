@@ -1,0 +1,206 @@
+<div class="pd-main-view">
+    <!--<div class="pd-breadcrumb-nav">-->
+        <!--试卷批改>-->
+    <!--</div>-->
+
+    <div ng-show="firstLoading">
+        <loader-ui></loader-ui>
+    </div>
+
+    <div ng-hide="firstLoading">
+        <h2>
+            <a ng-click="back2PaperManager()" style="vertical-align: top;">试卷批改</a>
+            >
+            <span ng-bind="paperDetail.detail.paperName || '（未命名试卷）'"></span></h2>
+
+        <div class="pd-result-info">
+            <ul>
+                <li ng-show="paperDetail.detail.answerTime.startTime && paperDetail.detail.answerTime.endTime">
+                    <div class="icon text-icon"></div>作答时间：<span ng-bind="paperDetail.detail.answerTime.startTime | date: 'yyyy-MM-dd HH:mm'"></span>——<span ng-bind="paperDetail.detail.answerTime.endTime | date: 'yyyy-MM-dd HH:mm'"></span>
+                </li>
+                <li>
+                    <div class="icon alarm-icon"></div><span ng-bind="isExam ? '限制' : '建议'"></span>时长：<span ng-bind="paperDetail.detail.suggestTime"></span>
+                </li>
+                <li>
+                    <div class="icon clock-icon"></div>平均用时：<span ng-bind="paperDetail.detail.avgTime"></span>
+                </li>
+                <li>
+                    <div class="icon bar-chart-icon"></div>平均分：<span ng-bind="paperDetail.detail.avgScore | number: 1"></span>（<span ng-bind="paperDetail.progress.submitProgress.curNum"></span>人已作答）
+                </li>
+            </ul>
+        </div>
+
+        <div class="pd-chart-head">
+        <span ng-init="showChart = false" ng-click="showChart = !showChart">
+            成绩统计表
+            <i class="fa fa-chevron-down" ng-hide="showChart"></i>
+            <i class="fa fa-chevron-up" ng-show="showChart"></i>
+        </span>
+        </div>
+
+        <div class="pd-chart-content" slide-show="showChart">
+            <!--<echarts option="EChartsOption" config="{width: 750, height: 450}"></echarts>-->
+            <!--<div id="HighCharts" style="width: 750px; height: 450px; margin: 0 auto;"></div>-->
+            <highcharts option="hcOption" config="{width: 750, height: 450}"></highcharts>
+        </div>
+    </div>
+
+    <div class="pd-progress mg-t15">
+        <table>
+            <tr>
+                <td style="width: 8%">
+                    提交进度
+                </td>
+                <td style="width: 38%;">
+                    <!--<div class="pd-progress-bar">-->
+                        <!--<span ng-bind="paperDetail.submitProgress.curNum"></span>/<span ng-bind="paperDetail.submitProgress.totalNum"></span>-->
+                        <!--<div class="progress-content" style="width: {{paperDetail.submitProgress.curNum / paperDetail.submitProgress.totalNum | percentage}}; background-color: #bddc42;"></div>-->
+                    <!--</div>-->
+                    <progress-bar config="{curNum: paperDetail.progress.submitProgress.curNum, totalNum: paperDetail.progress.submitProgress.totalNum, color: '#bddc42'}"></progress-bar>
+                </td>
+                <td style="width: 8%"></td>
+                <td style="width: 8%">
+                    批改进度
+                </td>
+                <td style="width: 38%;">
+                    <!--<div class="pd-progress-bar">-->
+                        <!--<span ng-bind="paperDetail.correctProgress.curNum"></span>/<span ng-bind="paperDetail.correctProgress.totalNum"></span>-->
+                        <!--<div class="progress-content" style="width: {{paperDetail.correctProgress.curNum / paperDetail.correctProgress.totalNum | percentage}}; background-color: #f9a669;"></div>-->
+                    <!--</div>-->
+                    <progress-bar config="{curNum: paperDetail.progress.correctProgress.curNum, totalNum: paperDetail.progress.correctProgress.totalNum, color: '#f9a669'}"></progress-bar>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="pd-tool-bar">
+        <div class="tool-btn">
+            <button ng-click="enterCorrect()">
+                <i class="fa fa-pencil-square-o"></i>进入批改
+            </button>
+
+            <!--todo-->
+            <button style="display: none">
+                <i class="fa fa-share-square-o"></i>导出成绩
+            </button>
+
+            <button ng-click="publishResult()">
+                <i class="fa fa-file-text-o"></i>发布成绩
+            </button>
+        </div>
+
+        <div class="search-bar">
+            <input placeholder="请输入关键字搜索" ng-model="searchKw" ng-keydown="onKeyDown($event)" />
+            <div class="search-btn" ng-click="searchStd()"></div>
+        </div>
+
+        <div style="clear: both;"></div>
+    </div>
+
+    <div class="pd-std-list">
+        <table ng-hide="showLoading">
+            <thead>
+                <tr>
+                    <th style="width: 4.4%;">
+                        <span ng-click="selectAll()">
+                            <i class="fa fa-square-o" ng-hide="clickAll" style="margin-left: 1px"></i>
+                            <i class="fa fa-check-square" ng-show="clickAll" style="color: #02c0b9;"></i>
+                            <!--<input type="checkbox" style="display: none;"/>-->
+                        </span>
+                    </th>
+                    <th style="width: 6.6%;">序号</th>
+                    <th style="width: 6.6%;">账号</th>
+                    <th style="width: 9%;">姓名</th>
+                    <!--todo 学号-->
+                    <!--<th>学号</th>-->
+                    <th style="max-width: 119px;" ng-repeat="sort in sortTypes track by $index">
+                        <span ng-bind="sort.name" ng-click="clickSort(sort)" style="cursor: pointer;"></span>
+                        <i class="fa fa-angle-up" ng-class="{'color-cyan': !sort.isDescended && sort.active}" style="vertical-align: top; margin: -1px 0 0 0;"></i>
+                        <i class="fa fa-angle-down" ng-class="{'color-cyan': sort.isDescended && sort.active}" style="vertical-align: bottom; margin: 0 0 -1px -13px;"></i>
+                    </th>
+                    <th style="max-width: 116px;">
+                        <head-selector content="'发布状态'" config="publishSelector"></head-selector>
+                    </th>
+                    <th style="max-width: 116px;">
+                        <head-selector content="'批改状态'" config="correctSelector"></head-selector>
+                    </th>
+                    <th style="max-width: 123px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="std in paperDetail.stdList track by $index">
+                    <td>
+                        <span class="check-box" ng-click="selectClick(std)">
+                            <i class="fa fa-square-o" ng-hide="std.click" style="margin-left: 1px"></i>
+                            <i class="fa fa-check-square" ng-show="std.click" style="color: #02c0b9;"></i>
+                            <!--<input type="checkbox" style="display: none;"/>-->
+                        </span>
+                    </td>
+                    <td ng-bind="$index + 1"></td>
+                    <td ng-bind="getUserData(std.usrId).account"></td>
+                    <td>
+                        <div ng-bind="getUserData(std.usrId).nickname"></div>
+                        <div class="color-red" ng-if="getUserStatus(std.usrId) == 'QUIT'">(已退学)</div>
+                    </td>
+                    <!--todo 学号-->
+                    <!--<td ng-bind="std.num"></td>-->
+                    <td ng-bind="std.subTimes"></td>
+                    <td ng-bind="std.curResult | number: 1"></td>
+                    <td>
+                        <span ng-bind="std.pubStatus ? '已发布' : '未发布'" ng-class="{'color-green': std.pubStatus}"></span>
+                    </td>
+                    <td>
+                        <span ng-bind="std.corStatus ? '已批改' : '未批改'" ng-class="{'color-green': std.corStatus}"></span>
+                    </td>
+                    <td>
+                        <div ng-hide="std.hasNotSub">
+                            <a class="mg-r15" ng-href="{{getUrl('批改', {tuids: std.usrId})}}" target="_blank">批改</a>
+                            <a ng-href="{{getUrl('查看', {tuids: std.usrId})}}" target="_blank">查看</a>
+                        </div>
+
+                        <div class="color-gray" ng-show="std.hasNotSub">
+                            <span class="mg-r15" title="未提交的学生不能进行该操作">批改</span>
+                            <span title="未提交的学生不能进行该操作">查看</span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <loader-ui show="!showLoading"></loader-ui>
+
+        <empty-tip ng-hide="paperDetail.stdList.length || showLoading"></empty-tip>
+
+    </div>
+
+    <div style="float: right; margin: 40px 30px" ng-hide="showLoading">
+        <pagination class="page-bar s3 jump-hide" list="paperDetail.stdList" pageargs="pageargs" pagefn="pagefn"></pagination>
+    </div>
+
+    <!--<div class="dialog" ng-show="showDialog">-->
+        <!--<div class="bg"></div>-->
+
+        <!--<div class="frame-dialog" ng-if="selectedUid.notCorrect.length === 0">-->
+            <!--<a class="close" ng-click="closeDialog()">×</a>-->
+            <!--<p class="title">确定发布？</p>-->
+            <!--<p class="info" ng-if="selectedUid.hasCorrect.length > 1">已批改学生<span class="color-cyan" ng-bind="selectedUid.hasCorrect.length"></span>名，点击确定发布成绩。</p>-->
+            <!--<p class="info" ng-if="selectedUid.hasCorrect.length == 1">发布后该学生即可查看成绩</p>-->
+
+            <!--<div class="btn">-->
+                <!--<div class="ok" ng-click="commitPublish()">确定</div>-->
+                <!--<div class="cancle" ng-click="closeDialog()">取消</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <!--<div class="frame-dialog" ng-if="selectedUid.notCorrect.length != 0">-->
+            <!--<a class="close" ng-click="closeDialog()">×</a>-->
+            <!--<p class="title">还不能发布成绩哦</p>-->
+            <!--<p class="info" ng-if="selectedUid.notCorrect.length > 1">有<span class="color-red" ng-bind="selectedUid.notCorrect.length"></span>名学生尚未批改完成</p>-->
+            <!--<p class="info" ng-if="selectedUid.notCorrect.length == 1">选中的学生尚未批改完成，不能发布</p>-->
+
+            <!--<div class="btn">-->
+                <!--<div class="ok" ng-click="closeDialog()">确定</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+</div>

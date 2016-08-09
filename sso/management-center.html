@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <title>管理中心</title>
+    <script src="../config-dy/config-dy.js"></script>
+    <!--build:css management-center/management-center.min.css-->
+    <!--basic stylesheet-->
+    <link rel="stylesheet" href="../rcp-common/styles/common.css" />
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/directive/common/common-dir.css" />
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css" />
+    <link rel="stylesheet" href="../rcp-common/directive/datetime/datetime-dir.css" />
+    <link rel="stylesheet" href="../rcp-common/styles/dateTimePlug.css" />
+    <link rel="stylesheet" href="../rcp-common/directive/default-img/default-img.css">
+    <!--my stylesheet-->
+    <link rel="stylesheet" href="management-center/management-center.css" />
+    <link rel="stylesheet" href="directive/head-tail-sso/head-tail-sso.css" />
+    <link rel="stylesheet" href="directive/select-org/select-org.css" />
+    <link rel="stylesheet" href="../cropper/dist/cropper.css">
+    <link rel="stylesheet" href="../rcp-common/directive/upload-img-base64/upload-img-base64.css">
+    <!--emoticon-->
+    <link rel="stylesheet" href="../rcp-common/styles/emoticon.css">
+    <!--emoticon -->
+    <!--endbuild-->
+</head>
+<body ng-controller="mainCtrl">
+
+    <!--<headnav item-list="itemList" user="user" style="display: none;"></headnav>-->
+
+    <div ng-controller="mcCtrl">
+
+
+        <head-tail-sso config="{pageInfo:['管理中心',' | ','Management center'], extClass: 'wide'}" user-data="userInfo"></head-tail-sso>
+
+        <!--<div class="head-nav">-->
+            <!--<div class="g-m-w">-->
+                <!--<div class="head-nav-left">欢迎你，<span ng-bind="currentUser.nickName || '请先登录'"></span></div>-->
+                <!--<div class="head-nav-right">-->
+                    <!--<a href="" ng-href="{{url.kx}}">酷校首页</a>-->
+                    <!--<span style="margin: 0 15px; vertical-align: bottom">|</span>-->
+                    <!--<a href="" ng-href="{{url.akx}}">爱科学首页</a>-->
+                    <!--<span style="margin: 0 15px; vertical-align: bottom">|</span>-->
+                    <!--<span ng-if="currentUser.nickName" ng-bind="currentUser.nickName + ' ，'" style="vertical-align: bottom"></span>-->
+                    <!--&lt;!&ndash;todo: login url&ndash;&gt;-->
+                    <!--<a ng-hide="currentUser.nickName" ng-href="{{loginUrl}}" style="color: #28b1ff;">登陆</a>-->
+                    <!--<a ng-show="currentUser.nickName" ng-href="{{exitUrl}}" style="color: #28b1ff;">退出</a>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+
+        <div class="g-m-w">
+
+            <div style="margin: 20px 10px 30px">
+                <!--<div class="image-mc-logo"></div>-->
+            </div>
+
+            <div class="main-view">
+
+                <div class="content-view">
+
+                    <div class="switch-tab">
+
+                        <div class="tab" ng-repeat="tab in tabList track by $index">
+                            <div class="tab-head-icon">
+                                <i ng-class="tab.css"></i>
+                            </div>
+
+                            <ul>
+                                <li class="li-head" ng-bind="tab.title"></li>
+                                <li ng-repeat="urlList in tab.list track by $index" ng-class="{'active': urlList.active[curPath]}">
+                                    <a ng-href="#/{{urlList.url}}" ng-bind="urlList.name"></a>
+                                </li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <div class="switch-view">
+                        <div ng-view></div>
+                    </div>
+
+                    <div style="clear: both;"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <tailnav></tailnav>
+
+
+    <!--已打包好的basic package-->
+    <script src="../rcp-common/service/lib-default.min.js"></script>
+    <!--已打包好的basic package end-->
+
+    <!--build:js management-center/management-center.min.js-->
+    <!--project dependency-->
+    <!--<script src="../rcp-common/service/aid.js"></script>-->
+    <!--<script src="../rcp-common/service/jf-v1.0.js"></script>-->
+    <script src="../moment/moment.js"></script>
+    <script src="../highcharts.com/lib/highcharts.js"></script>
+    <script src="management-center/modernizr.js"></script>
+    <!--my controller-->
+    <script src="management-center/management-center.js"></script>
+    <script src="management-center/mc-index/mc-index.js"></script>
+    <script src="management-center/member-approval/member-approval.js"></script>
+    <script src="management-center/course-approval/course-approval.js"></script>
+    <script src="management-center/member-detail/member-detail.js"></script>
+    <script src="management-center/course-identify/course-identify.js"></script>
+    <script src="management-center/manage-report/manage-report.js"></script>
+    <script src="management-center/manage-organization/manage-organization.js"></script>
+    <script src="management-center/manage-organization/manage-organization-edit.js"></script>
+    <script src="management-center/manage-user/manage-user.js"></script>
+    <script src="management-center/manage-user/manage-user-edit.js"></script>
+    <script src="management-center/manage-analyze/college-analyze.js"></script>
+    <script src="management-center/manage-analyze/course-analyze.js"></script>
+    <script src="management-center/manage-analyze/teacher-analyze.js"></script>
+    <script src="../cropper/dist/cropper.js"></script>
+    <script src="management-center/manage-home/manage-home.js"></script>
+    <script src="../rcp-common/directive/upload-img-base64/upload-img-base64.js"></script>
+    <script src="../rcp-common/module/main/main-ctrl.js"></script>
+    <!--<script src="../rcp-common/module/main/main-ctrl.js"></script>-->
+    <!--service-->
+    <script src="../course/service/course.js"></script>
+    <script src="service/sso.js"></script>
+    <!--customized unit-->
+    <!--<script src="../rcp-common/directive/common/common-dir.js"></script>-->
+    <!--<script src="../rcp-common/directive/placeholder-ie/placeholder-ie.js"></script>-->
+    <script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+    <script src="../rcp-common/directive/datetime/datetime-dir.js"></script>
+    <script src="../rcp-common/directive/pagination/pagination.js"></script>
+    <script src="../rcp-common/directive/default-img/default-img.js"></script>
+    <script src="../rcp-common/directive/empty-tip/empty-tip.js"></script>
+    <script src="../rcp-common/directive/image-slider/image-slider.js"></script>
+    <!--directives-->
+    <script src="directive/select-org/select-org.js"></script>
+    <script src="directive/head-tail-sso/head-tail-sso.js"></script>
+    <!-- emoji data -->
+    <script src="../js-emoji/lib/emoji.js"></script>
+    <!-- emoji data -->
+    <!-- emoticon -->
+    <script src="../rcp-common/filter/emoticon.js"></script>
+    <!--emoticon-->
+    <!--filter-->
+    <!--<script src="../rcp-common/filter/html.js"></script>-->
+    <!--<script src="../rcp-common/filter/ellipsis.js"></script>-->
+    <!--<script src="../rcp-common/filter/time.js"></script>-->
+    <!--endbuild-->
+
+    <script src="../rcp-common/service/service.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+@import '_color';
+
+$color-text-normal      : map-get(map-get($color, gray), 400);
+$color-text-green       : map-get(map-get($color, cyan), 100);
+$color-text-gray        : map-get(map-get($color, gray), 200);
+$color-text-dark-gray   : map-get(map-get($color, gray), 300);
+$color-text-light-gray  : map-get(map-get($color, gray), 100);
+$color-text-white       : map-get(map-get($color, white), 100);
+$color-text-blue        : map-get(map-get($color, blue), 200);
+$color-text-light-blue  : map-get(map-get($color, blue), 300);
+$color-text-red         : map-get(map-get($color, red), 100);
+$color-text-black       : map-get(map-get($color, black), 100);
+$color-text-black-3     : map-get(map-get($color, black), 300);
+$color-text-black-4     : map-get(map-get($color, black), 400);
+$color-text-black-6     : map-get(map-get($color, black), 600);
+$color-text-orange      : map-get(map-get($color, orange), 100);
+
+$color-bg-gray          : map-get(map-get($color, gray), 500);
+$color-bg-gray-max      : map-get(map-get($color, gray), 1000);
+$color-bg-light-green   : map-get(map-get($color, green), 300);
+$color-bg-middle-green  : map-get(map-get($color, green), 400);
+$color-bg-green         : map-get(map-get($color, cyan), 100);
+$color-bg-green-5       : map-get(map-get($color, green), 500);
+$color-bg-green-7       : map-get(map-get($color, green), 700);
+$color-bg-white         : map-get(map-get($color, white), 100);
+$color-bg-light-gray    : map-get(map-get($color, gray), 600);
+$color-bg-lg            : map-get(map-get($color, gray), 900);
+$color-bg-middle-gray   : map-get(map-get($color, gray), 700);
+$color-bg-dark-green    : map-get(map-get($color, cyan), 200);
+$color-bg-yellow        : map-get(map-get($color, yellow), 100);
+$color-bg-light-yellow  : map-get(map-get($color, yellow), 200);
+$color-bg-red           : map-get(map-get($color, red), 100);
+$color-bg-black         : map-get(map-get($color, black), 100);
+$color-bg-blue          : map-get(map-get($color, blue), 300);
+$color-bg-light-blue    : map-get(map-get($color, blue), 400);
+$color-bg-blue-5        : map-get(map-get($color, blue), 500);
+$color-bg-orange        : map-get(map-get($color, orange), 200);
+$color-bg-green-6       : map-get(map-get($color, green), 600);
+
+
+$color-border-gray      : map-get(map-get($color, gray), 700);
+$color-border-light-gray: map-get(map-get($color, gray), 800);
+$color-border-green     : map-get(map-get($color, cyan), 100);
+
+$font-size-12: 12px;
+$font-size-14: 14px;
+$font-size-16: 16px;
+$font-size-18: 18px;
+$font-size-20: 20px;
+$font-size-24: 24px;
+$font-size-30: 30px;
+$font-size-36: 36px;
+$font-size-50: 50px;
+
+$shadow-bottom-1        : 0 4px 10px rgba(0,0,0,0.2);
+$shadow-1               : 0 0 10px rgba(0,0,0,0.2);
+$shadow-2               : 0 0 20px rgba(0,0,0,0.5);

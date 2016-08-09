@@ -1,0 +1,101 @@
+<!--Created by Zhongj on 2016/6/4.-->
+<div class="score-manager">
+    <h2>成绩管理</h2>
+    <div class="course-list">
+        <div class="course-tags">
+            <div class="tags-title">
+                <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                <span>课程</span>
+            </div>
+            <div class="tags-content" ng-show="data.course.length">
+                <p ng-repeat="c in data.course track by $index" ng-class="{active: $index == data.curCourseIndex, 'm-t-large': $index >= data.rowNum}" ng-show="data.showMore || $index < data.rowNum ">
+                    <span ng-bind="c.title" ng-click="clickCourseTag(c, $index);"></span>
+                </p>
+            </div>
+            <div class="tags-more" ng-click="toggleMore(data.course)" ng-show="data.course.length > data.rowNum">
+                <span ng-bind="data.showMore ? '收起' : '展开'"></span>
+                <i class="fa" aria-hidden="true" ng-class="{'fa-chevron-up': data.showMore, 'fa-chevron-down': !data.showMore}"></i>
+            </div>
+        </div>
+    </div>
+    <br>
+    <table class="score-list">
+        <tr ng-if="data.scoreTags !== null">
+            <td class="score-tags  pd-t10 pd-b10" ng-repeat="s in data.scoreTags track by $index">
+                <div ng-if="s.status == 'basic'"><span ng-bind="s.key"></span></div>
+                <div ng-if="s.status == 'score'"><span ng-bind="s.key "></span><span ng-if="s.key != '总成绩'" ng-bind-template="({{s.weight}}%)"></span></div>
+                <div ng-if="s.status == 'scoreExt'">
+                    <span ng-bind="s.key "></span>
+                    <select ng-model="selectRemark" ng-options="item for item in s.range">
+                    </select>
+                </div>
+            </td>
+        </tr>
+        <tr ng-if="data.usrScorelst !== null" class="score-single" ng-repeat="u in data.usrScorelst track by $index" ng-init="rowNum=$index">
+            <td ng-repeat="s in data.scoreTags track by $index">
+                <div ng-if="s.status === 'basic'">
+                    <div ng-if="u.msg.hasOwnProperty(s.status)"><span ng-bind="u.msg.basic[s.key]"></span></div>
+                    <div ng-if="!u.msg.hasOwnProperty(s.status)"><span ng-bind="'--'"></span></div>
+                </div>
+                <div ng-show="s.status === 'score'">
+                    <div ng-if="s.key !== '总成绩'">
+                        <span class="suit-score" onmouseenter="$(this).find('input:eq(0)').focus();" onclick="$(this).find('input:eq(0)').focus();">
+                               <input type="text" class="score-input" ng-class="{'invalid-score':u.invalid[s.key]}"
+                                      onfocus="$(this).parent().addClass('focus');"
+                                      onblur="$(this).parent().removeClass('focus');"
+                                      ng-model="u.msg[s.status][s.key]" ng-change="scoreChange(rowNum+1,u,s)"
+                                      ng-pattern="/^[0-9][0-9]?$|^100$/" maxlength="3">
+                        </span>
+                    </div>
+                    <div ng-if="s.key === '总成绩'">
+                        <div ng-if="u.msg.hasOwnProperty(s.status)"><span ng-bind="u.msg.score[s.key] | number:1"></span></div>
+                        <div ng-if="!u.msg.hasOwnProperty(s.status)"><span ng-bind="'--'"></span></div>
+                    </div>
+                </div>
+
+                <div ng-if="s.status === 'scoreExt' && s.key==='备注'">
+                    <select ng-model="u.msg[s.status][s.key]" ng-options="item for item in s.range" ng-change="scoreChange(rowNum+1,u,s)"></select>
+                </div>
+
+                <div ng-if="s.status === 'scoreExt' && s.key==='证书发放'">
+                    <div ng-if="u.msg.hasOwnProperty(s.status)"><span ng-bind="u.msg.scoreExt[s.key]"></span></div>
+                    <div ng-if="!u.msg.hasOwnProperty(s.status)"><span ng-bind="'--'"></span></div>
+                </div>
+            </td>
+            <div class="clear"></div>
+        </tr>
+    </table>
+    <div class="foot-counts">
+        <nav>
+            <ul class="pagination">
+                <li>
+                    <a ng-click="Previous()">
+                        <span>上一页</span>
+                    </a>
+                </li>
+                <li ng-repeat="page in data.pageList track by $index" ng-class="{active:isActivePage(page)}">
+                    <a ng-click="selectPage(page)"><span ng-bind="page"></span></a>
+                </li>
+                <li>
+                    <a ng-click="Next()">
+                        <span>下一页</span>
+                    </a>
+                </li>
+            </ul>
+
+        </nav>
+
+        <div class="count-tags">
+            <div class="count-tag">
+                <span>共<span ng-bind="data.joinCurStuCount"></span>人,还有<span class="count-font" ng-bind="data.noEntryStuCount"></span>人无成绩,<span class="count-font" ng-bind="data.EntringStuCount"></span>人已录入成绩但未保存</span>
+            </div>
+            <div class="count-submit">
+                <input type="button" value="提交" ng-click="submitEntryStuScore()">
+            </div>
+            <div class="count-save">
+                <input type="button" value="保存" ng-click="saveEntryStuScore()">
+            </div>
+        </div>
+    </div>
+
+</div>

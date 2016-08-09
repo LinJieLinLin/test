@@ -1,0 +1,14 @@
+module.directive("userList", function () {
+    return {
+        template:'<div class="user-list"><div class="section-header"><i class="image-chat-icon"></i> <span>消息</span></div><div class="user-search white-bg"><i class="fa fa-search" aria-hidden="true"></i> <input ng-model="searchUser" type="text" placeholder="搜索学生"></div><ul class="user-list-detail l-scrollbar white-bg"><li title="{{user.nickName}}" class="user-item" ng-class="{active: user.uuid===chatTarget.uuid}" ng-repeat="user in users"><div class="info-avatar"><img ng-src="{{user.avatar}}" alt=""> <span ng-show="user.unread > 0" class="chat-unread" ng-class="{\'w-18\': user.unread <= 99, \'w-25\': user.unread > 99}" ng-bind="user.unread > 99 ? \'99+\' : user.unread"></span></div><div class="info-block"><p><span class="user-name" ng-bind="user.nickName"></span> <span class="time" ng-show="user.msgList.length">{{user.msgList[user.msgList.length - 1].time}}</span></p><p><span class="user-last-msg" ng-show="user.msgList.length">{{user.msgList[user.msgList.length - 1].message}}</span> <span class="type-text">{{user.type == 0 ? \'用户\' : \'游客\'}}</span></p></div></li></ul></div>',
+        restrict: "E",
+        replace: true,
+        transclude: true,
+        scope: {
+            users: '='
+        },
+        controller: ['$scope', function ($scope) {
+            $scope.searchUser = '';
+        }]
+    }
+});

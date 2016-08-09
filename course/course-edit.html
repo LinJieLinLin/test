@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html ng-app="RCP">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <title ng-bind="title"></title>
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css course-edit/course-edit.min.css -->
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/styles/common.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/image-slider/image-slider.css">
+    <link rel="stylesheet" href="../rcp-common/directive/chat/chat-directive.css">
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css">
+    <link rel="stylesheet" href="../rcp-common/directive/common/common-dir.css">
+    <link rel="stylesheet" href="../rcp-common/styles/dateTimePlug.css">
+    <link rel="stylesheet" href="../cropper/dist/cropper.css">
+
+    <!-- dirctives begin -->
+    <link rel="stylesheet" href="../rcp-common/directive/upload-img-base64/upload-img-base64.css">
+    <link rel="stylesheet" href="../rcp-common/directive/zoom/zoom.css">
+    <link rel="stylesheet" href="../rcp-common/directive/select-category/select-category-dir.css">
+    <!-- dirctives  end  -->
+    <!-- course content begin -->
+    <link rel="stylesheet" href="directive/course-content/content-edit.css">
+    <link rel="stylesheet" href="directive/test-paper/paper-edit.css">
+    <link rel="stylesheet" href="directive/test-paper/q-base.css">
+    <!-- course content  end  -->
+    <link rel="stylesheet" href="course-edit/course-edit.css">
+    <!-- endbuild -->
+
+</head>
+
+<body ng-controller="mainCtrl">
+
+<headnav item-list="itemList" user="user"></headnav>
+<div ng-controller="courseEditCtrl" id="main-panel">
+
+    <div class="loading-layer" id="loading-layer" ng-show="loadingMainShow">
+        <span class="loading-circle loading-amit-spin"></span>
+    </div>
+
+
+
+    <!-- loading:js -->
+    <!-- endinject -->
+
+    <div class="g-m-w">
+
+        <!-- <div class="mhd">
+            <a href="javascript:;"><b>创建新课程</b></a>
+        </div> -->
+        <div class="gap-20"></div>
+
+
+        <div class="m-area">
+
+            <div class="breadcrumb">
+                <a href="" ng-click="gotoTeacherSpace()">教学中心</a> >
+                <span class="">{{$root.title}}</span>
+            </div>
+
+            <!-- 选项列表 -->
+            <div class="inner-filling home" id="mainPanel">
+                <div class="shadow">
+                    <div class="basic">
+                        <div class="t" ng-show="">
+                            <div class="ic">
+                                <i class="image-c-course-i"></i>
+                                创建新课程
+                            </div>
+                        </div>
+                        <div class="full-w">
+
+                            <upload-img-base upload-config="coverUploadConfig"></upload-img-base>
+
+                            <div ng-show="!coverUploadConfig.showEdit">
+                                <div class="img-w" id="cover">
+                                    <div class="big-img">
+                                        <div class="add-img" ng-init="changePic = false">
+                                            <img src="/rcp-common/imgs/icon/gray-default-img.png" class="bg-img"
+                                                 ng-show="!course.crs.cover">
+                                            <img ng-src="{{course.crs.cover}}" class="main-img" width="100%"
+                                                 height="229" ng-show="course.crs.cover">
+                                            <i class="fa fa-3x fa-times cancel" aria-hidden="true" ng-show="course.crs.cover" ng-click="deleteCover($event)"></i>
+                                            <a href="javascript:;" class="my-btn"
+                                               ng-click="uploadCover()"
+                                               ng-mouseover="changePic = true" ng-mouseleave="changePic = false">
+                                                <div class="cover" ng-show="!course.crs.cover">
+                                                    <span ng-show="!course.crs.cover">上传封面</span>
+                                                    <span ng-show="course.crs.cover && changePic">更换封面</span>
+                                                </div>
+                                                <div class="advise" ng-show="!course.crs.cover">封面参考尺寸：544*306</div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="i">
+
+                                    <div class="detail-table">
+                                        <div class="item">
+                                            <div class="item-li name">
+                                                <span class="name-edit-bar" onmouseenter="$(this).find('input:eq(0)').focus();" onclick="$(this).find('input:eq(0)').focus();">
+                                                    <input class="name-input" type="text" maxlength="50"
+                                                           onfocus="$(this).parent().addClass('focus');"
+                                                           onblur="$(this).parent().removeClass('focus');"
+                                                           ng-model="course.crs.title" placeholder="请输入课程名称">
+                                                </span>
+                                            </div>
+                                            <div class="item-li">
+                                                <span>开课时间：</span>
+                                                <span class="i-s">
+                                                    <input type="text" class="jf-date e-input hide-b-input date-input"
+                                                           plug-style="all time" readonly
+                                                           ng-model="course.crs.start_time" placeholder="点击选择日期时间"
+                                                           id="startTime">
+                                                </span>
+                                                <span class="end-time">结束时间：</span>
+                                                <span class="i-s">
+                                                    <input type="text" class="jf-date e-input hide-b-input date-input"
+                                                           plug-style="all time" readonly
+                                                           ng-model="course.crs.end_time" placeholder="点击选择日期时间"
+                                                           id="endTime">
+                                                </span>
+                                            </div>
+                                            <div class="item-li">
+                                                <span>课程学分：</span>
+                                                <span class="i-s">
+                                                    <span class="input-m" onmouseenter="$(this).find('input:eq(0)').focus();" onclick="$(this).find('input:eq(0)').focus();">
+                                                        <input type="text" class="e-input" maxlength="4"
+                                                               onfocus="$(this).parent().addClass('focus');"
+                                                               onblur="$(this).parent().removeClass('focus');"
+                                                               onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                               onafterpaste="this.value=this.value.replace(/[^\d.]/g,'')"
+                                                               ng-model="course.crs.credit" placeholder="请输入学分">
+                                                    </span>
+                                                </span>
+                                                <span class="end-time">建议学时：</span>
+                                                <span class="i-s">
+                                                    <span class="input-m" onmouseenter="$(this).find('input:eq(0)').focus();" onclick="$(this).find('input:eq(0)').focus();">
+                                                        <input type="text" class="e-input" maxlength="4"
+                                                               onfocus="$(this).parent().addClass('focus');"
+                                                               onblur="$(this).parent().removeClass('focus');"
+                                                               onkeyup="this.value=this.value.replace(/\D/g,'')"
+                                                               onafterpaste="this.value=this.value.replace(/\D/g,'')"
+                                                               ng-model="course.crs.period" placeholder="请输入学时">
+                                                    </span>
+                                                </span>
+                                            </div>
+                                            <div class="item-li">
+                                                <span>适用人群：</span>
+                                                <span class="suit-people" onmouseenter="$(this).find('input:eq(0)').focus();" onclick="$(this).find('input:eq(0)').focus();">
+                                                    <input type="text" class="e-input" maxlength="10"
+                                                           onfocus="$(this).parent().addClass('focus');"
+                                                           onblur="$(this).parent().removeClass('focus');"
+                                                           ng-model="course.crs.suitable" placeholder="10字以内">
+                                                </span>
+                                            </div>
+                                            <div class="item-li">
+                                                <span class="cat-span">课程分类：</span>
+                                                <div class="cat">
+                                                    <div class="cat-select">
+                                                        <!-- 新版选择分类 start -->
+                                                        <!--<select-category tags="tags"></select-category>-->
+                                                        <select ng-model="courseCat.selectCur"  ng-options="a.name for a in courseCat.topCat" ng-change="courseCat.changeCat()">
+                                                            <option value="">请选择课程分类</option>
+                                                        </select>
+                                                        <!-- 新版选择分类 end -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+
+                        <div class="cat-area" id="courseCat">
+                            <div class="h-li" ng-class="{expand:!courseCat.tagsExpand}">
+                                <a href="" class="toggle-expand" ng-hide="courseCat.tagsExpand" ng-click="courseCat.tagsExpand = true">展开<i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+                                <a href="" class="toggle-expand" ng-show="courseCat.tagsExpand" ng-click="courseCat.tagsExpand = false">收起<i class="fa fa-chevron-up" aria-hidden="true"></i></a>
+                                <div class="title">课程标签：</div>
+                                <div class="area">
+                                    <div class="selected" ng-repeat="select in courseCat.tagsSelect track by $index">
+                                        <span>{{select}}</span>
+                                        <a href="" ng-click="courseCat.deleteTag(select)">×</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="h-li" ng-repeat="tagGrp in courseCat.tags track by $index" ng-show="courseCat.tagsExpand">
+                                <div class="title">{{tagGrp.name}}：</div>
+                                <div class="area">
+                                    <a href="" class="cat-item"
+                                       ng-click="courseCat.selectTag(tag.name)"
+                                       ng-repeat="tag in tagGrp.tags track by $index"
+                                       ng-class="{'disable': courseCat.tagsSelectRecord[tag.name]}">{{tag.name}}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="options-list">
+                        <ul>
+                            <li class="o-item" ng-show="">
+                                <div class="hover-bd"></div>
+                                <div class="w">
+                                    <div class="i icon0">
+                                        <div class="img"><i class="image-c-create-item-1"></i></div>
+                                        <span class="a-e-ic" alt="已编辑"
+                                              ng-show="courseGuidance != null && courseGuidance.teacher.length > 0"></span>
+                                        <!-- <span class="s-s-ic" alt="特色服务"></span> -->
+                                        <font>Guidance</font>
+                                    </div>
+                                    <div class="m">
+                                        <div class="c">
+                                            <div class="title"><span
+                                                    ng-class="courseGuidance != null && courseGuidance.teacher.length > 0 ? 'cyan-c' : 'title'">导学</span>
+                                            </div>
+                                            <div ng-class="courseGuidance != null && courseGuidance.teacher.length > 0 ? 'd s2' : 'd'">
+                                                导学用于设置导学服务总时长，配置导学老师及各导学老师的在线服务时间，编辑学习指导用于引导学生的整体学习等。
+                                            </div>
+                                        </div>
+                                        <div class="edit-price" ng-show="">
+                                            <span>价格：</span>
+                                            <span class="orange-c">￥ 0.00</span>
+                                        </div>
+                                        <div class="ac">
+                                            <a href="javascript:;" id="showGuidance" class="edit-b"><em><i
+                                                    class="image-c-course-o-1"></i></em><font>编辑</font></a>
+                                            <a href="javascript:;" class="stretch-b" id="guidanceStretch"><em><i
+                                                    class="image-c-course-o-2"></i></em><font>展开</font></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="s-v">
+                                    <div class="my-cke-content" ng-show="courseGuidance != null">
+                                        <table class="guidance-review">
+                                            <tr>
+                                                <td>
+                                                    导学老师：
+                                                </td>
+                                                <td>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    课程导语：
+                                                </td>
+                                                <td>
+                                                    <div ng-bind-html="deliberatelyTrustDangerousSnippet(courseGuidance.description)"></div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    提醒时间：
+                                                </td>
+                                                <td>
+                                                    <div>{{courseGuidance.extra.countTime == null ? 0 :
+                                                        courseGuidance.extra.countTime}}分钟
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="edit-empty" ng-hide="courseGuidance != null">
+                                        <div><img src="imgs/icon-cloud.png" alt=""></div>
+                                        <div class="text">
+                                            你还没有编辑哦，马上
+                                            <a href="javascript:;" class="blue-c" onclick="$('#showGuidance').click();">前往编辑</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="o-item">
+                                <div class="hover-bd"></div>
+                                <div class="w">
+                                    <div class="i icon1">
+                                        <div class="img"><i class="image-c-create-item-2"></i></div>
+                                        <span class="a-e-ic" alt="已编辑" ng-show="introEditStatus">
+                                            <i class="image-c-item-status"></i>
+                                        </span>
+                                        <font>Course Description</font>
+                                    </div>
+                                    <div class="m">
+                                        <div class="c">
+                                            <div class="title"><span
+                                                    ng-class="introEditStatus ? 'cyan-c' : 'title'">课程概述</span>
+                                            </div>
+                                            <div ng-class="introEditStatus ? 'd s2' : 'd'">
+                                                课程更诱人——在这里请您简要描述课程的基本信息，包括课程简介、学习目标、学习方法、课程考核、参考资源等基本模块；也可以根据需要自行添加一些模块，如知识点、教学形式、考核范围等。
+                                            </div>
+                                        </div>
+                                        <!--<div class="edit-price">-->
+                                        <!--<span>价格：</span>-->
+                                        <!--<input type="text" class="price-input">-->
+                                        <!--<a href="javascript:;" class="edit-b3"></a>-->
+                                        <!--</div>-->
+                                        <div class="ac">
+                                            <a href="javascript:;" id="showIntro" class="edit-b"
+                                               ng-click="openFullEdit('intro')"><em><i
+                                                    class="image-c-course-o-1"></i></em><font>编辑</font></a>
+                                            <a href="javascript:;" class="stretch-b" id="introStretch"><em><i
+                                                    class="image-c-course-o-2"></i></em><font>展开</font></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="s-v">
+                                    <div class="list-table">
+                                        <div class="tree-line" style="top:65px;"></div>
+                                        <table width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th width="40%">目录</th>
+                                                <!-- <th align="center" width="17%">知识点</th> -->
+                                            </tr>
+                                            </thead>
+                                            <tbody ng-repeat="section in introList.items track by $index"
+                                                   ng-show="introList.items.length > 0">
+                                            <tr>
+                                                <td>
+                                                    <div style="position: relative">
+                                                        <a ng-show="section.type == 'T1'" href="javascript:;"
+                                                           class="section-b" title="收起" ng-click="item.show=!item.show"><i
+                                                                class="image-con-dir-t1"></i></a>
+                                                        <a ng-show="section.type == 'T2'" href="javascript:;"
+                                                           class="section-b childItem" title="收起"><i
+                                                                class="image-con-dir-t2"></i></a>
+                                                        <div ng-show="section.type == 'T1'" class="parent"
+                                                             ng-class="{true:'up',false:''}[item.show]"
+                                                             ng-bind="section.title"></div>
+                                                        <div ng-show="section.type == 'T2' && !item.show" class="child"
+                                                             ng-bind="section.title"></div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr ng-repeat="period in section.childItems" ng-show="!item.show">
+                                                <td>
+                                                    <div style="position: relative">
+                                                        <a href="javascript:;" class=" childItem" title="收起"></a>
+                                                        <div class="child">{{period.name}}</div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="edit-empty" ng-hide="introList.items.length > 0">
+                                        <div><img src="imgs/icon-cloud.png" alt=""></div>
+                                        <div class="text">你还没有编辑哦，马上<a href="javascript:;"
+                                                                                                  class="blue-c"
+                                                                                                  onclick="$('#showIntro').click();">前往编辑</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </li>
+                            <li class="o-item">
+                                <div class="hover-bd"></div>
+                                <div class="w">
+                                    <div class="i icon2">
+                                        <div class="img"><i class="image-c-create-item-3"></i></div>
+                                        <span class="a-e-ic" alt="已编辑" ng-show="contentEditStatus">
+                                            <i class="image-c-item-status"></i>
+                                        </span>
+                                        <!-- <span class="s-s-ic" alt="特色服务"></span> -->
+                                        <font>Course Cataloge</font>
+                                    </div>
+                                    <div class="m">
+                                        <div class="c">
+                                            <div class="title">
+                                                <div ng-class="contentEditStatus ? 'cyan-c' : 'title'">
+                                                    <span>课程内容</span></div>
+                                            </div>
+                                            <div ng-class="contentEditStatus ? 'd s2' : 'd'">
+                                                学生更爱学——在这里请您添加课程的完整信息内容，包括课程目录、详细的章节内容、知识点、优秀的案例、各类课件资源等，可以通过文字、图片、动画、视频等多种媒体形式展现。
+                                            </div>
+                                        </div>
+                                        <div class="edit-price" ng-show="">
+                                            <span>价格：</span>
+                                            <span class="orange-c">￥ 0.00</span>
+                                            <!--<input type="text" class="price-input">-->
+                                            <!--<a href="javascript:;" class="edit-b3"></a>-->
+                                        </div>
+
+                                        <div class="ac">
+                                            <a href="javascript:;" id="showDir" class="edit-b"
+                                               ng-click="openFullEdit('dir')"><em><i
+                                                    class="image-c-course-o-1"></i></em><font>编辑</font></a>
+                                            <a href="javascript:;" class="stretch-b" id="dirStretch"><em><i
+                                                    class="image-c-course-o-2"></i></em><font>展开</font></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="s-v">
+                                    <div class="list-table">
+                                        <div class="tree-line" style="top:65px;"></div>
+                                        <table width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th width="40%">目录</th>
+                                                <!--<th width="17%">类型</th>-->
+                                                <!--<th align="center" width="17%">价格</th>-->
+                                                <!-- <th align="center" width="17%">知识点</th> -->
+                                            </tr>
+                                            </thead>
+                                            <tbody ng-repeat="section in dirList.items track by $index"
+                                                   ng-show="dirList.items.length > 0">
+                                            <tr>
+                                                <td>
+                                                    <div style="position: relative">
+                                                        <a ng-show="section.type == 'T1'" href="javascript:;"
+                                                           class="section-b" title="收起" ng-click="item.show=!item.show"><i
+                                                                class="image-con-dir-t1"></i></a>
+                                                        <a ng-show="section.type == 'T2'" href="javascript:;"
+                                                           class="section-b childItem" title="收起"><i
+                                                                class="image-con-dir-t2"></i></a>
+                                                        <div ng-show="section.type == 'T1'" class="parent"
+                                                             ng-class="{true:'up',false:''}[item.show]"
+                                                             ng-bind="section.title"></div>
+                                                        <div ng-show="section.type == 'T2' && !item.show" class="child"
+                                                             ng-bind="section.title"></div>
+                                                    </div>
+                                                </td>
+                                                <!--<td>-->
+                                                <!--</td>-->
+                                                <!--<td align="center">-->
+                                                    <!--<font class="price">¥ 0.00</font>-->
+                                                    <!--&lt;!&ndash;<input type="text" class="price-input">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;<a href="javascript:;" class="edit-b3"></a>&ndash;&gt;-->
+                                                <!--</td>-->
+                                            </tr>
+                                            <tr ng-repeat="period in section.childItems" ng-show="!item.show">
+                                                <td>
+                                                    <div style="position: relative">
+                                                        <a href="javascript:;" class="childItem" title="收起"></a>
+                                                        <div class="child">{{period.name}}</div>
+                                                    </div>
+                                                </td>
+
+                                                <!--<td>-->
+                                                <!--</td>-->
+                                                <!--<td align="center">-->
+                                                    <!--<font class="price">¥ 0.00</font>-->
+                                                <!--</td>-->
+
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="edit-empty" ng-hide="dirList.items.length > 0">
+                                        <div><img src="imgs/icon-cloud.png" alt=""></div>
+                                        <div class="text">你还没有编辑哦，马上<a href="javascript:;"
+                                                                                                  class="blue-c"
+                                                                                                  onclick="$('#showDir').click();">前往编辑</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- <li class="o-item">
+                                <div class="hover-bd"></div>
+                                <div class="w">
+                                    <div class="i icon3">
+                                        <span class="a-e-ic" alt="已编辑"></span>
+                                        <span class="s-s-ic" alt="特色服务"></span>
+                                        <font>Teaching</font>
+                                    </div>
+                                    <div class="m">
+                                        <div class="c">
+                                            <div class="title"><span>教学</span></div>
+                                            <div class="d">老师可以根据课程需要通过创建教学发布实时的在线直播课堂，教学用于填写教学的时间、教学老师，以及教学目标，教学方法，教学过程等相关描述。</div>
+                                        </div>
+                                        <div class="edit-price">
+                                            <span>价格：</span>
+                                            <span class="orange-c">￥ 0.00</span>
+                                            <input type="text" class="price-input">
+                                            <a href="javascript:;" class="edit-b3"></a>
+                                        </div>
+
+                                        <div class="ac">
+                                            <a href="javascript:;" class="edit-b"><em><i class="image-c-course-o-1"></i></em><font>编辑</font></a>
+                                            <a href="javascript:;" class="stretch-b"><em><i class="image-c-course-o-2"></i></em><font>展开</font></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="s-v">
+
+                                    <div style="padding:60px 15px 100px;text-align:center;" ng-show="true">
+                                        <div><img src="imgs/icon-cloud.png" alt=""></div>
+                                        <div style="padding-top:15px;color:#96979a;">功能正在建设中</div>
+                                    </div>
+
+                                </div>
+                            </li> -->
+                            <li class="o-item" ng-show="">
+                                <div class="hover-bd"></div>
+                                <div class="w">
+                                    <div class="i icon4">
+                                        <div class="img"><i class="image-c-create-item-4"></i></div>
+                                        <span class="a-e-ic" alt="已编辑" ng-show="courseQna.length > 0"></span>
+                                        <span class="s-s-ic" alt="特色服务"></span>
+                                        <font>Q & A</font>
+                                    </div>
+                                    <div class="m">
+                                        <div class="c">
+                                            <div class="title"><span
+                                                    ng-class="courseQna.length > 0 ? 'cyan-c' : 'title'">答疑</span></div>
+                                            <!--<div ng-class="courseQna.length > 0 ? 'd s2' : 'd'">老师可以根据课程需要通过创建答疑来发布一对一的在线答疑服务或一对多的实时答疑服务，答疑用于填写答疑的时间、答疑老师，以及相关描述。</div>-->
+                                            <div ng-class="courseQna.length > 0 ? 'd s2' : 'd'">
+                                                老师可以根据课程需要通过创建答疑来发布一对一的在线答疑服务，答疑用于填写答疑的时间、答疑老师，以及相关描述。
+                                            </div>
+                                        </div>
+                                        <div class="edit-price" ng-show="">
+                                            <span>价格：</span>
+                                            <span class="orange-c">￥ 0.00</span>
+                                            <!--<input type="text" class="price-input">-->
+                                            <!--<a href="javascript:;" class="edit-b3"></a>-->
+                                        </div>
+
+                                        <div class="ac">
+                                            <a href="javascript:;" id="showQna" class="edit-b"><em><i
+                                                    class="image-c-course-o-1"></i></em><font>编辑</font></a>
+                                            <a href="javascript:;" class="stretch-b"><em><i
+                                                    class="image-c-course-o-2"></i></em><font>展开</font></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="s-v">
+                                    <div class="QA-table" ng-show="courseQna.length > 0">
+                                        <div class="tree-line" style="top:65px;"></div>
+                                        <table width="100%">
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    <span>答疑总览</span>
+                                                    <span class="online-p"><em></em>在线答疑</span>
+                                                    <!--<span class="real-time-p"><em></em>实时答疑</span>-->
+                                                </th>
+                                                <th width="60" style="text-align:right;">价格</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr ng-repeat="qnaOne in courseQna">
+                                                <td>
+                                                    <div class="topic" ng-class="qnaOne.type == '25' ? 'real-time':''">
+                                                        <em class="ic-p"></em>
+                                                        <span ng-show="qnaOne.name != ''">{{qnaOne.name}}</span>
+                                                        <span ng-show="qnaOne.name == ''"
+                                                              class="orange-c">请输入答疑名称</span>
+                                                    </div>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <font class="price">¥ 0.00</font>
+                                                    <!--<a href="javascript:;" class="edit-ic2" title="编辑"></a>-->
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="edit-empty" ng-hide="courseQna.length > 0">
+                                        <div><img src="imgs/icon-cloud.png" alt=""></div>
+                                        <div class="text">你还没有编辑哦，马上<a href="javascript:;"
+                                                                                                  class="blue-c"
+                                                                                                  onclick="$('#showQna').click();">前往编辑</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <!-- <li class="o-item">
+                                <div class="hover-bd"></div>
+                                <div class="w">
+                                    <div class="i icon5">
+                                        <span class="a-e-ic" alt="已编辑" ng-show="false"></span>
+                                        <span class="s-s-ic" alt="特色服务"></span>
+                                        <font>Activity</font>
+                                    </div>
+                                    <div class="m">
+                                        <div class="c">
+                                            <div class="title"><span>活动</span></div>
+                                            <div class="d">老师可以根据课程需要创建活动，包括填写活动时间、活动封面，活动简介，介绍活动流程和规划等。活动可以与课程无关。</div>
+                                        </div>
+                                        <div class="edit-price">
+                                            <span>价格：</span>
+                                            <span class="orange-c">￥ 0.00</span>
+                                            <input type="text" class="price-input">
+                                            <a href="javascript:;" class="edit-b3"></a>
+                                        </div>
+
+                                        <div class="ac">
+                                            <a href="javascript:;" class="edit-b"><em><i class="image-c-course-o-1"></i></em><font>编辑</font></a>
+                                            <a href="javascript:;" class="stretch-b"><em><i class="image-c-course-o-2"></i></em><font>展开</font></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="s-v">
+                                    <div style="padding:60px 15px 100px;text-align:center;">
+                                        <div><img src="imgs/icon-cloud.png" alt=""></div>
+                                        <div style="padding-top:15px;color:#96979a;">功能正在建设中</a></div>
+                                    </div>
+                                </div>
+                            </li> -->
+                            <li class="o-item" ng-show="">
+                                <div class="hover-bd"></div>
+                                <div class="w">
+                                    <div class="i icon6">
+                                        <div class="img"><i class="image-c-create-item-5"></i></div>
+                                        <span class="a-e-ic" alt="已编辑" ng-show="courseEva.length > 0"></span>
+                                        <span class="s-s-ic" alt="特色服务"></span>
+                                        <font>Reviews</font>
+                                    </div>
+                                    <div class="m">
+                                        <div class="c">
+                                            <div class="title"><span
+                                                    ng-class="courseEva.length > 0 ? 'cyan-c' : 'title'">评测</span></div>
+                                            <div ng-class="courseEva.length > 0 ? 'd s2' : 'd'">
+                                                老师可以根据课程需要创建一个或多个评测，用来诊断学生的学习，包括设置评测时间，选择评测试卷，填写评测说明等。
+                                            </div>
+                                        </div>
+                                        <div class="edit-price" ng-show="">
+                                            <span>价格：</span>
+                                            <span class="orange-c">￥ 0.00</span>
+                                            <!--<input type="text" class="price-input">-->
+                                            <!--<a href="javascript:;" class="edit-b3"></a>-->
+                                        </div>
+
+                                        <div class="ac">
+                                            <a href="javascript:;" id="showEva" class="edit-b"><em><i
+                                                    class="image-c-course-o-1"></i></em><font>编辑</font></a>
+                                            <a href="javascript:;" class="stretch-b"><em><i
+                                                    class="image-c-course-o-2"></i></em><font>展开</font></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="s-v">
+                                    <div class="list-table status2">
+                                        <div class="tree-line"></div>
+                                        <table width="100%" ng-show="courseEva.length > 0">
+                                            <thead>
+                                            <tr>
+                                                <th>评测名称</th>
+                                                <th>试卷</th>
+                                                <th width="60" style="text-align:right;">价格</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody ng-repeat="evaOne in courseEva">
+                                            <tr>
+                                                <td>
+                                                    <div class="parent">
+                                                        <em class=" solid"></em>
+                                                        <span ng-show="evaOne.name != ''">{{evaOne.name}}</span>
+                                                        <span ng-show="evaOne.name == ''"
+                                                              class="orange-c">请输入评测名称</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div style="width: 250px;">{{evaOne.extra.paper.name}}</div>
+                                                </td>
+                                                <td style="text-align:right;">
+                                                    <font class="price">¥ 0.00</font>
+                                                    <!--<a href="javascript:;" class="edit-ic2" title="编辑"></a>-->
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="edit-empty" ng-hide="courseEva.length > 0">
+                                        <div><img src="imgs/icon-cloud.png" alt=""></div>
+                                        <div class="text">你还没有编辑哦，马上<a href="javascript:;"
+                                                                                                  class="blue-c"
+                                                                                                  onclick="$('#showEva').click();">前往编辑</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md-nav">
+                        <ul>
+                            <li class="ic0" ng-show="">
+                                <a href="javascript:;"
+                                   onmouseenter="$(this).find('.img i:eq(0)').attr('class', 'image-con-g-1-2')"
+                                   onmouseleave="$(this).find('.img i:eq(0)').attr('class', 'image-con-g-1-1')">
+                                    <div class="img">
+                                        <i class="image-con-g-1-1"></i>
+                                    </div>
+                                    <div>导学</div>
+                                </a>
+                            </li>
+                            <li class="ic1">
+                                <a href="javascript:;"
+                                   onmouseenter="$(this).find('.img i:eq(0)').attr('class', 'image-con-g-2-2')"
+                                   onmouseleave="$(this).find('.img i:eq(0)').attr('class', 'image-con-g-2-1')">
+                                    <div class="img">
+                                        <i class="image-con-g-2-1"></i>
+                                    </div>
+                                    <div>描述</div>
+                                </a>
+                            </li>
+                            <li class="ic2">
+                                <a href="javascript:;"
+                                   onmouseenter="$(this).find('.img i:eq(0)').attr('class', 'image-con-g-3-2')"
+                                   onmouseleave="$(this).find('.img i:eq(0)').attr('class', 'image-con-g-3-1')">
+                                    <div class="img">
+                                        <i class="image-con-g-3-1"></i>
+                                    </div>
+                                    <div>内容</div>
+                                </a>
+                            </li>
+                            <!--<li class="ic2"><a href="javascript:;"><div>内容</div></a></li>-->
+                            <!-- <li class="ic3"><a href="javascript:;"><div>教学</div></a></li> -->
+                            <!--<li class="ic4"><a href="javascript:;"><div>答疑</div></a></li>-->
+                            <!-- <li class="ic5"><a href="javascript:;"><div>活动</div></a></li> -->
+                            <!--<li class="ic6"><a href="javascript:;"><div>评测</div></a></li>-->
+                            <li class="return-top" onclick="$('body,html').animate({scrollTop: 0})">
+                                <a href="javascript:;"
+                                   onmouseenter="$(this).find('.img i:eq(0)').attr('class', 'image-con-g-top-2')"
+                                   onmouseleave="$(this).find('.img i:eq(0)').attr('class', 'image-con-g-top-1')">
+                                    <div class="img">
+                                        <i class="image-con-g-top-1"></i>
+                                    </div>
+                                    <div>TOP</div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <br>
+            <br>
+
+            <div class="mft">
+                <div class="g-m-w mft-f">
+                    <div class="bdw">
+                        <span style="color:#999;float:left;padding-left:20px;line-height:48px;">
+                            <span id="mainAutoSaving" class="contentAutoSaving"
+                                  style="position: absolute;display: none">
+                                <img src="imgs/loading-1.gif" alt="" width="21">
+                                自动保存中
+                            </span>
+                            <span id="mainAutoSaved" class="contentAutoSaved" style="position: absolute;display: none">
+                                <i class="image-c-save-success"></i>
+                                已自动保存
+                            </span>
+                        </span>
+                        <span class="mg-l25 t-price">
+                            总价格：
+                            <span class="total-price">
+                                <span>￥</span>
+                                <input type="text" ng-model="course.crs.minPrice">
+                            </span>
+                        </span>
+                        <span class="mg-l25" ng-show="">
+                            折扣价：
+                            <font class="price">¥ 0.00</font>
+                            <!-- <input type="text" class="price-input">
+                            <a href="javascript:;" class="edit-b3"></a> -->
+    					</span>
+                        <!-- <a href="javascript:;" class="preview-b" ng-click="alertBuilding('预览功能')">预览</a> -->
+                        <a href="" ng-href="{{getUrlCourseDetail(cid)}}" target="_blank" class="preview-b" ng-click="gotoPreview($event)" id="preview-b">
+                            <i class="image-c-create-preview"></i>
+                            预览
+                        </a>
+                        <a href="javascript:;" class="release-b" ng-click="dataRelease()" ng-show="courseStatusArr[course.crs.status].opt">
+                            <i class="image-c-create-release"></i>
+                            {{courseStatusArr[course.crs.status] ? courseStatusArr[course.crs.status].namePub : '发布'}}
+                        </a>
+                        <a href="javascript:;" class="save-b" ng-click="dataSave()">保存</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="gap-30"></div>
+
+    <div class="full-screen" style="display:none;" id="full-screen">
+        <div class="win-body">
+
+            <div class="win-head">
+                <div class="back-vb return-b" title="返回"></div>
+                <div class="bread-crumbs"><img src="" class="ic">创建新课程<span></span></div>
+                <div class="r">
+                    <!-- <div class="option">
+                        <a href="javascript:;" class="ic importing-b" ng-click="alertBuilding('导入文档功能')"><font>导入文档</font></a>
+                    </div>
+                    <div class="option">
+                        <a href="javascript:;" class="ic download-b"><font>下载</font></a>
+                    </div> -->
+                    <div class="option">
+                        <top-user-menu user="user" item-list="itemList"></top-user-menu>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mft">
+                <div class="bdw">
+                    <span class="save-an">
+                        <span id="contentAutoSaving" class="an saving">
+                            <img src="imgs/loading-1.gif" alt="" width="21">自动保存中
+                        </span>
+                        <span id="contentAutoSaved" class="an saved">
+                            <i class="image-c-save-success"></i>已自动保存
+                        </span>
+                    </span>
+                    <a href="javascript:;" class="blue-c return-b" ng-click="back()">返回</a>
+                    <a href="javascript:;" class="save-b" ng-click="saveItem()">保存</a>
+                </div>
+            </div>
+
+
+            <!-- 编辑导学 -->
+            <div class="my-view" id="courseGuidance">
+                <div class="edit-w content-n">
+                    <div class="ew-h con">
+                        <div class="list-ac">
+                            <div class="block-grp">
+                                <div class="bw">
+                                    <a href="javascript:;" class="return-b back">
+                                        <p class="ic"><i class="image-con-head-back"></i></p>
+                                        <p>返回</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 编辑课程简介 -->
+            <div class="my-view" id="courseIntro" ng-controller="introCtrl">
+                <div ng-show="open === 'intro'">
+                    <content-edit config="contentConfig"></content-edit>
+                </div>
+                <!--<div class="edit-w content-n">-->
+                    <!--<div class="ew-h con">-->
+                        <!--<div class="list-ac">-->
+                            <!--<div class="block-grp">-->
+                                <!--<div class="bw">-->
+                                    <!--<a href="javascript:;" class="return-b back">-->
+                                        <!--<p class="ic"><i class="image-con-head-back"></i></p>-->
+                                        <!--<p>返回</p>-->
+                                    <!--</a>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+
+            <!-- 编辑课程内容 -->
+            <div class="my-view" id="courseDir" ng-controller="dirCtrl">
+                <div ng-show="open === 'dir'">
+                    <content-edit config="contentConfig"></content-edit>
+                </div>
+                <div ng-show="open === 'exam'">
+                    <paper-edit config="paperConfig"></paper-edit>
+                </div>
+            </div>
+
+            <!-- 编辑教学 -->
+            <!-- <div class="my-view" style="display:none;" id="courseTeach">
+                <div style="padding:160px 15px 100px;text-align:center;">
+                    <div><img src="imgs/icon-cloud.png" alt=""></div>
+                    <div style="padding-top:15px;color:#96979a;">功能正在建设中</a></div>
+                </div>
+            </div> -->
+
+            <!-- 编辑答疑 -->
+            <div class="my-view" id="courseQna">
+
+            </div>
+
+            <!-- 编辑活动 -->
+            <!-- <div class="my-view" style="display:none;" id="courseAct">
+                <div style="padding:160px 15px 100px;text-align:center;">
+                    <div><img src="imgs/icon-cloud.png" alt=""></div>
+                    <div style="padding-top:15px;color:#96979a;">功能正在建设中</a></div>
+                </div>
+            </div> -->
+
+            <!-- 编辑评测 -->
+            <div class="my-view" id="courseEva">
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+<tailnav></tailnav>
+
+
+<!--<chat getscope="getscope" position="left"></chat>-->
+
+
+<script src="../rcp-common/service/lib-default.min.js"></script>
+
+
+<!-- build:js course-edit/course-edit.min.js-->
+<!-- lib -->
+<script src="../cropper/dist/cropper.js"></script>
+<script src="../moment/moment.js"></script>
+<script src="../jquery.scrollTo/jquery.scrollTo.js"></script>
+<!-- lib end -->
+<script src="course-edit/course-edit-effect.js"></script>
+<script src="course-edit/course-edit.js"></script>
+<script src="service/course.js"></script>
+<!-- directive   -->
+<script src="../rcp-common/directive/image-slider/image-slider.js"></script>
+<script src="../rcp-common/directive/pagination/pagination.js"></script>
+<script src="../rcp-common/directive/dynamic/dynamicService.js"></script>
+<script src="../rcp-common/directive/textarea/textarea.js"></script>
+<script src="../rcp-common/directive/datetime/datetime-dir.js"></script>
+<script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+<script src="../rcp-common/directive/upload-img-base64/upload-img-base64.js"></script>
+<script src="../rcp-common/directive/zoom/zoom.js"></script>
+<script src="../rcp-common/directive/select-category/select-category-dir.js"></script>
+<script src="../rcp-common/directive/exam-loading/y-loading.js"></script>
+<!-- directive end    -->
+<!-- course content begin -->
+<script src="../wcms/www/js/wcms.js"></script>
+<script src="service/content.js"></script>
+<script src="service/exam.js"></script>
+<script src="directive/course-content/content-edit.js"></script>
+<script src="directive/course-content/content-group.js"></script>
+<script src="directive/course-content/content-editor.js"></script>
+<script src="directive/test-paper/paper-edit.js"></script>
+<!-- course content  end  -->
+<!-- endbuild -->
+
+<script src="../ckeditor/ckeditor.js"></script>
+<script src="../rcp-common/service/service.min.js"></script>
+
+<!-- endinject -->
+
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+<div class="cm-dialog" ng-show="dialog.show">
+    <div class="bg"></div>
+    <div class="frame-dialog">
+        <div class="dialog-title">
+            <span class="title" ng-bind="dialog.title || '温馨提示'"></span>
+            <a class="close" ng-click="dialog.show = false;">×</a>
+        </div>
+        <div class="info" ng-transclude></div>
+        <div class="btn">
+            <button class="ok" ng-click="ok()" ng-bind="dialog.okBtn || '确定'"></button>
+            <button class="cancel" ng-click="cancel()" ng-bind="dialog.cancelBtn || '取消'"></button>
+        </div>
+    </div>
+</div>

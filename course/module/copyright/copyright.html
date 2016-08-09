@@ -1,0 +1,80 @@
+<div class="copyright-wrap">
+    <h2>课程转让</h2>
+    <span class="to-transfer" ng-class="{disabled: !detailData.options || !detailData.options.length}" ng-click="detailData.options && detailData.options.length && toTransfer();"><i class="fa fa-exchange" aria-hidden="true"></i>转让课程</span>
+    <div class="nav-btn">
+        <span class="btn" ng-click="tabClick(0);" ng-class="{active: curTab == 0}">接收的课程</span>
+        <span class="btn" ng-click="tabClick(1);" ng-class="{active: curTab == 1}">转让的课程</span>
+    </div>
+    <!--接收课程列表-->
+    <section class="receive-course"  ng-show="curTab == 0">
+        <table class="copyright-table" border="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th>课程名称</th>
+                <th>版权作者</th>
+                <th>时间</th>
+                <th>转让状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody ng-show="receiveLoaded && receiveList.length">
+            <tr ng-repeat="item in receiveList">
+                <td ng-bind="item.name" title="{{item.name}}"></td>
+                <td ng-bind="item.toUser"></td>
+                <td ng-bind="item.time | date:'yyyy年M月d日'"></td>
+                <!--0 已接收，1 待接收，2 已拒绝-->
+                <td ng-bind="receiveStatusText[item.status] || ''" ng-class="{'text-blue': item.status == 1, 'text-red': item.status == 2, 'text-green': item.status == 3}"></td>
+                <td>
+                    <div class="operation">
+                        <!--<a ng-click="resolve(item, 1);" ng-class="{hidden: item.status != 1}">同意</a>-->
+                        <!--<a ng-click="reject(item);" ng-class="{hidden: item.status != 1}">拒绝</a>-->
+                        <a ng-click="resolve(item, 1);" ng-hide="item.status != 1">同意</a>
+                        <a class="m-l-30" ng-click="reject(item);" ng-hide="item.status != 1">拒绝</a>
+                        <a ng-class="{'m-l-30': item.status == 1}" ng-click="lookDetail(item, 0)">查看详情</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <loader-ui show="receiveLoaded"></loader-ui>
+        <empty-tip ng-show="receiveLoaded && !receiveList.length"></empty-tip>
+        <pagination ng-hide="!receiveLoaded || !receiveList.length" list="receiveList" pagefn="receiveLoadFn" pageargs="receivePage" class="s3 jump-hide"></pagination>
+    </section>
+    <!--转让课程列表-->
+    <section class="transfer-course" ng-show="curTab == 1">
+        <table class="copyright-table" border="0" cellspacing="0">
+            <thead>
+            <tr>
+                <th>课程名称</th>
+                <th>接收对象</th>
+                <th>时间</th>
+                <th>转让状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody ng-show="transferLoaded && transferList.length">
+            <tr ng-repeat="item in transferList">
+                <td ng-bind="item.name" title="{{item.name}}"></td>
+                <td ng-bind="item.toUser"></td>
+                <td ng-bind="item.time | date:'yyyy年M月d日'"></td>
+                <!--0 已转让，1 转让中，2 转让失败-->
+                <td ng-bind="transferStatusText[item.status] || ''" ng-class="{'text-blue': item.status == 1, 'text-red': item.status == 2, 'text-green': item.status == 3}"></td>
+                <td>
+                    <div class="operation">
+                        <!--<a ng-click="cancelTransfer(item);" ng-class="{hidden: item.status != 1}">取消转让</a>-->
+                        <a ng-click="cancelTransfer(item);" ng-hide="item.status != 1">取消转让</a>
+                        <a ng-class="{'m-l-30': item.status == 1}" ng-click="lookDetail(item, 1)">查看详情</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <loader-ui show="transferLoaded"></loader-ui>
+        <empty-tip ng-show="transferLoaded && !transferList.length"></empty-tip>
+        <pagination ng-hide="!transferLoaded || !transferList.length" list="transferList" pagefn="transferLoadFn" pageargs="transferPage" class="s3 jump-hide"></pagination>
+    </section>
+    <detail-modal type="modalType" data="detailData" show="modalShow"></detail-modal>
+    <confirm-modal dialog="dialog">
+        取消向 <span class="text-blue">{{dialog.user}}</span> 转让版权课程《{{dialog.course}}》
+    </confirm-modal>
+</div>

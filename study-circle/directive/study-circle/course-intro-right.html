@@ -1,0 +1,41 @@
+<div class="right-course-intro">
+    <div class="right-course-contentDiv" >
+        <a ng-href="{{backToCourse}}" target="_blank">
+        <img  ng-src="{{info.imgUrl || '/rcp-common/imgs/icon/gray-default-img.png'}}" class="right-course-img" >
+        </a>
+        <h2 class="right-course-title">
+            <a ng-href="{{backToCourse}}" target="_blank" ng-bind="info.title || '暂无标题'"></a>
+        </h2>
+        <!--<p>创建者</p>-->
+        <!--<p>导学老师</p>-->
+        <!--<p>课程描述</p>-->
+        <!--<p>课程服务态度</p>-->
+        <!--<p>课程质量</p>-->
+        <table>
+            <tbody>
+                <tr>
+                    <td class="table-left">创建者</td>
+                    <td class="table-right">暂无</td>
+                </tr>
+                <tr>
+                    <td class="table-left">导学老师</td>
+                    <td class="table-right">
+                        <p ng-repeat="i in teachers" ng-bind="i.name"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="table-left">课程描述</td>
+                    <td class="table-right">暂无</td>
+                </tr>
+                <tr>
+                    <td class="table-left">课程服务态度</td>
+                    <td class="table-right">暂无</td>
+                </tr>
+                <tr>
+                    <td class="table-left">课程质量</td>
+                    <td class="table-right">暂无</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

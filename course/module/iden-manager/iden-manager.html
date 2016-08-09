@@ -1,0 +1,98 @@
+<div class="iden-main">
+    <h2 class="mg-b20">认证管理（机构V+）</h2>
+
+    <table class="iden-course-list" ng-hide="showLoading" ng-if="courseList.length">
+        <thead>
+            <tr>
+                <th style="text-align: left; width: 387px;">申请课程</th>
+                <th></th>
+                <th>申请状态</th>
+                <th></th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="course in courseList track by $index">
+                <td class="iden-course-detail">
+                    <a ng-href="{{getCourseUrl(course.id)}}" ng-attr-title="{{course.title}}" target="_blank">
+                        <default-img class="mg-r15" src="course.img" conf="{width: 180, height: 100}"></default-img>
+                    </a>
+                    <div class="iden-course-detail-word">
+                        <ul>
+                            <li class="title">
+                                <a ng-href="{{getCourseUrl(course.id)}}" ng-attr-title="{{course.title}}" target="_blank" style="color: #2d2d2d;">
+                                    <span ng-bind="course.title"></span>
+                                </a>
+                            </li>
+                            <li class="time" ng-bind="'开课时间：' + (course.startTime == 0 ? '无' : (course.startTime | date: 'yyyy-MM-dd HH:mm'))"></li>
+                            <li class="time" ng-bind="'结课时间：' + (course.endTime == 0 ? '无' : (course.endTime | date: 'yyyy-MM-dd HH:mm'))"></li>
+                            <li style="font-size: 12px">
+                                <span class="color-cyan" ng-bind="course.joinNum"></span>人参与
+                                <span class="free-icon" ng-show="course.price === 0">免费</span>
+                                <span class="price-icon" ng-hide="course.price === 0" ng-bind="'￥' + (course.price | number: 2)"></span>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+                <td style="width: 1px">
+                    <div class="iden-course-detail-split"></div>
+                </td>
+                <td>
+                    <org-iden ng-repeat="org in course.orgList track by $index" config="org"></org-iden>
+                    <div style="text-align: center">
+                        <span ng-if="course.orgList.length === 0" style="color: #999;">暂无认证</span>
+                    </div>
+                </td>
+                <td style="width: 1px;">
+                    <div class="iden-course-detail-split"></div>
+                </td>
+                <td class="iden-course-operate">
+                    <button class="apply-btn" ng-click="showDialogFn($index)">申请认证</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <empty-tip ng-if="courseList.length === 0 && !showLoading"></empty-tip>
+
+    <loader-ui show="!showLoading"></loader-ui>
+
+    <div class="mg-t35 f-r">
+        <pagination class="page-bar s3 jump-hide" list="courseList" pagefn="pageFn" pageargs="pageArgs"></pagination>
+    </div>
+
+
+    <div class="iden-dialog" ng-show="orgShowDialog">
+        <div class="bg"></div>
+        <div class="frame-dialog">
+            <a class="close" ng-click="closeDialogFn()">×</a>
+            <p class="title">请选择需要认证的机构</p>
+            <div style="width: 757px; height: 324px; overflow-y: auto">
+                <ul class="iden-cur-org-list">
+                    <li ng-repeat="curOrg in curOrgList track by $index">
+                        <div ng-if="curOrg.isWaitingOrNormal">
+                            <!--<default-img src="curOrg.img || ''" conf="{width: 54, height: 54}" style="border-radius: 50%;" ng-click="curOrg.isSelected = !curOrg.isSelected"></default-img>-->
+                            <img ng-src="{{curOrg.img}}" width="54" height="54" style="border-radius: 50%" ng-click="curOrg.isSelected = !curOrg.isSelected" />
+                            <div class="name text-of" ng-bind="curOrg.name" title="{{curOrg.name}}" ng-click="curOrg.isSelected = !curOrg.isSelected"></div>
+                            <div>
+                                <i class="fa fa-check-square-o color-cyan" ng-show="curOrg.isSelected" ng-click="curOrg.isSelected = !curOrg.isSelected"></i>
+                                <i class="fa fa-square-o" ng-hide="curOrg.isSelected" ng-click="curOrg.isSelected = !curOrg.isSelected"></i>
+                            </div>
+                        </div>
+                        <div ng-if="!curOrg.isWaitingOrNormal" title="该机构已通过认证或正在认证中，不能再选">
+                            <img ng-src="{{curOrg.img}}" width="54" height="54" style="border-radius: 50%" />
+                            <div class="name" ng-bind="curOrg.name" title="{{curOrg.name}}"></div>
+                            <i class="fa fa-ban"></i>
+                        </div>
+                    </li>
+                </ul>
+
+                <empty-tip ng-if="curOrgList.length === 0"></empty-tip>
+            </div>
+            <div class="btn">
+                <div class="ok" ng-click="commitApply()" ng-hide="curOrgList.length === 0">发起申请</div>
+                <div class="cancel" ng-click="closeDialogFn()" ng-style="{'margin-left': curOrgList.length === 0 ? '0' : '42px'}">取消申请</div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,26 @@
+<!--
+/**
+ * 学习中心-我的课程-我的评价
+ * Created by ph2 on 2016/7/27.
+ */
+-->
+
+<div class="my-appraisal-tip-space">
+  <!--<a>我的评价</a>-->
+  <span data-ng-transclude></span>
+
+  <!-- 不可见层 用于 hover -->
+  <div class="detail-view-hover-wrap"
+       data-ng-class="{config.hoverWrapClass: true, 'width-xs': !text, 'width-lg': text.length>50}"
+       data-ng-style="config.hoverWrapStyle">
+    <!-- 内容层 -->
+    <div class="detail-view" data-ng-class="config.viewClass" data-ng-style="config.viewStyle">
+      <p class="title">我的评价：</p>
+      <div class="clearfix">
+        <appraise-grade-icon class="f-l" grade="grade" selected="true"></appraise-grade-icon>
+        <p class="content" data-ng-bind="text||''"></p>
+      </div>
+    </div>
+  </div>
+
+</div>

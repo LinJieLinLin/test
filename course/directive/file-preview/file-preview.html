@@ -1,0 +1,21 @@
+<div class="list-main" id="list-main">
+    <div class="view-paper" ng-repeat="paper in paperList" id="{{$index}}">
+        <div class="view-full"><a href="" ng-click="fullScreen()"><i class="image-preview-fullscreen"></i></a></div>
+        <img class="view-content" ng-src="{{paper.url}}" default="/course/imgs/preview-err.png" width="100%">
+    </div>
+    <div class="view-foot">
+        <div class="foot-tool-bar">
+            <div class="tool-page">
+                <a href="" ng-click="prePage()"><i class="image-preview-prev"></i></a>
+                <input type="text" ng-model="pageTgt" ng-blur="goToPage(pageTgt)" ng-keydown="goToPageKeyDown($event, pageTgt)">
+                <span>/{{totalPage}}</span>
+                <a href="" ng-click="nextPage()"><i class="image-preview-next"></i></a>
+            </div>
+            <div class="tool-list">
+                <a href="" ng-click="zoomIn()"><i class="image-preview-scale-1"></i></a>
+                <a href="" ng-click="zoomOut()"><i class="image-preview-scale-2"></i></a>
+                <a href="" ng-click="fullScreen()"><i class="image-preview-fullscreen"></i></a>
+            </div>
+        </div>
+    </div>
+</div>

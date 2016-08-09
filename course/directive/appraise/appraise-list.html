@@ -1,0 +1,138 @@
+
+<div class="appraise-space">
+  <div class="appraise-bd">
+
+    <div class="appraise-content-head">
+      <div class="title-bar">
+        <span>课程评价</span>
+      </div>
+    </div>
+
+    <div class="appraise-content-bd" ng-show="firstLoaded && !noAppraiseData">
+      <!-- 评价信息总览 -->
+      <div class="appraise-general">
+        <div class="reputation">
+          <div>
+            <span class="reputation-num" ng-bind="percentNum['0']">0</span>
+            <span class="reputation-sign">%</span>
+          </div>
+          <span class="reputation-text">赞过</span>
+        </div>
+
+        <div class="grade-info">
+          <span class="item">点赞（<span ng-bind="percentNum['0']">0</span>%）</span>
+          <span class="item">一般（<span ng-bind="percentNum['1']">0</span>%）</span>
+          <span class="item">点踩（<span ng-bind="percentNum['2']">0</span>%）</span>
+        </div>
+        <div class="grade-percent-graph">
+          <span class="percent-bar-group">
+            <span class="percent-bar" ng-style="{'width': percentBarStyle['0']}"></span>
+          </span>
+          <span class="percent-bar-group">
+            <span class="percent-bar" ng-style="{'width': percentBarStyle['1']}"></span>
+          </span>
+          <span class="percent-bar-group">
+            <span class="percent-bar" ng-style="{'width': percentBarStyle['2']}"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="appraise-toolbar">
+        <div class="grade-filter">
+          <span ng-click="filtrateGrades(-1)" class="item" ng-class="{selected: gradeShowed==-1}">全部（<span ng-bind="cmtResult.gradesCount">0</span>）</span>
+          <span ng-click="filtrateGrades(0)" class="item"  ng-class="{selected: gradeShowed==0}">点赞（<span ng-bind="cmtResult.grades['0']">0</span>）</span>
+          <span ng-click="filtrateGrades(1)" class="item" ng-class="{selected: gradeShowed==1}">一般（<span ng-bind="cmtResult.grades['1']">0</span>）</span>
+          <span ng-click="filtrateGrades(2)" class="item" ng-class="{selected: gradeShowed==2}">点踩（<span ng-bind="cmtResult.grades['2']">0</span>）</span>
+        </div>
+
+        <div class="checkbox-filter">
+          <div class="checkbox-ctrl" ng-click="toggleShowNullComment()">
+            <span class="checkbox">
+              <i class="fa fa-square-o fa-lg" ng-hide="showContentCommentOnly" style="margin-left: 1px"></i>
+              <i class="fa fa-check-square fa-lg" ng-show="showContentCommentOnly" style="color: #02c0b9;"></i>
+            </span>
+            <span>只看有内容的评价</span>
+          </div>
+        </div>
+      </div>
+
+      <div data-ng-show="commentLoaded" class="comment-space">
+      <!--<div class="comment-space">-->
+        <ul class="cmt-list">
+          <li ng-repeat="c in cmtResult.comments | limitTo:pageCount">
+            <div class="cmt-item clearfix">
+              <!-- 头像 -->
+              <div class="head-icon f-l">
+                <img class="pic" ng-src="{{c.avatar}}" alt="{{c.userNickName}}" title="{{c.userDesc}}">
+                <p class="name ellipsis" ng-bind="c.userNickName" title="{{c.userNickName}}">呢称</p>
+              </div>
+
+              <div class="cmt-detail">
+                <div class="row">
+                  <!-- 评价等级 -->
+                  <div class="comment-grade f-l">
+                    <div class="grade selected" ng-class="c.gradeIcon">
+                      <span class="icon" ng-bind="gradeTexts[c.grade]||''">赞</span>
+                    </div>
+                  </div>
+
+                  <!-- 内容 -->
+                  <div class="cmt-content">
+                    <p class="cmt-text" ng-bind="c.contentText"></p>
+                  </div>
+                </div>
+
+                <!-- 时间 -->
+                <div class="cmt-time" ng-bind="c.contentTime|chineseTime"></div>
+
+                <!-- 回复 -->
+                <div class="cmt-reply" ng-show="c.replies.length">
+                  <div class="reply-item" ng-repeat="r in c.replies">
+                    <div class="name-bd f-l"><span class="name ellipsis" ng-bind="r.userNickName" title="{{r.userNickName}}"></span>:</div>
+                    <div class="reply-ctt">
+                      <p class="reply-text" ng-bind="r.contentText"></p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </li>
+        </ul>
+        <!-- 当前筛选条件没有文字评价 -->
+        <div class="no-data" ng-show="!cmtResult.comments.length">
+          暂无评价
+        </div>
+      </div>
+
+      <!-- 评论列表加载 loader -->
+      <div data-ng-hide="commentLoaded" class="loading-section">
+        <loader-ui></loader-ui>
+      </div>
+
+      <!--<div class="appraise-notes" ng-show="showTip">-->
+        <!--<p>仅有打分、无文字的评价未做展示</p>-->
+      <!--</div>-->
+
+      <!-- 页码 -->
+      <div class="mg-t20" ng-show="type=='normal'">
+        <!-- class="page-bar s3"  -->
+        <pagination class="page-bar" pagefn="pagefn" pageargs="pageargs" list="cmtResult.comments"></pagination>
+      </div>
+      <div class="mg-t20" ng-if="lookMoreUrl">
+        <div class="show-more">
+          <a ng-href="{{lookMoreUrl}}" target="_blank">查看全部点评&nbsp;&gt;</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 该课程没有任何评价 -->
+    <div class="no-data" ng-show="firstLoaded && noAppraiseData">暂无评价</div>
+
+    <!-- 页面初始化 loader -->
+    <div ng-hide="firstLoaded" class="loading-section">
+      <loader-ui></loader-ui>
+    </div>
+  </div>
+
+</div>

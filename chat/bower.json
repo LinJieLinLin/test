@@ -1,0 +1,24 @@
+{
+    "name": "chat",
+    "version": "0.0.1",
+    "authors": [
+        "linj"
+    ],
+    "license": "NO",
+    "description": "chat",
+    "main": "index.html",
+    "moduleType": [],
+    "homepage": "index.html",
+    "ignore": [
+        "*.cmd",
+        "test",
+        "node_modules",
+        "bower_components"
+    ],
+    "dependencies": {
+        "rcp-common": "https://w.gdy.io/dyf_w/dyf.git#buildDev"
+    },
+    "scripts": {
+        "postinstall": "gulp build"
+    }
+}

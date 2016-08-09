@@ -1,0 +1,45 @@
+<div>
+    <div class="head-nav-sso">
+        <div class="sso-w" ng-class="config.extClass">
+            <div class="head-nav-left">
+                <div ng-repeat="sys in childSys track by $index">
+                    <a ng-href="{{sys.url}}">
+                        <i ng-class="sys.cM"></i>
+                        <span ng-bind="sys.name"></span>
+                        <span ng-if="!$last" class="seq">|</span>
+                    </a>
+                </div>
+            </div>
+            <div ng-hide="isIndex">
+                <div class="head-nav-right" ng-show="!userData.nickName">
+                    <span class="f">已有账号，</span>
+                    <a ng-href="{{loginUrl}}">马上登录</a>
+                </div>
+                <div class="head-nav-right" ng-show="userData.nickName">
+                    <span class="f">你好，</span>
+                    <span class="f" ng-bind="userData.nickName + '，'"></span>
+                    <a ng-click="logout();">马上退出</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-hide="hideBanner" class="head-nav-item">
+        <div class="sso-w" ng-class="config.extClass">
+            <div class="pos-l">
+                <span ng-repeat="info in pageInfo track by $index" ng-bind="info"></span>
+            </div>
+            <div class="pos-r">
+                <div ng-repeat="sys in childSys track by $index">
+                    <a href="" ng-href="{{sys.url}}">
+                        <i ng-class="sys.c"></i>
+                        <div>
+                            <span ng-bind="sys.name"></span>
+                            <span ng-bind="sys.desc"></span>
+                        </div>
+                    </a>
+                    <span ng-hide="$last" class="seq"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

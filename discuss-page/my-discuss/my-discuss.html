@@ -1,0 +1,191 @@
+<div>
+    <!--todo api无法进行搜索-->
+    <!--<div class="search-div" ng-show="mDiscussList.length">-->
+        <!--<input placeholder="搜索本版帖子" ng-model="searchKw" ng-keydown="onKeyDown($event)" />-->
+        <!--<div class="search-btn" ng-click="searchMyDiscuss()"></div>-->
+    <!--</div>-->
+
+    <div class="mg-t30" ng-hide="hasLogin" style="text-align: center; border: 1px solid #e8e8e8; color: #9c9c9c; padding: 40px 0;">
+        想要吐槽什么？请先 <a ng-click="toLogin()" style="vertical-align: initial">登录</a>
+    </div>
+
+    <table class="send-discuss" ng-if="hasLogin">
+        <tr>
+            <td>
+                <img class="avatar-img" ng-src="{{userInfo.avatar}}" />
+            </td>
+            <!--<td>-->
+                <!--<div class="send-editor">-->
+                    <!--<dyeditor model="myDiscuss.content" exceed="exceed" config="{id:'send-discuss',len:150,style:{minHeight:80,overflow:'auto'},placeholder:'你想说什么呢？'}" style="padding: 5px; border: none"></dyeditor>-->
+                    <!--<div class="up-img" ng-show="myDiscuss.uploadData.img.length">-->
+                        <!--<div ng-repeat="img in myDiscuss.uploadData.img track by $index">-->
+                            <!--<ng-img c="{img:img}" class="img"></ng-img>-->
+                            <!--<div class="close"></div>-->
+                            <!--<i class="fa fa-times" aria-hidden="true" ng-click="delImg($index)"></i>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                   <!--<div class="advance">-->
+                        <!--<a addface="myDiscuss.content" bindeditor="#send-discuss"><i class="fa fa-smile-o"></i></a>-->
+                        <!--<a ng-click="uploader()"><i class="fa fa-picture-o"></i></a>-->
+                        <!--<upload-img upload="myDiscuss.uploadData" select-file="uploadImgSelect"></upload-img>-->
+                    <!--</div>-->
+                    <!--<div class="submit">-->
+                        <!--<button ng-disabled=" !myDiscuss.content.length || exceed" ng-click="sendDiscuss()">发布</button>-->
+                    <!--</div>-->
+                    <!--<div style="clear: both;"></div>-->
+                <!--</div>-->
+            <!--</td>-->
+
+            <!-- 旧的 -->
+            <!--<td>-->
+                <!--<div class="send-editor">-->
+                    <!--<emotion-editor model="myDiscuss.content" exceed="exceed" config="{id: 'editor', limit: 150, style: {minHeight:80,overflow:'auto'}, placeholder: '你想说什么呢？'}" style="border: none;"></emotion-editor>-->
+                    <!--<div class="up-img" ng-show="myDiscuss.uploadData.img.length">-->
+                        <!--<div ng-repeat="img in myDiscuss.uploadData.img track by $index">-->
+                            <!--<ng-img c="{img:img}" class="img"></ng-img>-->
+                            <!--<div class="close"></div>-->
+                            <!--<i class="fa fa-times" aria-hidden="true" ng-click="delImg($index)"></i>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<div class="advance">-->
+                        <!--<button add-target="'#editor'"><i class="fa fa-smile-o"></i></button>-->
+                        <!--<button ng-click="uploader(uploadImgSelect)" ng-disabled="myDiscuss.uploadData.status=='uploading'"><i class="fa fa-picture-o"></i></button>-->
+                        <!--<upload-img upload="myDiscuss.uploadData" select-file="uploadImgSelect" is-uploading="myDiscuss.uploadData.status=='uploading'"></upload-img>-->
+                    <!--</div>-->
+                    <!--<div class="submit">-->
+                        <!--<button ng-disabled="!myDiscuss.content.length || exceed || isSending" ng-click="sendDiscuss()">发布</button>-->
+                    <!--</div>-->
+                    <!--<div style="clear: both;"></div>-->
+                <!--</div>-->
+            <!--</td>-->
+            <td>
+                <div class="send-editor">
+                    <editor-with-emoji id="editor-emoji"
+                                       style="border: none;"
+                                       content="myDiscuss.content"
+                                       exceed="exceed"
+                                       config="{limit: 150, style: {minHeight:80,overflow:'auto'}, placeholder: '你想说什么呢？'}"></editor-with-emoji>
+
+                    <div class="up-img" ng-show="myDiscuss.uploadData.img.length">
+                        <div ng-repeat="img in myDiscuss.uploadData.img track by $index">
+                            <ng-img c="{img:img}" class="img"></ng-img>
+                            <div class="close"></div>
+                            <i class="fa fa-times" aria-hidden="true" ng-click="delImg($index)"></i>
+                        </div>
+                    </div>
+                    <div class="advance" style="position: relative;">
+                        <button data-ng-click="showEmojiPicker=!showEmojiPicker;$event.stopPropagation();"><i class="fa fa-smile-o"></i></button>
+                        <button ng-click="uploader(uploadImgSelect)" ng-disabled="myDiscuss.uploadData.status=='uploading'"><i class="fa fa-picture-o"></i></button>
+                        <upload-img class="swf-up-35" upload="myDiscuss.uploadData" select-file="uploadImgSelect" is-uploading="myDiscuss.uploadData.status=='uploading'"></upload-img>
+                    </div>
+                    <div class="submit">
+                        <button ng-disabled="!myDiscuss.content.length || exceed || isSending" ng-click="sendDiscuss()">发布</button>
+                    </div>
+                    <div style="position: relative;">
+                        <editor-emoji-picker showed="showEmojiPicker"
+                                             editor="'#editor-emoji'"
+                                             style="top: 35px; left: 11px;"></editor-emoji-picker>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+            </td>
+
+            <!--<td>-->
+                <!--&lt;!&ndash;<textarea id="editor" title="content" ng-model="myDiscuss.content"></textarea>&ndash;&gt;-->
+                <!--<emotion-editor model="myDiscuss.content" exceed="exceed" config="{id: 'editor', limit: 150, style: {minHeight:80,overflow:'auto'}, placeholder: '你想说什么呢？'}"></emotion-editor>-->
+                <!--<a add-target="'#editor'"><i class="fa fa-smile-o"></i></a>-->
+            <!--</td>-->
+            <!--<td ng-bind-html="myDiscuss.content | emotion"></td>-->
+        </tr>
+    </table>
+
+    <div class="my-discuss-head">
+        <div class="my-discuss-icon"></div>我发的帖子
+    </div>
+
+    <div style="text-align: center; padding: 15px 0;" ng-hide="showLoading || mDiscussList.length">
+        <div style="margin-left: auto; margin-right: auto;">
+            <img src="course/imgs/icon-cloud.png" />
+        </div>
+        <div class="pd-t10">暂无数据</div>
+    </div>
+
+    <ul class="discuss-list" ng-hide="showLoading || !mDiscussList.length">
+        <li ng-repeat="discuss in mDiscussList track by $index">
+            <table>
+                <tr ng-if="discuss.imgList.length">
+                    <td class="content">
+                        <!--<a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank" title="{{discuss.content}}" ng-bind-html="discuss.content | sanitize"></a>-->
+                        <a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank">
+                            <span ng-bind-html="discuss.content | encodeHtml | emojiUnifiedToCss | html"></span>
+                        </a>
+                    </td>
+                    <td class="img">
+                        <a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank">
+                            <!--<img ng-src="{{discuss.imgList[0]}}" />-->
+                            <ng-img c="{img: discuss.imgList[0]}"></ng-img>
+                        </a>
+                    </td>
+                </tr>
+                <tr ng-if="!discuss.imgList.length">
+                    <td colspan="2" class="single-content">
+                        <!--<a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank" title="{{discuss.content}}" ng-bind-html="discuss.content | sanitize"></a>-->
+                        <a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank">
+                            <span ng-bind-html="discuss.content | encodeHtml | emojiUnifiedToCss | html"></span>
+                        </a>
+                    </td>
+                </tr>
+                <!--<tr ng-if="discuss.content =='' && discuss.imgList.length">-->
+                    <!--<td colspan="2">-->
+                        <!--<div class="single-img" ng-repeat="imgsrc in discuss.imgList track by $index">-->
+                            <!--<a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank">-->
+                                <!--<ng-img c="{img: imgsrc}"></ng-img>-->
+                            <!--</a>-->
+                        <!--</div>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            </table>
+            <table>
+                <tr>
+                    <td class="usr-info">
+                        <span ng-bind="discuss.subTime | date: 'yyyy-MM-dd HH:mm'" style="margin: 0"></span>
+                    </td>
+                    <td class="img">
+                        <table>
+                            <tr>
+                                <td>
+                                    <!--<div class="read-icon"></div>-->
+                                    <i class="fa fa-lg fa-eye"></i>
+                                    <span ng-bind="discuss.readNum"></span>
+                                </td>
+                                <td>
+                                    <!--<div class="like-icon"></div>-->
+                                    <i class="fa fa-lg fa-thumbs-o-up"></i>
+                                    <span ng-bind="discuss.likeNum"></span>
+                                </td>
+                                <td>
+                                    <!--<div class="reply-icon"></div>-->
+                                    <i class="fa fa-lg fa-commenting-o fa-flip-horizontal"></i>
+                                    <span ng-bind="discuss.replyNum"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </li>
+    </ul>
+
+    <div ng-hide="showLoading" style="margin: 50px 0;">
+        <pagination class="page-bar s3 jump-hide" list="mDiscussList" pageargs="pageargs" pagefn="pagefn"></pagination>
+    </div>
+</div>
+
+<div class="loader-ui-style" ng-show="showLoading">
+    <loader-ui></loader-ui>
+</div>
+
+<script type="application/javascript">
+    $('.switch-tab-list li').removeClass('active');
+    $("[href='#/my-discuss']").parent().addClass('active');
+</script>

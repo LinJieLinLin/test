@@ -1,0 +1,27 @@
+{
+  "name": "emoji",
+  "description": "emoticon pictures",
+  "main": "",
+  "authors": [
+    "ph2"
+  ],
+  "license": "NO",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "940fa37e25",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "940fa37e2563b36d875a65ac42c0c7ec11f6fab9"
+  },
+  "_source": "https://w.gdy.io/dyf_w/emoji.git",
+  "_target": "*",
+  "_originalSource": "https://w.gdy.io/dyf_w/emoji.git"
+}

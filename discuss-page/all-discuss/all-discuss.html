@@ -1,0 +1,91 @@
+<div>
+    <div class="search-div">
+        <input placeholder="搜索本版帖子" ng-model="searchKw" ng-keydown="onKeyDown($event)" />
+        <div class="search-btn" ng-click="searchDiscuss()"></div>
+    </div>
+    <div style="text-align: center; padding: 15px 0;" ng-hide="showLoading || discussList.length">
+        <div style="margin-left: auto; margin-right: auto;">
+            <img src="course/imgs/icon-cloud.png" />
+        </div>
+        <div class="pd-t10">暂无数据</div>
+    </div>
+    <ul class="discuss-list" ng-hide="showLoading || !discussList.length">
+        <li ng-repeat="discuss in discussList track by $index">
+            <table>
+                <tr ng-if="discuss.imgList.length">
+                    <td class="content">
+                        <a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank">
+                            <span ng-bind-html="discuss.content | encodeHtml | emojiUnifiedToCss | html"></span>
+                        </a>
+                    </td>
+                    <td class="img">
+                        <a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank">
+                            <!--<img ng-src="{{discuss.imgList[0]}}" />-->
+                            <ng-img c="{img: discuss.imgList[0]}"></ng-img>
+                        </a>
+                    </td>
+                </tr>
+                <tr ng-if="!discuss.imgList.length">
+                    <td colspan="2" class="single-content">
+                        <a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank">
+                            <span ng-bind-html="discuss.content | encodeHtml | emojiUnifiedToCss | html"></span>
+                        </a>
+                    </td>
+                </tr>
+                <!--<tr ng-if="discuss.content =='' && discuss.imgList.length">-->
+                    <!--<td colspan="2">-->
+                        <!--<div class="single-img" ng-repeat="imgsrc in discuss.imgList track by $index">-->
+                            <!--<a ng-href="{{getDiscussUrl(discuss.id)}}" target="_blank">-->
+                                <!--&lt;!&ndash;<img ng-src="{{imgsrc}}" />&ndash;&gt;-->
+                                <!--<ng-img c="{img: imgsrc}"></ng-img>-->
+                            <!--</a>-->
+                        <!--</div>-->
+                    <!--</td>-->
+                <!--</tr>-->
+            </table>
+            <table>
+                <tr>
+                    <td class="usr-info">
+                        <img ng-src="{{getUserData(discuss.usrId).attrs.basic.avatar}}" />
+                        <span ng-bind="getUserData(discuss.usrId).attrs.basic.nickName"></span>
+                        <span ng-bind="discuss.subTime | date: 'yyyy-MM-dd HH:mm'"></span>
+                    </td>
+                    <td class="img">
+                        <table>
+                            <tr>
+                                <td>
+                                    <!--<div class="read-icon"></div>-->
+                                    <i class="fa fa-lg fa-eye"></i>
+                                    <span ng-bind="discuss.readNum"></span>
+                                </td>
+                                <td>
+                                    <!--<div class="like-icon"></div>-->
+                                    <i class="fa fa-lg fa-thumbs-o-up"></i>
+                                    <span ng-bind="discuss.likeNum"></span>
+                                </td>
+                                <td>
+                                    <!--<div class="reply-icon"></div>-->
+                                    <i class="fa fa-lg fa-commenting-o fa-flip-horizontal"></i>
+                                    <span ng-bind="discuss.replyNum"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </li>
+    </ul>
+
+    <div ng-hide="showLoading" style="margin: 50px 0;">
+        <pagination class="page-bar s3 jump-hide" list="discussList" pageargs="pageargs" pagefn="pagefn"></pagination>
+    </div>
+</div>
+
+<div class="loader-ui-style" ng-show="showLoading">
+    <loader-ui></loader-ui>
+</div>
+
+<script type="application/javascript">
+    $('.switch-tab-list li').removeClass('active');
+    $("[href='#/all-discuss']").parent().addClass('active');
+</script>

@@ -1,0 +1,44 @@
+{
+    "name": "rcp-common",
+    "version": "0.0.1",
+    "authors": [
+        "linj"
+    ],
+    "license": "NO",
+    "description": "rcp-common",
+    "main": "index.html",
+    "moduleType": [],
+    "homepage": "index.html",
+    "ignore": [
+        "**/.*",
+        "*.cmd",
+        "test",
+        "node_modules",
+        "bower_components"
+    ],
+    "dependencies": {
+        "jquery": "1.11.1",
+        "angular": "1.2.9",
+        "angular-cookies": "1.2.9",
+        "angular-route": "1.2.9",
+        "angular-sanitize": "1.2.9",
+        "moment": "2.8.4",
+        "angular-local-storage": "0.1.5",
+        "font-awesome": "4.4.0",
+        "js-base64": "2.1.9",
+        "cropper": "0.11.1",
+        "gray": "1.4.5",
+        "jquery.scrollTo": "",
+        "ckeditor": "#full/4.5.5",
+        "highcharts.com": "4.2.5",
+        "jswf": "https://github.com/Centny/jswf.git",
+        "config-dy": "https://w.gdy.io/dyf_w/conf.git",
+        "ars": "https://w.gdy.io/dyf_w/ars.js.git",
+        "ckeditor_ext": "https://w.gdy.io/dyf_w/ckeditor_ext.git",
+        "emoji": "https://w.gdy.io/dyf_w/emoji.git",
+        "js-emoji": "3.0.2"
+    },
+    "scripts": {
+        "postinstall": "gulp build"
+    }
+}

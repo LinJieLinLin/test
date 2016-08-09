@@ -1,0 +1,32 @@
+{
+  "name": "study-circle",
+  "authors": [
+    "linj"
+  ],
+  "license": "NO",
+  "description": "study-circle",
+  "main": "index.html",
+  "moduleType": [],
+  "homepage": "index.html",
+  "ignore": [
+    "*.cmd",
+    "test",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "rcp-common": "https://w.gdy.io/dyf_w/dyf.git#buildDev"
+  },
+  "scripts": {
+    "postinstall": "gulp build"
+  },
+  "_release": "42bab882f1",
+  "_resolution": {
+    "type": "branch",
+    "branch": "buildDev",
+    "commit": "42bab882f14954c1b776eb27fdaf5376cb8f966b"
+  },
+  "_source": "https://w.gdy.io/dyf_w/dms.git",
+  "_target": "buildDev",
+  "_originalSource": "https://w.gdy.io/dyf_w/dms.git"
+}

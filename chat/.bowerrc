@@ -1,0 +1,5 @@
+{
+  "registry": "http://bower.gdy.io",
+  "timeout": 300000,
+  "directory" : "../"
+}

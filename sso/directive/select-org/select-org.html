@@ -1,0 +1,12 @@
+<div class="select-org">
+    <div class="org-list">
+        <label class="org-g" for="name-{{$index}}" ng-repeat="tag in list track by $index">
+            <input type="checkbox" id="name-{{$index}}" ng-model="tag.select">
+            <span class="o-name" title="">{{tag.name}}</span>
+        </label>
+    </div>
+    <div class="org-btn">
+        <a href="" class="confirm" ng-click="confirm()">确定</a>
+        <a href="" class="cancel" ng-click="cancel()">取消</a>
+    </div>
+</div>

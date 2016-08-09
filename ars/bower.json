@@ -1,0 +1,22 @@
+{
+    "name": "ars.js",
+    "version": "0.0.1",
+    "authors": [
+        "wensh"
+    ],
+    "license": "NO",
+    "ignore": [
+        "**/.*",
+        "**/node_modules",
+        "src",
+        "**/bower_components",
+        "www/test"
+    ],
+    "devDependencies": {
+        "angular": "1.2.9"
+    },
+    "dependencies": {
+        "jquery": "1.11.1",
+        "jswf": "https://github.com/Centny/jswf.git"
+    }
+}

@@ -1,0 +1,291 @@
+<div ng-class=" (data.result === 'error' || data.result === 'noAnswer') && resolvestatus===1 ? 'a-q error' : resolvestatus && resolvestatus != 4 ? 'a-q' : 'a-q has-border'" id="question-{{data.index}}" q-type="{{qType}}">
+
+    <div class="inw">
+        <span class="k-num">{{data.index+1}}.
+            <span ng-show="qIType === 'e_sel' && qCType === 'single'">【单选题】</span>
+            <span ng-show="qIType === 'e_sel' && qCType === 'multi'">【多选题】</span>
+            <span ng-show="qIType === 'e_sel' && qCType === 'judge'">【判断题】</span>
+            <span ng-show="qIType === 'e_fill'">【填空题】</span>
+            <span ng-show="qIType === 'e_text' ">【简答题】</span>
+            <span class="k-num-score" ng-show="!resolvestatus || resolvestatus == 4">( <span ng-bind="data.c.score"></span>分 )</span>
+       </span>
+        <div id="exam-question" class="question-style" ng-bind-html="data.c.text | sanitize"></div>
+        <!--<div class="question-style" ng-bind-html="data.mytext | sanitize" ng-show="qIType=== 'e_fill'"></div>-->
+
+        <div class="choose" ng-if="qIType === 'e_sel'">
+            <ul>
+                <li ng-repeat="d in option track by $index" ng-click="select(d,$index)" ng-class="{'option-hover':!resolvestatus ,'option':true}">
+                    <div ng-hide="resolvestatus" class="hover-bg"></div>
+                    <div class="label">
+
+                            <label class="my-single-input"  ng-show="qCType === 'single'">
+                                <label ng-hide="resolvestatus == 4">
+                                    <label ng-class="{'single-checked':isClicked[$index]}"></label>
+                                    <label ng-class="optionClass(data,$index)"></label>
+                                </label>
+                                 <!--<input  type="radio" id="t-radio-{{data.index}}"  ng-model="isClicked[$index]" value="{{$index+1}}">-->
+                            </label>
+
+                            <label class="my-judge-input" ng-class="{'judge-checked-t': isClicked[$index],'{{optionClass(data,$index)}}': resolvestatus && resolvestatus != 4}"  ng-show="qCType ==='judge'">
+                                <label ng-class="{'judge-checked-r':isClicked[$index],'judge-unchecked-r':!isClicked[$index]}"  ng-show="$index === 0"></label>
+                                <label ng-class="{'judge-checked-e-up':isClicked[$index],'judge-unchecked-e-up':!isClicked[$index]}"  ng-show="$index === 1"></label>
+                                <label ng-class="{'judge-checked-e-dw':isClicked[$index],'judge-unchecked-e-dw':!isClicked[$index]}"  ng-show="$index === 1"></label>
+                                <!--<input  type="radio" id="t-judge-{{data.index}}" ng-model="isClicked[$index]"  value="{{$index+1}}">-->
+                            </label>
+
+                            <label class="my-multi-input"  ng-show="qCType === 'multi'">
+                                <label  ng-hide="resolvestatus == 4">
+                                    <label ng-class="{'multi-checked':isClicked[$index]}" ></label>
+                                    <label ng-class="optionClass(data,$index)" ></label>
+                                </label>
+                                <!--<input  type="checkbox" id="t-ckb-{{data.index}}" ng-model="isClicked[$index]"     >-->
+                            </label>
+
+                        <span  class="choice-char"  ng-hide="qIType === 'e_text' || qCType === 'judge'" ng-bind="toChar($index)+' .'"></span>
+                        <div ng-class="{'judge-padding':qCType === 'judge','nojudge-padding':qCType !== 'judge'}">
+                            <span ng-bind-html="d | sanitize"></span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="choose" ng-if="!resolvestatus && qIType === 'e_fill'">
+            <ul>
+            <li ng-repeat="d in data.fill track by $index" class="option">
+                <span class="mg-r10 gray-c">( {{$index+1}} )</span>
+                <input  id="q-input-{{data.index}}-{{$index}}"  class="fill-input" ng-model="data.fill[$index]"  ng-focus="setFillAnswer($index)" ng-blur="setFillAnswer($index)" ng-change="setFillAnswer($index)" placeholder="请输入你的答案">
+            </li>
+            </ul>
+        </div>
+
+        <div class="answer" ng-if="!resolvestatus && qIType === 'e_text' ">
+            <div class="answerIntro">答题区:</div>
+            <!--<dyeditor style="padding: 6px; margin: 20px 0;" model="data.answerContent"  config="{id:'',style:{minHeight:80,overflow:'auto'},placeholder:'请输入内容'}"></dyeditor>-->
+
+            <textarea id="ck-{{data.index}}" ng-model="data.answerContent" ng-blur="blurText($event)" ng-focus="recordTextAns()" ng-change="recordTextAns()" ></textarea>
+            <!--<div id="" args="{}" ng-model="data.answerContent" ng-editor contenteditable="true" ng-bind-html="" style="width:100%;height: 200px; border: 1px solid #e8e8e8; margin-top: 20px;"></div>-->
+        </div>
+
+        <div class="show-answer" ng-show="seeanddo">
+            <button ng-click="seeanddoTemp = !seeanddoTemp">查看解析</button>
+            <!--<i class="fa fa-star-o" style="color: #999999;"></i>-->
+            <!--<button style="background-color: transparent;border: 0 solid;font-size: 14px; color: #999999;  text-align: center;">收藏</button>-->
+        </div>
+
+    </div>
+
+    <!-- 解析  批改  查看成绩-->
+    <div ng-if="resolvestatus && resolvestatus != 4" ng-class="'resolve '">
+        <div class="top-triangle"></div>
+        <div class="inw" ng-show="qIType != 'e_text'">
+
+            <i ng-class="{'fa fa-meh-o noanswer':data.result === 'noAnswer','fa fa-frown-o error': data.result === 'error','fa fa-smile-o correct':data.result === 'correct'}" class="face-image"></i>
+            <span ng-show="data.result === 'noAnswer'" class="noanswer">未作答</span>
+            <span ng-show="data.result === 'error'" class="error">回答错误</span>
+            <span ng-show="data.result === 'correct'" class="correct">回答正确</span>
+            <span ng-show="resolvestatus == 1">
+                <span ng-bind=" '| ' + data.useScore" class="middle-vertical"></span><span ng-bind="'/'+data.c.score+'分'" class="middle-vertical"></span>
+            </span>
+
+            <p class="self-p" ng-if="qCType == 'single' || qCType == 'multi'">正确答案是
+                <span ng-repeat="ans in data.c.answer track by $index" ng-bind="toChar(ans)" class="correctspan"></span>
+            </p>
+
+            <p class="self-p" ng-show="qCType == 'judge'">正确答案是
+                <span ng-show="data.c.answer[0] == 0"  class="correctjudge0"></span>
+                <span class="usually-inline">
+                    <span ng-show="data.c.answer[0] == 1" class="correctjudge1up"></span>
+                    <span ng-show="data.c.answer[0] == 1" class="correctjudge1down"></span>
+                </span>
+            </p>
+
+            <p class="self-p" ng-show="data.result === 'error' && qIType === 'e_sel' && qCType!== 'judge'" >您的答案是
+                <span ng-bind="toNum(answerlist[data.groupIndex][data.questionIndex].answer)" class="errorspan"></span>
+            </p>
+
+            <p class="self-p" ng-show="data.result === 'error' && qIType === 'e_sel'  && qCType=== 'judge'" >您的答案是
+                <span ng-show="answerlist[data.groupIndex][data.questionIndex].answer[0]" class="errorjudge0"></span>
+                <span class="usually-inline">
+                    <span ng-show="answerlist[data.groupIndex][data.questionIndex].answer[1]" class="errorjudge1up"></span>
+                    <span ng-show="answerlist[data.groupIndex][data.questionIndex].answer[1]" class="errorjudge1down"></span>
+                </span>
+
+            </p>
+
+            <div ng-if="qIType == 'e_fill'">
+                <p class="self-p">正确答案是</p>
+                <!--<span ng-show="!data.c.answer">空</span>-->
+                <!--<div ng-repeat="d in data.c.answer track by $index" class="answer-position">-->
+                    <!--<span class="gray-c f-l">( {{$index+1}} )</span>-->
+                    <!--<span class="f-l" ng-repeat="ans in d track by $index" style="color: #2bc866;">-->
+                        <!--<span ng-bind="ans+'/'" ng-show="$index !== (d.length-1)"></span>-->
+                        <!--<span ng-show="$index === (d.length-1)" ng-bind="ans"></span>-->
+                    <!--</span>-->
+                    <!--<div class="clear"></div>-->
+                <!--</div>-->
+
+                <div class="answer-position">
+                    <span ng-bind-html="fillAnsArray|sanitize"></span>
+                </div>
+                <div class="clear"></div>
+
+                <div ng-if="data.result === 'error'">
+                    <p class="self-p">您的答案是</p>
+                    <span ng-repeat="d in answerlist[data.groupIndex][data.questionIndex].answer track by $index" class="answer-position">
+                        <span class="gray-c f-l">( {{$index+1}} ) </span>
+                        <span class="f-l"  ng-bind="d" ng-class="{'correctspan':data.c.answer[$index].indexOf(d) !== -1,'errorspan':data.c.answer[$index].indexOf(d) === -1}"></span>
+                        <!--<div class="clear"></div>-->
+                    </span>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <p class="self-p" style="padding-bottom: 20px;">
+                <!--本题被作答<span >555</span>次 , 正确率为<span >80%</span>-->
+                <button class="resolve-show" ng-click="showResolveTemp = !showResolveTemp" ng-show="!showResolveTemp">
+                    试题解析
+                    <i class="fa fa-angle-down" ></i>
+                </button>
+                <button class="resolve-show" ng-click="showResolveTemp = !showResolveTemp" ng-show="showResolveTemp">试题解析
+                    <i class="fa fa-angle-up" ></i>
+                </button>
+            </p>
+            <div class="resolve-info-div" ng-show="!showResolveTemp">
+                <span class="span1">【解析】</span>
+                <div class="self-desc" ng-bind-html="data.c.analyze | sanitize"></div>
+            </div>
+            <div class="correcting-score-show" ng-show="resolvestatus == 2 || resolvestatus == 3">
+                <span class="f-l">得分：</span>
+                <div class="self-score-div" >
+                    <span ng-bind="data.c.score" ng-show="data.result === 'correct'" class="middle-vertical"></span>
+                    <span ng-show="data.result !== 'correct'" class="sub-vertical" ng-bind="data.useScore"></span>
+                </div>
+                <span class="self-score-total">(本题共<span ng-bind="data.c.score"></span>分)</span>
+            </div>
+        </div>
+
+        <div class="inw" ng-show="qIType == 'e_text'">
+            <span ng-show="resolvestatus == 1">
+                <span ng-bind="data.useScore" class="middle-vertical"></span><span ng-bind="'/'+data.c.score+'分'" class="middle-vertical"></span>
+
+            </span>
+            <div class="cyan-c mg-b10" style="margin: 10px 0;">
+                <span ng-hide="resolvestatus ==2 || resolvestatus == 3">您的答案是：</span>
+                <span ng-show="resolvestatus ==2 || resolvestatus == 3">学生的答案是：</span>
+                <!--<span ng-show="!data.answer.aItem[0]">空</span>-->
+                <div class="max" ng-bind-html="answerlist[data.groupIndex][data.questionIndex].answer.toString()|sanitize"></div>
+            </div>
+            <div class="cyan-c mg-b10">
+                <p class="self-p">正确答案是：</p>
+                <!--<span ng-show="!data.answer.aItem[0]">空</span>-->
+                <div class="max" ng-bind-html="data.c.answer.toString()|sanitize"></div>
+            </div>
+
+            <div class="resolve-info-div" >
+                <span class="span1">【解析】</span>
+                <div class="self-desc" ng-bind-html="data.c.analyze | sanitize"></div>
+            </div>
+
+            <label for="add-button-{{data.index}}" class="addText-mask" ng-show="resolvestatus == 2 && !answerlist[data.groupIndex][data.questionIndex].nodone"></label>
+            <div ng-show="resolvestatus == 2 && !answerlist[data.groupIndex][data.questionIndex].nodone">
+                <label class="triangle-label-up" ng-show="textResolveTemp && !answerlist[data.groupIndex][data.questionIndex].nodone"></label>
+                <label for="add-button-{{data.index}}" class="triangle-label-down" ng-show="!textResolveTemp && !answerlist[data.groupIndex][data.questionIndex].nodone"></label>
+                <button id="add-button-{{data.index}}" class="add-button" ng-click="closeMyText()" ng-show="resolvestatus == 2 && !answerlist[data.groupIndex][data.questionIndex].nodone">补充解析</button>
+            </div>
+
+            <div ng-show="textResolveTemp && resolvestatus == 2">
+                <div class="resolve-text" ng-show="!textResolveFinish">
+                    <!--<dyeditor class="my-dyedit" model="answerlist[data.groupIndex][data.questionIndex].analyze" exceed="circle.exceed" config="{id:'reply-circle-'+$index,style:{minHeight:80,overflow:'auto'},placeholder:'请输入内容'}"></dyeditor>-->
+                    <textarea class="my-textarea" ng-model="answerlist[data.groupIndex][data.questionIndex].analyze" placeholder="请输入内容"></textarea>
+                    <button ng-click="correctPaper(true)">提交</button>
+                </div>
+                <div class="resolve-text-after"ng-show="textResolveFinish">
+                    <div class="my-textareaAfter" ng-bind="answerlist[data.groupIndex][data.questionIndex].analyze"></div>
+                    <button class="my-textarea-editbtn" ng-click="addResolveText()">
+                        <i class="fa fa-pencil-square-o" class="self-i"></i>
+                        <span>编辑</span>
+                    </button>
+                </div>
+
+            </div>
+            <div class="resolve-info-div1" ng-show="resolvestatus == 3 && answerlist[data.groupIndex][data.questionIndex].analyze">
+                <div>【补充解析】</div>
+                <div ng-bind-html="answerlist[data.groupIndex][data.questionIndex].analyze|sanitize" class="add-content-left"></div>
+            </div>
+            <div class="resolve-info-div2" ng-show="resolvestatus == 1 && answerlist[data.groupIndex][data.questionIndex].analyze">
+                <div>【补充解析】</div>
+                <div ng-bind-html="answerlist[data.groupIndex][data.questionIndex].analyze|sanitize" class="add-content-left"></div>
+            </div>
+            <div class="gain-score" ng-show="resolvestatus == 2 || resolvestatus == 3">
+                <span class="f-l">得分：</span>
+                <input class="gain-input" ng-model="answerlist[data.groupIndex][data.questionIndex].score.score" ng-blur="correctPaperScore()" ng-show="resolvestatus == 2" ng-disabled="answerlist[data.groupIndex][data.questionIndex].nodone">
+                <input class="gain-input-none" ng-disabled="true" ng-show="resolvestatus == 3" ng-value="answerlist[data.groupIndex][data.questionIndex].score.score">
+                <span class="gain-span">(本题共<span ng-bind="data.c.score"></span>分)</span>
+                <span id="correctingTip-{{data.index}}" class="gain-tip"><i class="fa fa-check-circle-o"></i>已自动保存</span>
+            </div>
+        </div>
+    </div>
+
+    <!--边做边看-->
+    <div ng-if="seeanddo && seeanddoTemp" ng-class="'resolve '">
+        <div class="top-triangle"></div>
+        <div class="inw" ng-show="qIType != 'e_text'">
+
+            <p class="self-p" ng-show="qCType == 'single' || qCType == 'multi'">正确答案是
+                <span ng-repeat="ans in data.c.answer track by $index" ng-bind="toChar(ans)" class="correctspan"></span>
+            </p>
+
+            <p class="self-p" ng-show="qCType == 'judge'">正确答案是
+                <span ng-show="data.c.answer[0] == 0"  class="correctjudge0"></span>
+                <span class="usually-inline">
+                    <span ng-show="data.c.answer[0] == 1" class="correctjudge1up"></span>
+                    <span ng-show="data.c.answer[0] == 1" class="correctjudge1down"></span>
+                </span>
+            </p>
+
+            <div ng-if="qIType == 'e_fill'">
+                <p>正确答案是</p>
+                <!--<span ng-show="!data.c.answer">空</span>-->
+                <!--<div ng-repeat="d in data.c.answer track by $index" class="answer-position">-->
+                    <!--<span class="gray-c f-l">( {{$index+1}} )</span>-->
+                    <!--<span class="f-l" ng-repeat="ans in d track by $index" style="color: #2bc866;">-->
+                        <!--<span ng-bind="ans+'/'" ng-show="$index !== (d.length-1)"></span>-->
+                        <!--<span ng-show="$index === (d.length-1)" ng-bind="ans"></span>-->
+                    <!--</span>-->
+                    <!--<div class="clear"></div>-->
+                <!--</div>-->
+
+                <div class="answer-position">
+                    <span ng-bind-html="fillAnsArray|sanitize"></span>
+                </div>
+                <div class="clear"></div>
+
+            </div>
+            <p class="self-p" style="padding-bottom: 20px;">
+                <!--本题被作答<span >555</span>次 , 正确率为<span >80%</span>-->
+                <button class="resolve-show" ng-click="showResolveTemp = !showResolveTemp" ng-show="!showResolveTemp">
+                    试题解析
+                    <i class="fa fa-angle-down" ></i>
+                </button>
+                <button class="resolve-show" ng-click="showResolveTemp = !showResolveTemp" ng-show="showResolveTemp">试题解析
+                    <i class="fa fa-angle-up" ></i>
+                </button>
+            </p>
+            <div class="resolve-info-div" ng-show="!showResolveTemp">
+                <span class="span1">【解析】</span>
+                <div class="self-desc" ng-bind-html="data.c.analyze | sanitize"></div>
+            </div>
+
+        </div>
+
+        <div class="inw" ng-show="qIType == 'e_text'">
+            <p class="self-p">正确答案是</p>
+            <div ng-bind-html="data.c.answer.toString() | sanitize" style="padding-bottom: 20px;"></div>
+            <div class="resolve-info-div" >
+                <span class="span1">【解析】</span>
+                <div class="self-desc" ng-bind-html="data.c.analyze | sanitize" ></div>
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta   http-equiv="Cache-Control"   CONTENT="no-cache">
+    <meta   http-equiv="Pragma"   CONTENT="no-cache">
+    <meta http-equiv="expires" content="-1" />
+    <title ng-bind="title"></title>
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css course-detail/course-detail.min.css -->
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/styles/common.css">
+    <link rel="stylesheet" href="../rcp-common/directive/common/common-dir.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/chat/chat-directive.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/datetime/datetime-dir.css"/>
+    <!--<link rel="stylesheet" href="../rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.css"/>-->
+    <link rel="stylesheet" href="course-detail/course-detail.css">
+    <link rel="stylesheet" href="../study-circle/directive/study-circle/study-circle.css"/>
+    <!-- appraiseList -->
+    <link rel="stylesheet" href="directive/appraise/appraise-list.css">
+    <!-- summary -->
+    <link rel="stylesheet" href="directive/course-content/content-summary.css">
+
+    <link rel="stylesheet" href="../rcp-common/styles/emoticon.css">
+    <!-- endbuild -->
+
+
+
+</head>
+<body ng-controller="mainCtrl" class="loading">
+<!-- loading:js -->
+<!-- endinject -->
+<headnav item-list="itemList" user="user"></headnav>
+
+<!--<div ng-show="loadingCourse" class="page-loader">-->
+    <!--<span></span>-->
+<!--</div>-->
+<div ng-controller="courseDetail" class="wrapper" >
+
+    <div class="review-action ng-cloak" ng-show="status==2" ng-class="{float: floatCNav}" >
+        <div class="wrapper" >
+            <input type="text" ng-model="c.courseReasonInput" placeholder="请输入理由或建议（非必填）" ng-disabled="course.crs.status === 500 || course.crs.status === 400" maxlength="50">
+            <div>
+                <button ng-click="approveCourse(1)" ng-show="course.crs.status === 200" class="self-button-click pass-button"><div class="icon"><i class="image-agree "></i></div> 通过</button>
+                <button ng-click="approveCourse(0)" ng-show="course.crs.status === 200" class="self-button-click nopass-button"><div class="icon"><i class="image-disagree "></i></div> 不通过</button>
+                <button ng-click="approveCourse(10)" ng-show="course.crs.status === 100 || course.crs.status === 300" class="self-button-click ban-button"><div class="icon"><i class=" fa fa-exclamation-circle"></i></div> 课程禁用</button>
+                <button ng-click="approveCourse(1)" ng-show="course.crs.status === 400" class="self-button-click alive-button"><div class="icon"><i class="image-agree "></i></div> 激活</button>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div ng-if="status == 2" class="ng-cloak">
+        <div class="statusTwo">
+            <a ng-href="{{goCircleCheck}}" target="_blank" >课程审核</a> &gt;
+            <span>课程详情</span>
+        </div>
+
+        <div class="statusReason" ng-show="(course.crs.status === 100 || course.crs.status === 400 || course.crs.status === 500) && courseReason !== ''">
+            <div>
+                <i class="fa fa-check-circle"  ng-show="course.crs.status === 100"></i>
+                <span ng-bind="courseReason"  ng-show="course.crs.status === 100"></span>
+
+                <i class="fa fa-exclamation-circle" ng-show="course.crs.status === 400"></i>
+                <span ng-bind="courseReason"  ng-show="course.crs.status === 400"></span>
+
+
+                <i class="fa fa-ban"  ng-show="course.crs.status === 500"></i>
+                <span ng-bind="courseReason"  ng-show="course.crs.status === 500"></span>
+
+            </div>
+
+        </div>
+
+        <div class="course-label" ng-show="course.crs.tags && course.crs.tags.length">
+            <span class="span1">课程分类：</span>
+            <div class="label-div">
+                <span class="span2" ng-repeat="tagName in course.crs.tags" ng-bind="tagName"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="review-action ng-cloak" ng-show="status==3" ng-class="{float: floatCNav}" >
+        <div class="wrapper" >
+            <input type="text" ng-model="c.courseReasonInput" placeholder="请输入理由或建议（非必填）" ng-disabled="orgStatus !== 'WAITING'" maxlength="50">
+            <div>
+                <button ng-click="approveOrg(1)" ng-show="orgStatus === 'WAITING'" class="self-button-click pass-button"><div class="icon"><i class="image-agree "></i></div> 通过</button>
+                <button ng-click="approveOrg(-1)" ng-show="orgStatus === 'WAITING'" class="self-button-click nopass-button"><div class="icon"><i class="image-disagree "></i></div> 不通过</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div ng-if="status == 3" class="ng-cloak">
+        <div class="statusTwo">
+            <a ng-href="{{goOrgCheck}}" target="_blank" >课程认证</a> &gt;
+            <span> 课程详情</span>
+        </div>
+
+        <div class="statusReason" ng-show="courseReason !== ''">
+            <div>
+                <i class="fa fa-check-circle"  ng-show="orgStatus === 'NORMAL'"></i>
+                <span ng-bind="courseReason"  ng-show="orgStatus === 'NORMAL'"></span>
+
+                <i class="fa fa-ban"  ng-show="orgStatus === 'FAIL'"></i>
+                <span ng-bind="courseReason"  ng-show="orgStatus === 'FAIL'"></span>
+
+            </div>
+
+        </div>
+
+        <div class="course-label" ng-show="course.crs.tags && course.crs.tags.length">
+            <span class="span1">课程分类：</span>
+            <div class="label-div">
+                <span class="span2" ng-repeat="tagName in course.crs.tags" ng-bind="tagName"></span>
+            </div>
+        </div>
+    </div>
+
+    <section class="course-intro inline">
+        <!-- 课程封面 -->
+        <!--<div class="course-cover" ng-style="cover"></div>-->
+        <div class="course-image-div">
+            <ng-img c="{img:course.crs.imgs[0],divClass:'course-cover',default:'/rcp-common/imgs/icon/gray-default-img.png'}"></ng-img>
+        </div>
+
+        <!-- 课程介绍 -->
+        <div>
+            <div class="course-intro-content">
+                <!--<h2 class="course-name" ng-bind="course.crs.title">课程名称</h2>-->
+                <div class="ng-cloak">
+                    <span class="course-name" ng-bind="course.crs.title"></span>
+                    <div class="org-total-div ng-cloak" ng-show="orgList.length">
+                        <div class="org-auth-div">
+                            <i class="image-sc-course-auth"></i>
+                            <span class="spanOutside" ng-show="orgList.length != 1">已认证(<span ng-bind="orgList.length" class="spanInside"></span>)</span>
+                            <span class="spanOutside" ng-show="orgList.length == 1">已认证</span>
+                        </div>
+                        <div class="org-info-div">
+                            <div class="up-tra"></div>
+                            <p class="self-desc-p">已认证机构：</p>
+                            <span class="org-detail" ng-repeat="orgname in orgList" ng-bind="orgname"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<p ng-show="course.ext.A"><rate value="course.ext.A" disabled="true" style="'big'"></rate> <span class="course-eva" ng-bind="course.ext.A.toFixed(1)">0</span>&lt;!&ndash; <span class="course-eva-people">({{commentList.length || 0}}人)</span> &ndash;&gt;</p>-->
+                <!--<p ng-show="!course.ext.A">暂无评价（0）</p>-->
+                <div class="course-good-grade-num ng-cloak">
+                    <p><i class="image-course-good-reputation"></i>&nbsp;<span><span ng-bind="goodGradeNum||0">0</span>人</span>&nbsp;赞过</p>
+                </div>
+
+                <!--<p class="course-service-type" ng-show="!course.visiable.exam && !course.visiable.qa">特色服务：-->
+                    <!--<span class="service-list-icon">-->
+                        <!--<span ng-show="course.visiable.exam"><span class="image-course-exercise icon"></span>在线评测</span>-->
+                        <!--<span ng-show="course.visiable.qa"><span class="image-course-qna icon"></span>在线答疑</span>-->
+                        <!--<span ng-show="!course.visiable.exam && !course.visiable.qa">无</span>-->
+                    <!--</span>-->
+                <!--</p>-->
+
+                <p class="course-member ng-cloak" ng-hide="!course.crs.joined">参与人数：
+                    <span class="self-span"><span ng-bind="course.crs.joined"></span>人</span>
+                </p>
+                <p class="ng-cloak" ng-hide="!course.crs.suitable || !course.crs.suitable[0]">适合人群：
+                    <span class="self-span"><span ng-bind="course.crs.suitable"></span></span>
+                </p>
+                <p class="ng-cloak" ng-hide="!course.crs.credit">课程学分：
+                    <span class="self-span"><span ng-bind="course.crs.credit"></span>分</span>
+                </p>
+                <p class="ng-cloak" ng-hide="!course.crs.period">课程学时：
+                    <span class="self-span"><span ng-bind="course.crs.period"></span>学时</span>
+                </p>
+                <p class="ng-cloak" ng-hide="course.crs.start_time === 0" class="course-start-time">学习时间：
+                    <span class="self-span">
+                        <span ng-bind="course.crs.start_time| date:'yyyy-MM-dd HH:mm'">无</span><span>开课</span>
+                        <span class="self-span-time-middle" ng-hide="course.crs.end_time === 0">|</span>
+                        <span ng-hide="course.crs.end_time === 0"><span ng-bind="course.crs.end_time| date:'yyyy-MM-dd HH:mm'">无</span>结束</span>
+                    </span>
+                </p>
+
+                <!--<p class="course-action" ng-if="course && currentUser.uid == course.user">-->
+                    <!--<button ng-click="guideCourse()" ng-hide="(!course.price || course.price == 0) && isIE && !disabledAction()" class="buy-course" ng-disabled="disabledAction()" ng-class="{disabled: disabledAction()}">-->
+                        <!--<span class="course-price" ng-show="course.price">￥<span ng-bind="course.price.toFixed(2)">0</span></span>-->
+                        <!--<span class="course-price" ng-show="!course.price || course.price == 0" ng-bind="statusText"></span>-->
+                        <!--<span ng-show="course.price && !isIE" class="buy-course-text" ng-bind="statusText"></span>-->
+                    <!--</button>-->
+                    <!--<button ng-click="manageStudent()" class="student-manage" ng-hide="disabledAction()">-->
+                        <!--学生管理-->
+                    <!--</button>-->
+                    <!-- <a href="" class="course-fav"><img src="img/heart.png" class="icon" alt="">收藏（<span>1500</span>）</a> -->
+                <!--</p>-->
+            </div>
+            <div>
+                <!--<p ng-show="course.joinMode == 9" class="ng-cloak apply-update-info">-->
+                    <!--<span class="span1">更新提示</span>-->
+                    <!--<span class="span2">该课程申请信息已更新，需要再次填写课程申请信息哦！</span>-->
+                <!--</p>-->
+                <p class="course-action-nofloat ng-cloak" ng-if="course">
+                    <button  ng-hide="status == 2 || status == 3" ng-click="buyCourse()" ng-disabled="disabledAction()" ng-class="{disabled: disabledAction()}" class="buy-course">
+                        <span class="course-price" ng-show="course.price">￥<span ng-bind="course.price.toFixed(2)">0</span></span>
+                        <span class="course-price" ng-show="!course.price || course.price == 0" ng-bind="statusText"></span>
+                        <span ng-show="course.price" class="buy-course-text" ng-bind="statusText"></span>
+                    </button>
+
+                    <a ng-show="status == 2 || status == 3" ng-href="{{goStudyPage}}"  target="_blank" class="goto-study-page" ng-disabled="disabledAction()" ng-class="{disabled: disabledAction()}">
+                        <span class="course-price" ng-show="course.price">￥<span ng-bind="course.price.toFixed(2)"></span></span>
+                        <span class="course-price" ng-show="!course.price || course.price == 0" ng-bind="statusText"></span>
+                        <span ng-show="course.price" class="buy-course-text" ng-bind="statusText"></span>
+                    </a>
+                    <!-- <button class="course-free-trial">
+                        免费试学
+                    </button> -->
+                    <!--<button ng-hide="disabledAction() || isIE" ng-click="chatCustom()" class="course-chat"><span class="image-chat-icon-small icon"></span><span>在线咨询</span></button>-->
+                    <!-- <a href="" class="course-fav"><img src="img/heart.png" class="icon" alt="">收藏（<span>1500</span>）</a> -->
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="inline course-detail" ng-hide="loadCourseError">
+        <div class="course-main">
+            <div class="course-main-nav" ng-class="{float: floatNav}">
+                <ul>
+                    <li ng-class="{active: activeNav == nav.name}" ng-click="scrollToTab(nav)" ng-repeat="nav in navList"><span ng-bind="nav.name">简介</span><span ng-show="nav.showNum">(<span ng-bind="nav.num||0">0</span>)</span></li>
+                    <div class="course-action ng-cloak" ng-if="course && floatNav">
+                        <button ng-hide="status == 2 || status == 3" ng-click="buyCourse()" class="buy-course" ng-disabled="disabledAction()" ng-class="{disabled: disabledAction()}">
+                            <span class="course-price" ng-show="course.price">￥<span ng-bind="course.price.toFixed(2)"></span></span>
+                            <span class="course-price" ng-show="!course.price || course.price == 0" ng-bind="statusText"></span>
+                            <span ng-show="course.price" class="buy-course-text" ng-bind="statusText"></span>
+                        </button>
+
+                        <a ng-show="status == 2 || status == 3" ng-href="{{goStudyPage}}"  target="_blank" class="goto-study-pageF" ng-disabled="disabledAction()" ng-class="{disabled: disabledAction()}">
+                            <span class="course-price" ng-show="course.price">￥<span ng-bind="course.price.toFixed(2)"></span></span>
+                            <span class="course-price" ng-show="!course.price || course.price == 0" ng-bind="statusText"></span>
+                            <span ng-show="course.price" class="buy-course-text" ng-bind="statusText"></span>
+                        </a>
+                        <!-- <button class="course-free-trial">
+                            免费试学
+                        </button> -->
+                    </div>
+                    <!--<div class="course-action" ng-if="currentUser.uid == course.user && floatNav">-->
+                        <!--<button ng-click="guideCourse()" ng-hide="(!course.price || course.price == 0) && isIE && !disabledAction()" ng-disabled="disabledAction()" class="buy-course" ng-class="{disabled: disabledAction()}">-->
+                            <!--<span class="course-price" ng-show="course.price">￥<span ng-bind="course.price.toFixed(2)"></span></span>-->
+                            <!--<span class="course-price" ng-show="!course.price || course.price == 0" ng-bind="statusText"></span>-->
+                            <!--<span ng-show="course.price && !isIE" class="buy-course-text" ng-bind="statusText"></span>-->
+                        <!--</button>-->
+                        <!--<button ng-click="manageStudent()" style="border-left:1px solid #fff" class="student-manage" ng-hide="disabledAction()">-->
+                            <!--学生管理-->
+                        <!--</button>-->
+                    <!--</div>-->
+                </ul>
+            </div>
+
+            <!--课程介绍模块-->
+            <div class="content-section" id="intro">
+                <!-- <h3 class="content-section-head">
+                    {{type}}介绍
+                </h3> -->
+                <div class="content-section-body">
+
+
+                    <content-summary config="introConfig"></content-summary>
+
+                    <!--<div ng-show="loading.intro" class="loading-section" >-->
+                        <!--<loader-ui></loader-ui>-->
+                    <!--</div>-->
+                    <!--<div ng-bind-html="intro" ng-class="{less: lessIntro}" ng-hide="loading.intro" class="intro-content">-->
+
+                    <!--</div>-->
+                    <!--<div ng-show="longIntro" class="more-btn">-->
+                        <!--<a href="" class="more-intro-btn" ng-click="lessIntro = false" ng-show="lessIntro"><img src="/rcp-common/imgs/icon/more-btn.png" alt=""></a>-->
+                        <!--<a href="" class="more-intro-btn" ng-click="lessIntro = true" ng-show="!lessIntro"><img src="/rcp-common/imgs/icon/less-btn.png" alt=""></a>-->
+                    <!--</div>-->
+                    <!--<div class="no-data ng-cloak" ng-show="!loading.intro && !intro" >-->
+                        <!--暂无<span ng-bind="type">课程</span>介绍-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+            <!--试卷模块-->
+            <div class="content-section ng-cloak" id="exam" ng-show="type=='题库'">
+                <h3 class="content-section-head">
+                    试卷
+                </h3>
+                <div ng-show="loading.exam" class="loading-section">
+                    <loader-ui></loader-ui>
+                </div>
+                <div class="content-section-body" ng-show="!loading.exam && paperList">
+                    <ul class="question-exam">
+                        <li class="course-exam" ng-repeat="i in paperList" ng-click="i.showDesc=!i.showDesc" ng-hide="paperList.length > 10 && !paperList.more && $index > 9">
+                            <p>
+                                <span class="exam-name" ng-bind="i.title">试卷名称</span>
+                                <span class="exam-progress" ng-show="currentUser.uid">已完成<span ng-bind="i.doneQuestion || 0">0</span>/<span ng-bind="i.qCount || 0">0</span></span>
+                                <span class="block-right">
+                                    <span ng-show="!i.showDesc">
+                                        <i class="icon image-course-expand"></i>展开
+                                    </span>
+
+                                    <span ng-show="i.showDesc">
+                                        <i class="icon image-course-close"></i>收起
+                                    </span>
+                                    <span ng-show="(currentUser.uid != course.user) && isPurchase">
+                                        <span ng-click="doExercise(i, 1, $event)">
+                                            <i class="icon image-course-ex"></i>做题
+                                        </span>
+
+                                        <span ng-click="doExercise(i, 1, $event)" ng-if="['N', 'APPLIED'].indexOf(i.status) != -1">
+                                            <i class="icon image-course-ex"></i>继续做题
+                                        </span>
+
+                                        <span ng-click="doExercise(i, 1, $event, true)" ng-if="i.status == 'REMARKED'">
+                                            <i class="icon image-course-ex"></i>再做一次
+                                        </span>
+
+                                        <span ng-click="viewResolve(i, $event)" ng-if="i.status == 'REMARKED'">
+                                            查看解析
+                                        </span>
+
+                                        <span ng-if="i.status == 'REMARKING'">
+                                            等待批改
+                                        </span>
+                                    </span>
+
+                                    <span ng-click="checkExercise(i, $event)" ng-if="currentUser.uid == course.user">
+                                        <i class="icon image-course-ex"></i>批改
+                                    </span>
+
+                                    <span ng-if="(currentUser.role === 'SA')">
+                                        <span ng-click="doPreview(i, 1,$event,true)">
+                                            预览
+                                        </span>
+                                    </span>
+
+                                </span>
+                            </p>
+                            <div class="exam-desc" ng-show="i.showDesc" ng-bind-html="i.description">
+                            </div>
+                        </li>
+                    </ul>
+                    <div ng-hide="paperList.length <= 10" class="more-btn">
+                        <a href="" class="more-intro-btn" ng-click="paperList.more = true" ng-show="!paperList.more"><img src="/rcp-common/imgs/icon/more-btn.png" alt=""></a>
+                        <a href="" class="more-intro-btn" ng-click="paperList.more = false" ng-show="paperList.more"><img src="/rcp-common/imgs/icon/less-btn.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="no-data" ng-show="!loading.exam && !paperList.length">
+                    暂无试卷
+                </div>
+            </div>
+
+            <!--课程内容模块-->
+            <div class="content-section ng-cloak" id="content" ng-show="type == '课程'" >
+                <h3 class="content-section-head">
+                    课程内容
+                </h3>
+                <div ng-show="loading.content" class="loading-section">
+                    <loader-ui></loader-ui>
+                </div>
+                <div class="content-section-body" ng-hide="loading.content || (!loading.content && !section.length && !qna.length && !exercise.length)">
+                    <!--目录，评测，答疑总数-->
+                    <div class="content-overview">
+                        <span>
+                            <span class="num"><span ng-bind="course.info.sectionCount || 0">0</span>个</span>章节<span class="icon image-course-section"></span>
+                        </span>
+                        <!--<span>-->
+                            <!--<span class="num"><span ng-bind="course.info.examCount || 0">0</span>个</span>评测<span class="icon image-course-exercise"></span>-->
+                        <!--</span>-->
+                        <!--<span>-->
+                            <!--<span class="num"><span ng-bind="course.info.qnaCount || 0">0</span>个</span>答疑<span class="icon image-course-qna-1"></span>-->
+                        <!--</span>-->
+                    </div>
+
+                    <!--目录块-->
+                    <div class="block " ng-hide="!loading.content && !section.length">
+                        <div class="block-title">
+                            <span>目录</span>
+                            <!--<button ng-show="currentUser.uid==course.user" ng-click="goToCorrect()" class="block-right check-exercise-btn">批改练习</button>-->
+                            <!-- <label for="free-trail" class="block-right">
+                                <input type="checkbox" id="free-trail">
+                                免费试学
+                            </label> -->
+                        </div>
+                        <ul class="block-content course-section-list">
+                            <li ng-repeat="i in section" ng-class="{'section-name': i.t=='T1', 'node-name': i.t == 'T2'}" ng-hide="section.length > 10 && !section.more && $index > 9" ng-click="enterLearning(i)">
+                                <p ng-click="">
+                                    <a href="" title="{{i.c.title}}" class="ellipsis" ng-bind="i.c.title" ng-hide="status ==2 || status == 3"></a>
+                                    <a ng-href="{{goStudyPage +'&target='+i.i}}" target="_blank" title="{{i.c.title}}" class="ellipsis" ng-bind="i.c.title" ng-show="status ==2 || status == 3"></a>
+                                    <a ng-href="{{goStudyPage +'&target='+i.i}}" class="block-right free-study" target="_blank" ng-if="!course.price && (status == 2 || status == 3)">[免费学习]</a>
+                                    <span class="block-right free-study" ng-if="!course.price  && status != 2 && status != 3 ">[免费学习]</span>
+                                    <!-- <span class="image-course-content-pic icon"></span>
+                                    <span class="image-course-content-text icon"></span>
+                                    <span class="image-course-content-video icon"></span>
+                                    <span class="image-course-content-exe icon"></span> -->
+                                    <a ng-href="{{goStudyPage +'&target='+i.i}}" class="block-right" target="_blank" ng-if="((course.price > 0 && isPurchase) || !course.price) && (status ==2 || status ==3)"><span class="icon image-course-try"></span>点击学习</a>
+                                    <span class="block-right" ng-if="((course.price > 0 && isPurchase) || !course.price) && status !=2 && status !=3"><span class="icon image-course-try"></span>点击学习</span>
+                                </p>
+                            </li>
+                        </ul>
+                        <div ng-hide="section.length <= 10" class="more-btn">
+                            <a href="" class="more-intro-btn" ng-click="section.more = true" ng-show="!section.more"><img src="/rcp-common/imgs/icon/more-btn.png" alt=""></a>
+                            <a href="" class="more-intro-btn" ng-click="section.more = false" ng-show="section.more"><img src="/rcp-common/imgs/icon/less-btn.png" alt=""></a>
+                        </div>
+                        <div class="no-data ng-cloak" ng-show="!loading.content && !section.length">
+                            暂无课程内容
+                        </div>
+                    </div>
+
+                    <!--评测块-->
+                    <!--<div class="block" ng-hide="!loading.content && !exercise.length">-->
+                        <!--<div class="block-title">-->
+                            <!--<span>评测</span>-->
+                        <!--</div>-->
+                        <!--<ul class="block-content">-->
+                            <!--<div class="course-exam" ng-repeat="i in exercise"  ng-hide="exercise.length > 10 && !exercise.more && $index > 9">-->
+                                <!--<p ng-click="i.showDesc=!i.showDesc">-->
+                                    <!--<span class="exam-name" title="{{i.title}}" class="ellipsis" title="{{i.title}}" ng-bind="i.title">试卷名称</span>-->
+                                    <!--&lt;!&ndash; <span class="exam-progress">已完成5/10</span> &ndash;&gt;-->
+                                    <!--<span class="exam-date" ng-hide="!i.startTime && !i.endTime"><span ng-bind="i.startTime"></span> 至 <span ng-bind="i.endTime"></span></span>-->
+                                        <!--<span class="block-right">-->
+                                            <!--<span ng-show="!i.showDesc">-->
+                                                <!--<i class="icon image-course-expand"></i>展开-->
+                                            <!--</span>-->
+
+                                            <!--<span ng-show="i.showDesc">-->
+                                                <!--<i class="icon image-course-close"></i>收起-->
+                                            <!--</span>-->
+
+                                            <!--&lt;!&ndash;<span ng-if="(currentUser.uid != course.user) && isPurchase">&ndash;&gt;-->
+                                                <!--<span ng-show="i.status !== 100 && i.status !== 300 && isPurchase">-->
+                                                    <!--<i class="icon image-course-ex"></i>做题-->
+                                                <!--</span>-->
+
+                                            <!--&lt;!&ndash;<span ng-click="doExercise(i.paper, 0, $event)" ng-if="['N', 'APPLIED'].indexOf(i.paper.status) != -1">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<i class="icon image-course-ex"></i>继续做题&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                            <!--&lt;!&ndash;<span ng-click="doExercise(i.paper, 0, $event, true)" ng-if="i.paper.status == 'REMARKED'">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<i class="icon image-course-ex"></i>再做一次&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                            <!--&lt;!&ndash;<span ng-click="viewResolve(i.paper, $event)" ng-if="i.paper.status == 'REMARKED'">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;查看解析&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                            <!--&lt;!&ndash;<span ng-if="i.paper.status == 'REMARKING'">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;等待批改&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                            <!--&lt;!&ndash;<span ng-click="checkExercise(i.extra.paper, $event)" ng-if="currentUser.uid == course.user">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<i class="icon image-course-ex"></i>批改&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                            <!--&lt;!&ndash;<span ng-if="(currentUser.role === 'SA')">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;<span ng-click="doPreview(i.paper, 0,$event,true)">&ndash;&gt;-->
+                                            <!--&lt;!&ndash;预览&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                            <!--<span ng-if="i.status === 300 && isPurchase">已结束</span>-->
+
+                                            <!--<span ng-if="!i.status === 100 && isPurchase">未开始</span>-->
+                                        <!--</span>-->
+                                <!--</p>-->
+
+                                <!--<li ng-repeat="aidsIndex in i.aids" ng-show="i.showDesc">-->
+                                    <!--<p ng-click="examPaperInfo[aidsIndex].showDesc=!examPaperInfo[aidsIndex].showDesc">-->
+                                        <!--<span class="exam-name" title="{{examPaperInfo[aidsIndex].title}}" class="ellipsis" title="{{examPaperInfo[aidsIndex].title}}" ng-bind="examPaperInfo[aidsIndex].title">试卷名称</span>-->
+                                        <!--&lt;!&ndash;&lt;!&ndash; <span class="exam-progress">已完成5/10</span> &ndash;&gt;&ndash;&gt;-->
+                                        <!--&lt;!&ndash;<span class="exam-date" ng-hide="!i.startTime && !i.endTime"><span ng-bind="i.startTime"></span> 至 <span ng-bind="i.endTime"></span></span>&ndash;&gt;-->
+                                        <!--<span class="block-right">-->
+                                            <!--<span ng-show="!examPaperInfo[aidsIndex].showDesc">-->
+                                                <!--<i class="icon image-course-expand"></i>展开-->
+                                            <!--</span>-->
+
+                                            <!--<span ng-show="examPaperInfo[aidsIndex].showDesc">-->
+                                                <!--<i class="icon image-course-close"></i>收起-->
+                                            <!--</span>-->
+
+                                            <!--<span ng-if="(currentUser.uid != course.user) && isPurchase">-->
+                                                <!--<span ng-if="i.status !== 100 &&(i.status === 300 && i.multi === 200 || i.multi === 300)" ng-click="doExercise(aidsIndex,i._id) ">-->
+                                                    <!--<i class="icon image-course-ex"></i>做题-->
+                                                <!--</span>-->
+
+                                                <!--&lt;!&ndash;<span ng-click="doExercise(i.paper, 0, $event)" ng-if="['N', 'APPLIED'].indexOf(i.paper.status) != -1">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;<i class="icon image-course-ex"></i>继续做题&ndash;&gt;-->
+                                                <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                                <!--&lt;!&ndash;<span ng-click="doExercise(i.paper, 0, $event, true)" ng-if="i.paper.status == 'REMARKED'">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;<i class="icon image-course-ex"></i>再做一次&ndash;&gt;-->
+                                                <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                                <!--&lt;!&ndash;<span ng-click="viewResolve(i.paper, $event)" ng-if="i.paper.status == 'REMARKED'">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;查看解析&ndash;&gt;-->
+                                                <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                                <!--&lt;!&ndash;<span ng-if="i.paper.status == 'REMARKING'">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;等待批改&ndash;&gt;-->
+                                                <!--&lt;!&ndash;</span>&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                            <!--&lt;!&ndash;<span ng-click="checkExercise(i.extra.paper, $event)" ng-if="currentUser.uid == course.user">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<i class="icon image-course-ex"></i>批改&ndash;&gt;-->
+                                            <!--&lt;!&ndash;</span>&ndash;&gt;-->
+
+                                            <!--&lt;!&ndash;<span ng-if="(currentUser.role === 'SA')">&ndash;&gt;-->
+                                                <!--&lt;!&ndash;<span ng-click="doPreview(i.paper, 0,$event,true)">&ndash;&gt;-->
+                                                    <!--&lt;!&ndash;预览&ndash;&gt;-->
+                                                <!--&lt;!&ndash;</span>&ndash;&gt;-->
+                                            <!--</span>-->
+
+                                            <!--<span ng-if="i.status === 300 && isPurchase && (i.multi !== 200 && i.multi !== 300)">已结束</span>-->
+
+                                            <!--<span ng-if="!i.status === 100 && isPurchase">未开始</span>-->
+                                        <!--</span>-->
+                                    <!--</p>-->
+                                    <!--<div class="exam-desc" ng-bind-html="examPaperInfo[aidsIndex]._id" ng-show="examPaperInfo[aidsIndex].showDesc">-->
+
+                                    <!--</div>-->
+                                <!--</li>-->
+                            <!--</div>-->
+                        <!--</ul>-->
+                        <!--<div ng-hide="exercise.length <= 10" class="more-btn">-->
+                            <!--<a href="" class="more-intro-btn" ng-click="exercise.more = true" ng-show="!exercise.more"><img src="/rcp-common/imgs/icon/more-btn.png" alt=""></a>-->
+                            <!--<a href="" class="more-intro-btn" ng-click="exercise.more = false" ng-show="exercise.more"><img src="/rcp-common/imgs/icon/less-btn.png" alt=""></a>-->
+                        <!--</div>-->
+                        <!--<div class="no-data" ng-show="!loading.content && !exercise.length">-->
+                            <!--暂无课程评测-->
+                        <!--</div>-->
+                    <!--</div>-->
+
+                    <!--&lt;!&ndash;答疑块&ndash;&gt;-->
+                    <!--<div class="block" ng-hide="!loading.content && !qna.length">-->
+                        <!--<div class="block-title">-->
+                            <!--<span>答疑</span>-->
+                        <!--</div>-->
+                        <!--<ul class="block-content">-->
+                            <!--<li class="course-qna" ng-repeat="i in qna"  ng-click="i.showDesc=!i.showDesc" ng-hide="qna.length > 10 && !qna.more && $index > 9">-->
+                                <!--<p>-->
+                                    <!--<span class="qna-name ellipsis" title="{{i.name}}" ng-bind="i.name">答疑名称</span>-->
+                                    <!--<span class="qna-times">每人限制<span ng-bind="i.useLimit">0</span>次</span>-->
+                                    <!--<span class="block-right">-->
+                                        <!--<span ng-show="!i.showDesc"><span class="icon image-course-expand"></span>展开</span>-->
+                                        <!--<span ng-show="i.showDesc"><span class="icon image-course-close"></span>收起</span>-->
+                                    <!--</span>-->
+                                <!--</p>-->
+                                <!--<p>答疑老师：</p>-->
+                                <!--<ul>-->
+                                    <!--<li ng-repeat="t in i.teachers">-->
+                                        <!--<span class="qna-teacher" ng-bind="t.name">老师名称</span>-->
+                                        <!--<span class="qna-date" ng-hide="t.noTime">时间<span ng-bind="t.date[0]"></span> 至 <span ng-bind="t.date[1]"></span>/每天<span ng-bind="t.time[0]"></span>  - <span ng-bind="t.time[1]"></span></span>-->
+                                    <!--</li>-->
+                                <!--</ul>-->
+                                <!--<div class="qna-desc" ng-show="i.showDesc" ng-bind-html="i.desc">-->
+                                    <!--答疑描述-->
+                                <!--</div>-->
+                            <!--</li>-->
+                            <!--<div ng-hide="qna.length <= 10" class="more-btn">-->
+                                <!--<a href="" class="more-intro-btn" ng-click="qna.more = true" ng-show="!qna.more"><img src="/rcp-common/imgs/icon/more-btn.png" alt=""></a>-->
+                                <!--<a href="" class="more-intro-btn" ng-click="qna.more = false" ng-show="qna.more"><img src="/rcp-common/imgs/icon/less-btn.png" alt=""></a>-->
+                            <!--</div>-->
+                        <!--</ul>-->
+                        <!--<div class="no-data" ng-show="!loading.content && !qna.length">-->
+                            <!--暂无答疑-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+                <div class="no-data" ng-show="!loading.content && !section.length && !qna.length && !exercise.length">
+                    暂无课程内容
+                </div>
+            </div>
+
+            <!--评价模块-->
+            <appraise-list class="course-appraise ng-cloak" id="comment"
+                           ng-if="cmtResult"
+                           config="appraiseConfig"
+                           data="cmtResult"></appraise-list>
+
+            <!--学习圈子模块-->
+            <study-circle ng-if="circleConfig" c="circleConfig" circlenum="circleNum" id="circle" class="study-circle"></study-circle>
+
+        </div><div class="course-teacher" id="teacher">
+            <h3>老师团队</h3>
+            <div ng-show="loading.teacher" class="loading-section">
+                <loader-ui></loader-ui>
+            </div>
+            <ul ng-hide="loading.teacher" class="ng-cloak">
+                <li class="inline" ng-repeat="i in teachers">
+                    <div>
+                        <!--<div class="user-avatar">-->
+                            <!--<img class="" ng-hide="i.avatar",src="/rcp-common/imgs/face/d-face-1.png" alt="">-->
+                            <!--<img ng-show="i.avatar" ng-src="{{i.avatar}}">-->
+                        <!--</div>-->
+                        <ng-img c="{img:i.avatar,divClass:'user-avatar',imgClass:'user-avatar'}"></ng-img>
+                        <p class="teacher-name ellipsis" title="{{i.name}}"><a href="javascript:void(0)" ng-bind="i.name">导学老师</a></p>
+                    </div>
+                    <div>
+                        <!-- <p>北京师范大学教授</p>
+                        <p>阿里巴巴讲师</p>
+                        <p>10年外贸电子商务经验</p> -->
+                        <p ng-hide="i.desc">暂无老师介绍</p>
+                        <p ng-show="i.desc" ng-bind="i.desc"></p>
+                    </div>
+                </li>
+            </ul>
+            <div class="no-data" ng-show="!loading.teacher && !teachers.length">
+                暂无老师团队
+            </div>
+        </div>
+    </section>
+    <div class="float-menu" ng-show="floatNav">
+        <button ng-click="toTop()"><img src="/rcp-common/imgs/icon/course-to-top.png" alt=""></button>
+        <!--<button  ng-hide="(course && disabledAction()) || isIE || currentUser.uid == course.user" ng-click="chatCustom()">-->
+            <!--<img src="/rcp-common/imgs/icon/course-find-teacher.png" alt="">-->
+        <!--</button>-->
+    </div>
+
+    <div class="course-application ng-cloak" ng-style="{'height':requestHeight}" ng-show="requestShow">
+        <div class="course-application-title">
+            <span class="course-application-title-name">课程申请</span>
+            <span class="course-application-close" ng-click="requestCancle()">×</span>
+        </div>
+        <div class="course-application-table" id="table-insert-position">
+            <!--<div ng-bind-html="requestTable|sanitize"></div>-->
+        </div>
+        <div class="course-application-buttonDiv">
+            <button class="sureButton" ng-click="requestOk()">确定</button>
+            <button class="cancleButton" ng-click="requestCancle()">取消</button>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+<tailnav></tailnav>
+
+<!--<chat></chat>-->
+
+<script src="../rcp-common/service/lib-default.min.js"></script>
+
+<!-- build:js course-detail/course-detail.min.js-->
+<!--lib-->
+<script src="../moment/moment.js"></script>
+<script src="../js-base64/base64.js"></script>
+<script src="../gray/js/jquery.gray.js"></script>
+<!--lib end-->
+
+<script src="../rcp-common/service/aid.js"></script>
+<script src="course-detail/course-detail.js"></script>
+
+<!--service-->
+<script src="service/course.js"></script>
+<script src="service/content.js"></script>
+<!--service end-->
+
+<!--directive-->
+<script src="../rcp-common/directive/placeholder-ie/placeholder-ie.js"></script>
+<script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+<!--<script src="../rcp-common/directive/fixed-toolbar/fixed-toolbar-dir.js"></script>-->
+<script src="../rcp-common/directive/upload/upload-plugin.js"></script>
+<script src="../rcp-common/directive/drag/drag.js"></script>
+<script src="../rcp-common/directive/datetime/datetime-dir.js"></script>
+<script src="../rcp-common/directive/pagination/pagination.js"></script>
+<script src="../rcp-common/directive/space/sidebarPlugin.js"></script>
+<script src="../rcp-common/directive/rate/rate.js"></script>
+<script src="../rcp-common/directive/star/star.js"></script>
+<!--directive end-->
+<!-- appraise list -->
+<script src="directive/appraise/appraise-service.js"></script>
+<script src="directive/appraise/appraise-list.js"></script>
+<!-- summary -->
+<script src="directive/course-content/content-summary.js"></script>
+<!--圈子-->
+<script type="text/javascript" src="../rcp-common/directive/image-slider/image-slider.js"></script>
+<script src="../study-circle/directive/study-circle/study-circle.js"></script>
+<script src="../study-circle/service/study-circle.js"></script>
+<!-- emoji data -->
+<script src="../js-emoji/lib/emoji.js"></script>
+<!-- emoticon -->
+<script src="../rcp-common/filter/emoticon.js"></script>
+<!-- endbuild-->
+<script src="../rcp-common/service/service.min.js"></script>
+
+
+</body>
+</html>

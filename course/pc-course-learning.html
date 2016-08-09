@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
+    <title>课时内容</title>
+    <meta name="keywords" content="学习痕迹" />
+    <meta name="description" content="学习痕迹" />
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css course-learning/pc-course-learning.min.css -->
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/styles/common.css" />
+    <link rel="stylesheet" href="../rcp-common/directive/common/common-dir.css">
+    <link rel="stylesheet" href="../rcp-common/directive/dynamic/dynamicService.css" />
+    <link rel="stylesheet" href="../rcp-common/directive/textarea/textarea.css" />
+    <link rel="stylesheet" href="../rcp-common/directive/datetime/datetime-dir.css" />
+    <link rel="stylesheet" href="directive/course-content/content-view.css">
+    <link rel="stylesheet" href="directive/appraise/appraise-info.css">
+    <link rel="stylesheet" href="course-learning/pc-course-learning.css">
+    <!-- emoticon -->
+    <link rel="stylesheet" href="../rcp-common/directive/editor-with-emoji/editor-with-emoji.css">
+    <link rel="stylesheet" href="../rcp-common/styles/emoticon.css">
+    <!-- endbuild -->
+</head>
+
+<body ng-controller="mainCtrl">
+    <div class="loading-main" ng-hide="contentLoadingReady">
+        <div class="loading-middle">
+            <loader-ui></loader-ui>
+        </div>
+    </div>
+    <div class="content-ctrl" id="content-ctrl" ng-controller="contentCtrl">
+        <div class="toggle-section" id="toggle-section-new" ng-click="toggleSection()">
+            <div class="toogle-btn ng-cloak" ng-show="contentLoadingReady">
+                <i ng-hide="showSectionLock" class="fa fa-caret-right"></i>
+                <i ng-show="showSectionLock" class="fa fa-caret-left"></i>
+            </div>
+        </div>
+        <menu class="section-v" id="section-v">
+            <div class="divwrap">
+                <div class="c-info">
+                    <a ng-href="{{link.courseDetail}}" target="_blank" class="c-img cs-p" ng-click="pauseLearning()">
+                        <ng-img c="{img:courseData.crs.imgs[0],title:courseData.crs.title,divStyle:{width:'100px',height:'56px'},default:'/rcp-common/imgs/icon/gray-default-img.png'}"></ng-img>
+                    </a>
+                    <div class="info">
+                        <a ng-href="{{link.courseDetail}}" class="text-of" ng-click="pauseLearning()" title="{{courseData.crs.title}}" ng-bind="courseData.crs.title"></a>
+                        <div class="author mg-t20">
+                            <i class="image-user-orange"></i>
+                            <span target="_blank" class="cs-p" ng-click="pauseLearning()" title="{{courseData.usr[courseData.crs.uid].attrs.basic.nickName}}" ng-bind="courseData.usr[courseData.crs.uid].attrs.basic.nickName"></span>
+                        </div>
+                    </div>
+                </div>
+                <appraise-info config="{autoLoadGrade: false}" data="appraiseData"></appraise-info>
+                <div class="section-list">
+                    <empty-tip ng-show="sectionLoadingReady&&!currentUser.uid" c="{msg:'请先登录'}"></empty-tip>
+                    <div class="full-w" ng-show="currentUser.uid">
+                        <div class="loading-ready" ng-hide="sectionLoadingReady" style="position:relative;padding:30px 0;height:auto;">
+                            <loader-ui></loader-ui>
+                        </div>
+                        <empty-tip ng-show="sectionLoadingReady&&!readPermissions" c="{msg:'请先参与课程'}"></empty-tip>
+                        <empty-tip ng-show="(!sectionList.length || curFilterType.showNull) && courseDirectory" c="{msg:'暂无'+(curFilterType.name == '全部' ? '目录' : curFilterType.name+'章节')}"></empty-tip>
+                        <!-- new content list start -->
+                        <content-list ng-show="readPermissions&&getRecordReady"></content-list>
+                        <!-- new content list end -->
+                    </div>
+                </div>
+            </div>
+        </menu>
+        <!-- 侧栏 -->
+        <section class="service-v" id="service-v" ng-controller="serviceCtrl" ng-click="stopPropagation($event)">
+            <div class="service-t-b">
+                <div class="service-t-v" ng-click="stopPropagation($event)" ng-class="{right:showTabLock}" ng-show="tabsNavList.length">
+                    <ul class="m">
+                        <li class="li" ng-repeat="item in tabsNavList track by $index" ng-show="readSlideBar&&$index==2" ng-click="switchServiceTab(item.name);">
+                            <div class="msg" ng-if="item.msg">
+                                <div class="bg"></div>
+                                <p ng-bind="item.msg"></p>
+                            </div>
+                            <a href="">
+                                <i ng-class="item.class"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <a href="javascript:;" class="toggle-tab" ng-click="closeServiceTab()" ng-show="showTabLock">
+                <i class="fa fa-times color-gray"></i>
+            </a>
+            <div class="widthmark"></div>
+            <div class="tabs-wrap">
+                <div class="tabs-content" ng-show="!currentUser.uid">
+                    <empty-tip ng-show="sectionLoadingReady&&!currentUser.uid" c="{msg:'请先登录'}"></empty-tip>
+                </div>
+                <div class="tabs-content" ng-show="currentUser.uid">
+                    <div ng-show="serviceLoadingReady && !readPermissions">
+                        <empty-tip ng-show="sectionLoadingReady&&!readPermissions" c="{msg:'请先参与课程'}"></empty-tip>
+                    </div>
+                    <div ng-show="serviceLoadingReady && readPermissions" class="sidebar-content">
+                        <!-- <div ng-show="tabsNavList[0].active">
+                            <group-chat></group-chat>
+                        </div> -->
+                        <!-- <div ng-show="tabsNavList[1].active">{{curTabName}}</div> -->
+                        <div ng-show="tabsNavList[2].active">
+                            <study-circle-learn c="studyCircleConfig"></study-circle-learn>
+                        </div>
+                    </div>
+                </div>
+        </section>
+        <section class="container-v" id="container-v">
+            <header class="top-bar">
+                <div class="course-name" ng-show="courseData.crs.title&&curSectionName.length">
+                    <span class="cs-p" ng-click="gotoDetail(courseData.id)">
+                    <span class="text-of section-name">
+                    <span ng-bind="learnStatus+'：'+curSectionName"></span>
+                    <span class="color-gray">
+                    ( <span ng-bind="curSectionIndex"></span>/<span ng-bind="sectionLength"></span> )
+                    </span>
+                    </span>
+                    </span>
+                </div>
+                <div class="f-r top-active-bar">
+                    上课模式
+                    <span ng-click="fullScreen()" class="switch-btn" ng-class="{active: fullScreenLock}">&nbsp;</span>
+                </div>
+            </header>
+            <div class="content-v">
+                <empty-tip ng-show="sectionLoadingReady&&!currentUser.uid" c="{msg:'请先登录'}"></empty-tip>
+                <div ng-show="currentUser.uid">
+                    <empty-tip ng-show="sectionLoadingReady&&!readPermissions" c="{msg:'请先参与课程'}"></empty-tip>
+                    <empty-tip ng-show="isNullContent" c="{msg:'暂无内容'}"></empty-tip>
+                    <coucontent></coucontent>
+                    <!-- new content view start -->
+                    <div ng-show="readPermissions&&getRecordReady">
+                        <content-view></content-view>
+                        <cv-dialog></cv-dialog>
+                    </div>
+                    <!-- new content view start -->
+                </div>
+            </div>
+        </section>
+        <!-- 继续学习弹出窗 start -->
+        <div class="win-wrap s-p-win" id="learning-dialog-win">
+            <div class="win-bd"></div>
+            <div class="my-wrap jf-drag">
+                <div class="my-main">
+                    <div class="win-hd" style="background:#02c0b9;color:white;">
+                        <span>提示</span>
+                    </div>
+                    <div class="inner" style="text-align:center;padding:50px 30px;min-width:320px;" ng-bind="learningDialog.text"></div>
+                    <div class="full-w" style="text-align:center;padding:12px 0;border-top:1px solid #dfdfdf;">
+                        <a href="javascript:;" class="blue-button" style="padding:10px 20px;display:inline-block;" ng-click="continueLearning($event)" ng-hide="learningDialog.type">继续学习</a>
+                        <a href="javascript:;" class="blue-button" style="padding:10px 20px;display:inline-block;margin:0 10px;" ng-click="continueLearning($event)" ng-show="learningDialog.type">已完成做题</a>
+                        <a href="javascript:;" class="white-button" style="padding:9px 20px;display:inline-block;margin:0 10px;" ng-click="continueLearning($event)" ng-show="learningDialog.type">未完成做题</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 继续学习弹出窗 end -->
+        </div>
+        <!-- lib -->
+        <script src="../rcp-common/service/lib-default.min.js"></script>
+        <!-- lib end -->
+        <!-- build:js course-learning/pc-course-learnint.min.js -->
+        <script src="course-learning/pc-course-learning.js"></script>
+        <script src="service/course.js"></script>
+        <!-- upload -->
+        <script src="../rcp-common/directive/upload/swfobject.js"></script>
+        <script src="../rcp-common/directive/upload/upload-img.js"></script>
+        <!-- upload end -->
+        <!-- directive   -->
+        <script src="../rcp-common/directive/image-slider/image-slider.js"></script>
+        <script src="../rcp-common/directive/pagination/pagination.js"></script>
+        <script src="../rcp-common/directive/dynamic/dynamicService.js"></script>
+        <script src="../rcp-common/directive/textarea/textarea.js"></script>
+        <script src="../rcp-common/directive/datetime/datetime-dir.js"></script>
+        <script src="../rcp-common/directive/empty-tip/empty-tip.js"></script>
+        <!-- emoji data -->
+        <script src="../js-emoji/lib/emoji.js"></script>
+        <!-- emoticon -->
+        <script src="../rcp-common/filter/emoticon.js"></script>
+        <script src="../rcp-common/directive/editor-with-emoji/editor-with-emoji.js"></script>
+        <!-- directive end    -->
+        <!-- 评价 -->
+        <script src="directive/appraise/appraise-info.js"></script>
+        <script src="directive/appraise/appraise-service.js"></script>
+        <!-- 评价 end -->
+        <!-- 圈子 -->
+        <script src="../study-circle/service/study-circle.js"></script>
+        <script src="../study-circle/directive/study-circle/study-circle-learn.js"></script>
+        <!-- 圈子 end -->
+        <script src="../wcms/www/js/wcms.js"></script>
+        <script src="service/content.js"></script>
+        <script src="service/exam.js"></script>
+        <script src="directive/course-content/content-view.js"></script>
+        <!-- endbuild -->
+        <script src="../rcp-common/service/service.min.js"></script>
+</body>
+
+</html>

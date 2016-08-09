@@ -1,0 +1,47 @@
+ 
+.swiper-wrap{
+	position: relative;
+	min-height:166px;
+
+	.swiper-container{
+		margin:0 68px;
+		overflow:hidden;
+		padding:20px 0;
+	}
+
+	.scroll-list{
+		transition: transform .3s ease-out;
+	}
+
+	.flex-w{
+		display:table;
+	}
+
+	.before,
+	.after {
+		width: 40px;
+		height: 40px;
+		display: block;
+		position: absolute;
+		top: 50%;
+		margin-top: -20px;
+		background:rgba(0,0,0,.3) url(/rcp-common/imgs/icon/slide-bar-btn.png) no-repeat;
+		border-radius:50%;
+		z-index: 3;
+	}
+
+	.before{
+		left:0;
+		background-position: center 9px;
+	}
+
+	.after{
+		right:0;
+		background-position: center -59px;
+	}
+
+	.before:hover,
+	.after:hover{
+		background-color:rgba(0,0,0,.7);
+	}
+}

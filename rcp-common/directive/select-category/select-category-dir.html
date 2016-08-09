@@ -1,0 +1,38 @@
+<div class="main-cat">
+    <!--<a href="" class="new-cat" ng-click="catShow = true" ng-show="!catShow">添加分类</a>-->
+    <div class="search-sort" ng-click="stopPropagation($event)" onmouseenter="$(this).find('input:eq(0)').focus();" ng-mouseover="searchChange('focus',$event)" ng-mouseenter="showSearchLock = true" ng-mouseleave="onmouseleave($event)">
+        <a href="javascript:;" class="new-cat" ng-show="!showSearchLock">添加分类</a>
+        <span class="input-w" ng-show="showSearchLock">
+            <input type="text" id="kw-sc-input" class="input" ng-model="sortKeyWork" ng-focus="searchChange('focus',$event)" ng-change="searchChange('change',$event)" ng-keydown="onkeydown($event)" ng-blur="onblur($event)" placeholder="请输入关键词" />
+
+            <i class="fa fa-plus-circle add-key-wrok" title="创建关键词" ng-show="!inSort && sortKeyWork" ng-click="addKeyWork(sortKeyWork)"></i>
+
+            <div class="select-sort" ng-show="showSelect">
+                <sort-tree-menu id="tag-sle-v" list="allSortTag" option="selectOption" ng-show="inSort || showSort"></sort-tree-menu>
+            </div>
+        </span>
+    </div>
+    <div>
+        <a href="javascript:;" class="f-r" ng-click="showMoreKwLock = !showMoreKwLock" ng-show="checkShowMoveLock()">
+            <span ng-show="!showMoreKwLock">展开</span>
+            <span ng-show="showMoreKwLock">收起</span>
+        </a>
+        <div class="kw-laber" ng-class="{smove: showMoreKwLock}" ng-show="labelList.length || categoryList.length">
+            <div class="kw-laver-wrap">
+                <p ng-repeat="item in labelList track by $index" class="block-w" ng-class="{last: $index == labelList.length-1 && !keyWordList.length}">
+                    <span ng-repeat="name in item track by $index" class="grid">
+                        <a href="javascript:;" class="key text-of" title="{{name}}">
+                            <i class="fa fa-times-circle" title="删除" ng-click="deleteEvent(name,item)"></i> {{name}}
+                        </a>
+                    </span>
+                </p>
+                <p ng-hide="!categoryList.length">
+                    <a href="javascript:;" class="key text-of" ng-repeat="name in categoryList track by $index" title="{{name}}">
+                        <i class="fa fa-times-circle" title="删除" ng-click="deleteEvent(name)"></i> {{name}}
+                    </a>
+                </p>
+            </div>
+        </div>
+        <p class="more" ng-show="checkShowMoveLock() && !showMoreKwLock">...</p>
+    </div>
+</div>

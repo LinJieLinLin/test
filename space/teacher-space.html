@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <title>教学中心</title>
+
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css teacher-space/teacher-space.min.css -->
+    <!-- common -->
+    <link rel="stylesheet" href="../rcp-common/styles/common.css" />
+    <link rel="stylesheet" href="../rcp-common/styles/font-awesome.css">
+    <link rel="stylesheet" href="../rcp-common/directive/common/common-dir.css"/>
+    <link rel="stylesheet" href="../rcp-common/directive/head-tail/head-tail-dir.css"/>
+    <!--directive style-->
+    <link rel="stylesheet" href="../rcp-common/directive/default-img/default-img.css"/>
+    <link rel="stylesheet" href="../course/directive/tips-tool/tips-tool.css"/>
+    <!-- course manager -->
+    <link rel="stylesheet" href="../course/module/course-manager/course-manager.css"/>
+    <!--paper detail-->
+    <link rel="stylesheet" href="../course/module/paper-detail/paper-detail.css" />
+    <!--img sprite-->
+    <link rel="stylesheet" href="../course/imgs/sprite.css">
+    <!-- pager manager -->
+    <link rel="stylesheet" href="../course/module/exam-score/exam-score.css">
+    <!-- score manager -->
+    <link rel="stylesheet" href="../space/module/score-manager/score-manager.css">
+    <!-- copyright manager -->
+    <link rel="stylesheet" href="../course/directive/detail-modal/detail-modal.css">
+    <link rel="stylesheet" href="../course/module/copyright/copyright.css">
+    <!--iden-manager-->
+    <link rel="stylesheet" href="../course/module/iden-manager/iden-manager.css" />
+    <link rel="stylesheet" href="../course/directive/org-iden/org-iden.css" />
+    <!-- team manager -->
+    <link rel="stylesheet" href="../course/module/team-manager/team-manager.css">
+    <!-- teacher space -->
+    <link rel="stylesheet" href="directive/sidebar/sidebar.css"/>
+    <link rel="stylesheet" href="teacher-space/space.css" />
+    <!-- endbuild -->
+
+</head>
+<body ng-controller="mainCtrl" class="bg-body-c">
+    <headnav item-list="itemList" user="user"></headnav>
+
+    <div class="g-m-w" ng-controller="teacherSpaceCtrl">
+        <div class="main-body">
+            <div class="left-list">
+                <div class="userInfo">
+                    <div class="topBox">
+                        <img ng-src="{{user.avatar}}" alt="用户头像" class="userImg f-l loading-img">
+                        <div class="userInfoList inlineBlock">
+                            <p class="text loading-text">
+                                <span class="biggerText f-l" title="{{user.nickName}}" ng-bind="user.nickName">user</span>
+                                <a ng-href="{{certificateUrl}}" target="_blank" class="uncertificate white-a loading" ng-show="!user.certification">未认证</a>
+                                <a ng-href="{{certificateUrl}}" target="_blank"  class="certificate white-a loading" ng-show="user.certification">已认证</a>
+                            </p>
+                            <!--<div>
+                                <i class="image-dingdanfabu"></i>
+                                <a ng-href="{{orderUrl}}" target="_blank"  class="order">已售订单</a>
+                            </div>-->
+
+                        </div>
+                    </div>
+
+                    <div class="bottom-box">
+                        <span ng-bind="user.desc"></span>
+                    </div>
+                </div>
+                <sidebar sidebar-type="teacher"></sidebar>
+            </div>
+
+            <div class="right-list">
+                <div ng-view class="content"></div>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+        
+    </div>
+    <div class="gap-20"></div>
+
+    <!--<chat getscope="getscope"></chat>-->
+    <tailnav></tailnav>
+
+    <!-- lib -->
+    <script src="../rcp-common/service/lib-default.min.js"></script>
+    <script src="../highcharts.com/lib/highcharts.js"></script>
+    <!-- build:js teacher-space/teacher-space.min.js-->
+    <script src="../moment/moment.js"></script>
+    <!-- teacher space -->
+    <script src="teacher-space/teacher-space.js"></script>
+    <!-- main controller -->
+    <script src="../rcp-common/module/main/main-ctrl.js"></script>
+    <!-- directive -->
+    <script src="../rcp-common/directive/pagination/pagination.js"></script>
+    <script src="../rcp-common/directive/head-tail/head-tail-dir.js"></script>
+    <script src="../rcp-common/directive/empty-tip/empty-tip.js"></script>
+    <script src="directive/sidebar/sidebar.js"></script>
+    <!-- teacher course manager -->
+    <script src="../rcp-common/directive/default-img/default-img.js"></script>
+    <script src="../course/directive/tips-tool/tips-tool.js"></script>
+    <!-- teacher course manager -->
+    <script src="../course/service/course.js"></script>
+    <script src="../course/module/course-manager/course-manager.js"></script>
+    <!-- paper manager -->
+    <script src="../course/directive/landscape-list/landscape-list.js"></script>
+    <script src="../course/directive/head-selector/head-selector.js"></script>
+    <script src="../course/service/exam.js"></script>
+    <script src="../course/module/exam-score/exam-score.js"></script>
+    <!-- score manager -->
+    <script src="../space/service/score-manager.js"></script>
+    <script src="../space/module/score-manager/score-manager.js"></script>
+    <!-- paper-detail ctrl -->
+    <script src="../course/module/paper-detail/paper-detail.js"></script>
+    <!-- copyright manager -->
+    <script src="../course/directive/detail-modal/detail-modal.js"></script>
+    <script src="../course/module/copyright/copyright.js"></script>
+    <!--iden-manager ctrl-->
+    <script src="../course/module/iden-manager/iden-manager.js"></script>
+    <script src="../course/directive/org-iden/org-iden.js"></script>
+    <!-- team manager -->
+    <script src="../sso/service/sso.js"></script>
+    <script src="../course/directive/confirm-modal/confirm-modal.js"></script>
+    <script src="../course/directive/search-user/search-user.js"></script>
+    <script src="../course/module/team-manager/team-manager.js"></script>
+    <!-- endbuild-->
+    <!-- service -->
+    <script src="../rcp-common/service/service.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+<div class="emotion-editor">
+    <div class="exceed-prompt">
+        <span ng-class="{'c-gray':exceed}" ng-hide="exceed">还可以输入<b class="text1">{{surplus}}</b>字</span>
+        <span ng-class="{'c-red':exceed>0}" ng-show="exceed">已超出<b class="text1">{{exceed}}</b>字</span>
+    </div>
+    <label>
+        <textarea ng-attr-id="{{config.id}}" ng-attr-placeholder="{{config.placeholder}}" ng-model="model" ng-focus="onFocus()" ng-blur="onBlur()" ng-style="config.style"></textarea>
+    </label>
+</div>

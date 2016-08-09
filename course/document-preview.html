@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="RCP">
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <title>文件预览</title>
+    <script src="../config-dy/config-dy.js"></script>
+    <!-- build:css document-preview/document-preview.min.css -->
+    <link rel="stylesheet" href="../rcp-common/styles/common.css"/>
+    <link rel="stylesheet" href="document-preview/document-preview.css"/>
+    <link rel="stylesheet" href="directive/file-preview/file-preview.css"/>
+    <!-- endbuild -->
+</head>
+<body ng-controller="mainCtrl">
+
+    <div ng-controller="viewCtrl">
+
+        <file-preview config="config" args="args"></file-preview>
+
+    </div>
+
+
+
+    <script src="../rcp-common/service/lib-default.min.js"></script>
+
+    <!-- build:js document-preview/document-preview.min.js-->
+
+    <script src="../jquery.scrollTo/jquery.scrollTo.js"></script>
+
+
+    <script src="document-preview/document-preview.js"></script>
+    <script src="directive/file-preview/file-preview.js"></script>
+    <script src="../course/service/course.js"></script>
+
+    <!-- endbuild -->
+    <script src="../rcp-common/service/service.min.js"></script>
+
+</body>
+</html>
