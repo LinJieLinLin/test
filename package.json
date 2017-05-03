@@ -1,0 +1,22 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "index.js",
+  "scripts": {
+    "test": "no"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LinJieLinLin/test.git"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "linj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LinJieLinLin/test/issues"
+  },
+  "homepage": "https://github.com/LinJieLinLin/test#readme"
+}
